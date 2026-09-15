@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kimya Laboratuvarı — Maarif Modeli Kimya Oyunu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #f6f4ee;
+    --ink: #1c231f;
+    --teal: #0e6b5c;
+    --teal-dark: #094c41;
+    --amber: #d69a1f;
+    --coral: #c1542f;
+    --line: #d8d3c4;
+    --card: #ffffff;
+    --good: #1f7a4d;
+    --bad: #b5402a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  html,body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app{
+    max-width: 460px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 18px 16px 40px;
+    position: relative;
+  }
+  .bg-grid{
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .app > *{ position: relative; z-index: 1; }
+
+  header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .brand{
+    font-family:'Fraunces', serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+  .brand span{ color: var(--teal); }
+  .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--coral);
+    background: #fdece5;
+    padding: 3px 7px;
+    border-radius: 3px;
+  }
+
+  .grade-select{ display:flex; gap: 6px; margin: 16px 0 18px; }
+  .grade-btn{
+    flex:1;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 0;
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .grade-btn:active{ transform: translateY(1px); }
+  .grade-btn.active{ background: var(--teal); border-color: var(--teal); color: #fff; }
+  .grade-btn .lvl{ display:block; font-size: 9px; font-weight: 500; opacity: 0.65; margin-top: 2px; }
+
+  .olympiad-btn{
+    width:100%;
+    margin-bottom: 18px;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:700;
+    font-size: 13px;
+    padding: 12px 0;
+    background: var(--card);
+    border: 1.5px dashed var(--coral);
+    color: var(--coral);
+    cursor:pointer;
+  }
+  .olympiad-btn:active{ transform: translateY(1px); }
+  .olympiad-btn.active{ background: var(--coral); border-style: solid; color: #fff; }
+
+  .theme-line{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: #5a5f56;
+    margin-bottom: 18px;
+    line-height: 1.5;
+    padding: 8px 10px;
+    border-left: 3px solid var(--amber);
+    background: #fbf5e6;
+  }
+
+  .setup-panel{ background: var(--card); border: 1.5px solid var(--ink); padding: 20px 18px; }
+  .setup-panel h2{ font-family:'Fraunces', serif; font-size: 19px; margin: 0 0 4px; }
+  .setup-panel > p.sub{ font-size: 13px; color: #5a5f56; margin: 0 0 18px; }
+  .field{ margin-bottom: 16px; }
+  .field-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: var(--teal-dark);
+    margin-bottom: 8px;
+    display:block;
+  }
+  .chip-row{ display:flex; flex-wrap: wrap; gap: 7px; }
+  .chip{
+    font-family:'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 13px;
+    border: 1.3px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .chip.active{ background: var(--ink); border-color: var(--ink); color: #fff; }
+  select.topic-select{
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 1.3px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .toggle-row{
+    display:flex; align-items:center; justify-content: space-between;
+    padding: 11px 0; border-bottom: 1px solid var(--line);
+  }
+  .toggle-row:last-child{ border-bottom: none; }
+  .toggle-text{ font-size: 14px; }
+  .toggle-text small{ display:block; font-size: 11.5px; color: #7a7f70; margin-top: 2px; }
+  .switch{ position: relative; width: 42px; height: 24px; flex-shrink: 0; }
+  .switch input{ opacity:0; width:0; height:0; }
+  .switch .slider{ position:absolute; inset:0; background: var(--line); cursor: pointer; transition: .15s; }
+  .switch .slider::before{ content:""; position:absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: #fff; transition: .15s; }
+  .switch input:checked + .slider{ background: var(--teal); }
+  .switch input:checked + .slider::before{ transform: translateX(18px); }
+
+  .warn-line{ font-family:'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--coral); margin: 4px 0 14px; display: none; }
+  .warn-line.show{ display:block; }
+
+  .comp-name-input{
+    width:100%; padding:10px 12px; border:1.3px solid var(--line);
+    background:var(--paper); font-family:'Inter',sans-serif; font-size:14px; margin-top:8px;
+  }
+  .comp-note{ font-size: 11px; color: #8a8e80; margin-top: 6px; line-height: 1.5; }
+  .btn-ghost{
+    background:none; border:1.3px solid var(--line); color:var(--ink);
+    font-family:'IBM Plex Mono',monospace; font-size:12px; padding:9px 12px;
+    cursor:pointer; width:100%; margin-top: 4px;
+  }
+  .leaderboard{ margin-top: 16px; text-align:left; border-top: 1px solid var(--line); padding-top: 12px; }
+  .leaderboard-title{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase;
+    letter-spacing:.03em; color: var(--teal-dark); margin-bottom: 8px;
+    display:flex; justify-content: space-between; align-items:center;
+  }
+  .lb-row{
+    display:flex; align-items:center; gap: 6px;
+    padding: 8px 4px; border-bottom: 1px solid var(--line); font-size: 12.5px;
+  }
+  .lb-row.me{ background:#fbf5e6; font-weight:700; }
+  .lb-rank{ width:20px; font-family:'IBM Plex Mono',monospace; color:#7a7f70; flex-shrink:0; }
+  .lb-name{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .lb-score{ font-family:'IBM Plex Mono',monospace; font-weight:600; color: var(--teal-dark); flex-shrink:0; }
+  .lb-time{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#8a8e80; flex-shrink:0; margin-left:4px; }
+  .lb-empty{ font-size: 12.5px; color: #8a8e80; padding: 6px 4px; }
+
+  .btn-primary{
+    font-family:'Inter', sans-serif; font-weight: 600; font-size: 15px;
+    background: var(--ink); color: #fff; border: none; padding: 13px 26px;
+    cursor: pointer; width: 100%;
+  }
+  .btn-primary:active{ transform: translateY(1px); }
+  .btn-primary[disabled]{ opacity: .4; cursor: default; }
+
+  .progress-row{
+    display:flex; align-items:center; gap: 10px; margin-bottom: 8px;
+    font-family:'IBM Plex Mono', monospace; font-size: 12px;
+  }
+  .progress-bar{ flex:1; height: 6px; background: var(--line); position: relative; overflow: hidden; }
+  .progress-fill{ position:absolute; left:0; top:0; bottom:0; background: var(--teal); transition: width .35s ease; }
+  .score-chip{ font-weight: 600; color: var(--teal-dark); }
+
+  .status-row{ display:flex; align-items:center; justify-content: space-between; margin-bottom: 14px; min-height: 22px; }
+  .lives{ font-size: 15px; letter-spacing: 3px; }
+  .timer-wrap{ display:flex; align-items:center; gap:6px; font-family:'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: var(--coral); }
+  .timer-bar{ width: 60px; height: 5px; background: var(--line); position: relative; overflow: hidden; }
+  .timer-fill{ position:absolute; left:0; top:0; bottom:0; right:0; background: var(--coral); transform-origin: left; }
+
+  .q-card{ background: var(--card); border: 1.5px solid var(--ink); padding: 20px 18px; margin-bottom: 14px; }
+  .q-topic{
+    font-family:'IBM Plex Mono', monospace; font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: 0.03em; color: var(--amber); margin-bottom: 10px; display:flex; justify-content: space-between;
+  }
+  .q-type-badge{ color: var(--teal-dark); }
+  .q-diff{ color: #8a8e80; }
+  .q-text{ font-family:'Fraunces', serif; font-size: 18px; font-weight: 600; line-height: 1.4; margin: 0 0 18px; }
+
+  .opt{
+    display:block; width: 100%; text-align: left;
+    font-family: 'Inter', sans-serif; font-size: 14.5px; padding: 12px 14px;
+    margin-bottom: 9px; background: var(--paper); border: 1.3px solid var(--line);
+    cursor: pointer; color: var(--ink); transition: border-color .12s ease, background .12s ease;
+  }
+  .opt:active{ transform: translateY(1px); }
+  .opt.correct{ background: #e5f3ea; border-color: var(--good); color: var(--good); font-weight: 600; }
+  .opt.wrong{ background: #fbe9e5; border-color: var(--bad); color: var(--bad); font-weight: 600; }
+  .opt[disabled]{ cursor: default; }
+
+  /* fill-in-the-blank */
+  .fill-sentence{
+    font-family:'Fraunces', serif; font-size: 16.5px; line-height: 1.7;
+    margin: 0 0 18px; color: var(--ink);
+  }
+  .blank-slot{
+    display:inline-block; min-width: 84px; padding: 1px 10px;
+    border-bottom: 2px solid var(--ink); font-weight: 700; color: var(--teal-dark);
+    text-align: center;
+  }
+  .blank-slot.correct{ color: var(--good); border-color: var(--good); }
+  .blank-slot.wrong{ color: var(--bad); border-color: var(--bad); }
+  .bank-row{ display:flex; flex-wrap: wrap; gap: 8px; }
+  .opt.bank{ display:inline-block; width:auto; margin-bottom: 0; }
+
+  /* matching */
+  .match-hint{ font-family:'IBM Plex Mono', monospace; font-size: 11.5px; color: #7a7f70; margin-bottom: 12px; }
+  .match-wrap{ display:flex; gap: 10px; }
+  .match-col{ flex:1; display:flex; flex-direction:column; gap: 8px; }
+  .match-item{
+    font-family: 'Inter', sans-serif; font-size: 12.8px; line-height: 1.35;
+    padding: 10px 9px; border: 1.3px solid var(--line); background: var(--paper);
+    cursor: pointer; text-align: left; color: var(--ink); min-height: 44px;
+  }
+  .match-item.selected{ border-color: var(--teal); background: #e2f0ec; }
+  .match-item.locked{ border-color: var(--good); background: #e5f3ea; color: var(--good); font-weight: 600; cursor: default; }
+  .match-item.wrong-flash{ border-color: var(--bad); background: #fbe9e5; }
+  .match-item[disabled], .match-item.locked{ pointer-events: none; }
+
+  /* numeric / hesaplama */
+  .numeric-wrap{ margin-bottom: 4px; }
+  .num-display{
+    font-family:'IBM Plex Mono', monospace; font-size: 20px; font-weight:700;
+    text-align:center; padding: 14px; border: 1.5px solid var(--ink);
+    background: var(--paper); margin-bottom: 8px; min-height: 26px;
+    word-break: break-word;
+  }
+  .num-display.correct{ color: var(--good); border-color: var(--good); background:#e5f3ea; }
+  .num-display.wrong{ color: var(--bad); border-color: var(--bad); background:#fbe9e5; }
+  .num-unit{ font-size: 12px; color:#7a7f70; text-align:center; margin-bottom: 12px; }
+  .keypad{ display:grid; grid-template-columns: repeat(3,1fr); gap:8px; margin-bottom: 10px; }
+  .key-btn{
+    font-family:'Inter',sans-serif; font-size:17px; font-weight:600;
+    padding:13px 0; background:var(--card); border:1.3px solid var(--line); cursor:pointer;
+  }
+  .key-btn:active{ transform: translateY(1px); }
+  .key-btn[disabled]{ cursor:default; opacity:.45; }
+  .key-btn.wide{ grid-column: span 3; }
+  .btn-submit-num{
+    font-family:'Inter',sans-serif; font-weight:700; font-size:14px;
+    background:var(--teal); color:#fff; border:none; padding:13px; width:100%; cursor:pointer;
+  }
+  .btn-submit-num[disabled]{ opacity:.4; cursor:default; }
+
+  .explain{
+    font-size: 13.5px; line-height: 1.55; color: #3d4239; background: #f1efe6;
+    border-left: 3px solid var(--teal); padding: 10px 12px; margin-top: 8px; display:none;
+  }
+  .explain.show{ display:block; }
+  .explain.timeout{ border-left-color: var(--coral); }
+
+  .next-row{ display:flex; justify-content:flex-end; margin-top: 4px; }
+  .btn-next{
+    font-family:'IBM Plex Mono', monospace; font-weight: 600; font-size: 13px;
+    background: var(--ink); color: #fff; border: none; padding: 10px 20px;
+    cursor: pointer; display:none;
+  }
+  .btn-next.show{ display:inline-block; }
+
+  .result-panel{ background: var(--card); border: 1.5px solid var(--ink); padding: 28px 20px; text-align: center; }
+  .result-panel.gameover{ border-color: var(--bad); }
+  .result-tag{ font-family:'IBM Plex Mono', monospace; font-size: 12px; color: #6a6f60; margin-bottom: 16px; }
+  .result-score{ font-family:'Fraunces', serif; font-size: 44px; font-weight: 700; color: var(--teal); margin: 6px 0 2px; }
+  .result-panel.gameover .result-score{ color: var(--bad); }
+  .result-msg{ font-size: 14.5px; line-height: 1.6; margin-bottom: 22px; }
+
+  .topic-perf{ text-align: left; margin: 4px 0 22px; }
+  .topic-perf-title{
+    font-family:'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase;
+    letter-spacing: .03em; color: var(--teal-dark); margin-bottom: 10px;
+  }
+  .topic-row{ margin-bottom: 10px; }
+  .topic-row-head{
+    display:flex; justify-content: space-between; align-items:baseline;
+    font-size: 12.5px; margin-bottom: 4px;
+  }
+  .topic-row-head .t-name{ font-weight: 600; color: var(--ink); }
+  .topic-row-head .t-frac{ font-family:'IBM Plex Mono', monospace; color: #6a6f60; }
+  .topic-bar{ height: 8px; background: var(--line); position: relative; overflow: hidden; }
+  .topic-bar-fill{ position:absolute; left:0; top:0; bottom:0; background: var(--teal); }
+  .topic-bar-fill.weak{ background: var(--coral); }
+  .topic-bar-fill.mid{ background: var(--amber); }
+
+  .btn-secondary{
+    font-family:'Inter', sans-serif; font-weight: 600; font-size: 14px;
+    background: transparent; color: var(--ink); border: 1.3px solid var(--ink);
+    padding: 11px 22px; cursor: pointer; width: 100%; margin-top: 10px;
+  }
+
+  footer{ text-align:center; margin-top: 22px; font-family:'IBM Plex Mono', monospace; font-size: 10.5px; color: #8a8e80; }
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="app">
+
+  <header>
+    <div class="brand">Kimya<span>Lab</span></div>
+    <div class="tag">Maarif Modeli</div>
+  </header>
+
+  <div class="grade-select" id="gradeSelect">
+    <button class="grade-btn" data-grade="9">9<span class="lvl">Etkileşim</span></button>
+    <button class="grade-btn" data-grade="10">10<span class="lvl">Tepkime·Gaz</span></button>
+    <button class="grade-btn" data-grade="11">11<span class="lvl">Denge</span></button>
+    <button class="grade-btn" data-grade="12">12<span class="lvl">Organik</span></button>
+  </div>
+  <button class="olympiad-btn" id="olympiadBtn">🏆 OLİMPİYAT MODU — Müfredat Üstü, İleri Düzey</button>
+
+  <div class="theme-line" id="themeLine">Bir sınıf seç, o sınıfın öğretim programındaki temalardan sorular gelsin.</div>
+
+  <div id="setupScreen" class="setup-panel">
+    <h2>Sınavını kur</h2>
+    <p class="sub">Zorluk, konu ve oyun modunu seç, sonra başlat. Sorular çoktan seçmeli, boşluk doldurma ve eşleştirme olarak karışık gelir.</p>
+
+    <div class="field">
+      <span class="field-label">Zorluk</span>
+      <div class="chip-row" id="diffChips">
+        <button class="chip active" data-diff="all">Tümü</button>
+        <button class="chip" data-diff="kolay">Kolay</button>
+        <button class="chip" data-diff="orta">Orta</button>
+        <button class="chip" data-diff="zor">Zor</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Konu (ünite)</span>
+      <select class="topic-select" id="topicSelect">
+        <option value="all">Tüm konular</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <div class="toggle-row">
+        <div class="toggle-text">Süreli mod<small>Soru tipine göre 20-60 saniye</small></div>
+        <label class="switch"><input type="checkbox" id="timedToggle"><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-text">Can hakkı modu<small>3 yanlışta oyun biter</small></div>
+        <label class="switch"><input type="checkbox" id="livesToggle"><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="warn-line" id="warnLine">Bu filtreyle eşleşen soru yok, başka bir zorluk/konu seç.</div>
+    <button class="btn-primary" id="startBtn">Sınavı Başlat</button>
+  </div>
+
+  <div id="gameScreen" class="hidden">
+    <div class="progress-row">
+      <span id="qCount">Soru 1/8</span>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <span class="score-chip" id="scoreChip">Skor: 0</span>
+    </div>
+    <div class="status-row">
+      <span class="lives hidden" id="livesDisplay"></span>
+      <span class="timer-wrap hidden" id="timerWrap">
+        <span id="timerNum">20</span>s
+        <span class="timer-bar"><span class="timer-fill" id="timerFill"></span></span>
+      </span>
+    </div>
+
+    <div class="q-card">
+      <div class="q-topic"><span id="qTopic">ÜNİTE</span><span><span class="q-type-badge" id="qTypeBadge"></span> <span class="q-diff" id="qDiff"></span></span></div>
+      <p class="q-text" id="qText"></p>
+      <div id="answerArea"></div>
+      <div class="explain" id="explainBox"></div>
+      <div class="next-row"><button class="btn-next" id="nextBtn">Sıradaki →</button></div>
+    </div>
+  </div>
+
+  <div id="resultScreen" class="hidden result-panel">
+    <div class="result-tag" id="resultTag">SONUÇ</div>
+    <div class="result-score" id="resultScore">0/8</div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="topic-perf hidden" id="topicPerf">
+      <div class="topic-perf-title">Konu Bazlı Performans</div>
+      <div id="topicPerfRows"></div>
+    </div>
+
+    <div class="topic-perf hidden" id="miscReport">
+      <div class="topic-perf-title">Kavram Yanılgısı Analizin</div>
+      <div id="miscReportRows"></div>
+      <button class="btn-secondary" id="aiTipBtn">🤖 Yapay Zekadan Kişiye Özel Tavsiye Al</button>
+      <div class="explain hidden" id="aiTipBox"></div>
+    </div>
+
+    <div class="topic-perf hidden" id="miscMap">
+      <div class="topic-perf-title">
+        <span>🗺️ Türkiye Kavram Yanılgıları Haritası</span>
+      </div>
+      <div class="comp-note" id="miscMapNote"></div>
+      <div id="miscMapRows"></div>
+    </div>
+
+    <div class="topic-perf" id="connStatus">
+      <div class="topic-perf-title">Veri Bağlantı Durumu</div>
+      <div class="comp-note" id="connStatusText">Kontrol ediliyor...</div>
+    </div>
+
+    <button class="btn-primary" id="retryBtn">Aynı Ayarlarla Tekrar</button>
+    <button class="btn-secondary" id="reconfigBtn">Ayarları Değiştir</button>
+  </div>
+
+  <footer>9-12. sınıf Türkiye Yüzyılı Maarif Modeli kimya öğretim programı temalarına göre hazırlanmıştır.</footer>
+</div>
+
+<script>
+const FIREBASE_PROJECT_ID = "kimya-oyunu";
+const FIREBASE_API_KEY = "AIzaSyAhnD1L6MwDRISi2xlN_JD19jRVsu2x4AM";
+const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents`;
+
+// Firebase JS SDK yerine doğrudan Firestore REST API kullanıyoruz;
+// bu, harici <script> dosyası yüklemeye gerek bırakmadığı için
+// kısıtlı önizleme ortamlarında da çalışır.
+function jsToFirestoreFields(obj){
+  const fields = {};
+  Object.entries(obj).forEach(([k, v]) => {
+    if(typeof v === 'string'){
+      fields[k] = { stringValue: v };
+    } else if(typeof v === 'number' && Number.isInteger(v)){
+      fields[k] = { integerValue: String(v) };
+    } else if(typeof v === 'number'){
+      fields[k] = { doubleValue: v };
+    } else if(Array.isArray(v)){
+      fields[k] = { arrayValue: { values: v.map(item => ({ stringValue: String(item) })) } };
+    } else if(v instanceof Date){
+      fields[k] = { timestampValue: v.toISOString() };
+    }
+  });
+  return fields;
+}
+
+function firestoreFieldsToJs(fields){
+  const out = {};
+  if(!fields) return out;
+  Object.entries(fields).forEach(([k, v]) => {
+    if(v.stringValue !== undefined) out[k] = v.stringValue;
+    else if(v.integerValue !== undefined) out[k] = parseInt(v.integerValue, 10);
+    else if(v.doubleValue !== undefined) out[k] = v.doubleValue;
+    else if(v.timestampValue !== undefined) out[k] = v.timestampValue;
+    else if(v.arrayValue !== undefined) out[k] = (v.arrayValue.values || []).map(x => x.stringValue !== undefined ? x.stringValue : x);
+  });
+  return out;
+}
+</script>
+<script>
+const BANK = {
+  9: {
+    label: "9. Sınıf — Kimya Hayattır · Atomdan Periyodik Tabloya · Etkileşimler",
+    questions: [
+      {type:"mc", topic:"Atomdan Periyodik Tabloya", diff:"orta", q:"Modern atom teorisine göre elektronlar atom çekirdeği etrafında nasıl bulunur?", opts:["Belirli dairesel yörüngelerde sabit hızla","Bulunma olasılığının yüksek olduğu orbitallerde","Çekirdeğin içinde protonlarla iç içe","Sadece en dış katmanda sabit biçimde"], correct:1, diagMisc:{0:"yorunge-sabit"}, exp:"Modern atom teorisi (kuantum modeli), elektronun tam konumunu değil, bulunma olasılığının yüksek olduğu bölgeleri yani orbitalleri tanımlar."},
+      {type:"mc", topic:"Atomdan Periyodik Tabloya", diff:"kolay", q:"Aynı periyotta soldan sağa gidildikçe atom yarıçapı genellikle nasıl değişir?", opts:["Artar","Azalır","Değişmez","Önce artar sonra azalır"], correct:1, diagMisc:{0:"periyot-yaricap-yon"}, exp:"Aynı periyotta proton sayısı arttıkça çekirdeğin çekim kuvveti güçlenir ve elektronlar çekirdeğe daha sıkı bağlanır, bu yüzden atom yarıçapı azalır."},
+      {type:"mc", topic:"Etkileşimler", diff:"kolay", q:"NaCl (sofra tuzu) bileşiğindeki bağ türü nedir?", opts:["Kovalent bağ","Metalik bağ","İyonik bağ","Hidrojen bağı"], correct:2, diagMisc:{0:"iyonik-molekul"}, exp:"Na metali elektron verip katyon, Cl ametali elektron alıp anyon olur; zıt yüklü iyonlar arasındaki elektrostatik çekim iyonik bağı oluşturur."},
+      {type:"mc", topic:"Etkileşimler", diff:"zor", q:"Bir molekülün polar mı apolar mı olduğunu belirlemede aşağıdakilerden hangisi doğrudan etkili değildir?", opts:["Bağ polarlığı","Molekül geometrisi","Molekülün molar kütlesi","Ortaklanmamış elektron çiftlerinin konumu"], correct:2, exp:"Polarlık, bağların polarlığına ve molekülün geometrik simetrisine bağlıdır; molar kütlenin polarlıkla doğrudan bir ilişkisi yoktur."},
+      {type:"mc", topic:"Kimya Hayattır", diff:"kolay", q:"Yeşil kimya yaklaşımının temel amacı nedir?", opts:["Üretim hızını en üst düzeye çıkarmak","Kimyasal süreçlerde çevreye zararı azaltıp sürdürülebilirliği artırmak","Sadece doğal maddelerle çalışmak","Laboratuvar maliyetini sıfırlamak"], correct:1, exp:"Yeşil kimya; daha az atık, daha güvenli maddeler ve daha az enerjiyle üretim yaparak çevresel etkiyi azaltmayı hedefler."},
+      {type:"mc", topic:"Atomdan Periyodik Tabloya", diff:"orta", q:"Elektronegatifliği en yüksek element periyodik tabloda genellikle nerede bulunur?", opts:["Sol alt köşede","Sağ üst köşede (soy gazlar hariç)","Tablonun tam ortasında","Alkali metallerde"], correct:1, diagMisc:{0:"elektronegatiflik-yer"}, exp:"Elektronegatiflik periyotta sağa, grupta yukarı çıkıldıkça artar; bu yüzden en yüksek değerler sağ üst köşede (F gibi) görülür."},
+      {type:"mc", topic:"Etkileşimler", diff:"orta", q:"Metalik bağın iletkenlik özelliğini açıklayan model nedir?", opts:["Sabit elektron modeli","Serbest dolaşan elektron denizi modeli","İyon çifti modeli","Kovalent ağ modeli"], correct:1, diagMisc:{0:"metalik-bag-sabit"}, exp:"Metal atomlarının değerlik elektronları serbestçe hareket eden bir 'elektron denizi' oluşturur; bu hareketlilik elektrik ve ısı iletkenliğini sağlar."},
+      {type:"mc", topic:"Kimya Hayattır", diff:"kolay", q:"Kimyasal madde güvenliğinde bir maddenin tehlike sınıfını gösteren uluslararası sembol sistemine ne ad verilir?", opts:["GHS piktogramları","SI birim sistemi","IUPAC adlandırma sistemi","Periyodik sınıflandırma"], correct:0, exp:"GHS (Küresel Uyumlaştırılmış Sistem) piktogramları, kimyasalların yanıcılık, toksisite gibi tehlikelerini standart sembollerle gösterir."},
+      {type:"fill", topic:"Etkileşimler", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Metal atomu ile ametal atomu arasında elektron alışverişi sonucu oluşan bağa ___ bağ denir.", bank:["iyonik","kovalent","metalik"], correct:"iyonik", exp:"Metal elektron vererek katyon, ametal elektron alarak anyon olur; zıt yüklü iyonlar arasındaki çekim iyonik bağı oluşturur."},
+      {type:"fill", topic:"Atomdan Periyodik Tabloya", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"Bir grupta yukarıdan aşağıya inildikçe atom yarıçapı ___.", bank:["artar","azalır","sabit kalır"], correct:"artar", exp:"Gruplarda aşağı inildikçe elektron katman sayısı arttığı için atom yarıçapı artar."},
+      {type:"match", topic:"Etkileşimler", diff:"orta", q:"Bağ türünü örneğiyle eşleştir:", pairs:[["İyonik bağ","NaCl"],["Kovalent bağ","H₂O"],["Metalik bağ","Fe (demir)"]], exp:"NaCl iyonik bağa, H₂O moleküler kovalent bağa, Fe (demir) ise metalik bağa örnektir."},
+      {type:"mc", topic:"Atomdan Periyodik Tabloya", diff:"kolay", q:"Bohr atom modeline göre elektronlar nerede bulunur?", opts:["Belirli enerji düzeylerinde dairesel yörüngelerde","Rastgele her yerde dağınık biçimde","Sadece çekirdeğin içinde","Sadece çekirdeğin yüzeyinde"], correct:0, exp:"Bohr modeli, elektronların belirli enerji düzeylerinde dairesel yörüngelerde dolaştığını varsayar; modern kuantum modeli bunu olasılık bulutuyla geliştirmiştir."},
+      {type:"mc", topic:"Etkileşimler", diff:"orta", q:"Lewis nokta yapısında iki atom arasındaki bağ elektronları nasıl gösterilir?", opts:["Bir çizgi veya nokta çifti ile","Sadece ok işaretiyle","Üçgen sembolüyle","Kare işaretiyle"], correct:0, diagMisc:{1:"lewis-ok-karisikligi"}, exp:"Lewis yapılarında bağ elektronları, iki atom arasına çizilen bir çizgi ya da nokta çifti ile gösterilir."},
+      {type:"fill", topic:"Atomdan Periyodik Tabloya", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Periyodik tabloda aynı düşey sütunda yer alan elementlere ___ denir.", bank:["grup","periyot","blok"], correct:"grup", exp:"Dikey sütunlar gruplardır, yatay sıralar periyottur; aynı gruptaki elementler benzer kimyasal özellikler gösterir."},
+      {type:"fill", topic:"Etkileşimler", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"Elektronegatiflik farkı çok büyük olan iki atom arasında genellikle ___ bağ oluşur.", bank:["iyonik","apolar kovalent","metalik"], correct:"iyonik", exp:"Elektronegatiflik farkı büyükse elektron transferi gerçekleşir ve iyonik bağ oluşur; fark küçükse kovalent bağ oluşur."},
+      {type:"match", topic:"Kimya Hayattır", diff:"kolay", q:"Kimya alt disiplinini odak alanıyla eşleştir:", pairs:[["Analitik kimya","Madde miktarını ve türünü belirleme"],["Organik kimya","Karbon bileşiklerini inceleme"],["Biyokimya","Canlılardaki kimyasal süreçleri inceleme"]], exp:"Kimyanın alt disiplinleri farklı odak alanlarına sahiptir: analitik ölçüm, organik karbon bileşikleri, biyokimya ise canlı sistemleri inceler."}
+    ]
+  },
+  10: {
+    label: "10. Sınıf — Etkileşim (Tepkimeler·Gazlar) · Çeşitlilik (Çözeltiler) · Sürdürülebilirlik",
+    questions: [
+      {type:"mc", topic:"Kimyasal Tepkimeler", diff:"orta", q:"Bir redoks tepkimesinde yükseltgenme ne anlama gelir?", opts:["Elektron alma","Elektron verme","Proton alma","Proton verme"], correct:1, diagMisc:{0:"yukseltgenme-indirgenme-karisikligi"}, exp:"Yükseltgenme, bir türün elektron kaybetmesi ve yükseltgenme basamağının artmasıdır; indirgenme ise elektron kazanmadır."},
+      {type:"mc", topic:"Stokiyometri", diff:"kolay", q:"1 mol herhangi bir gazın normal koşullarda (NKA) kapladığı hacim yaklaşık kaç litredir?", opts:["11,2 L","22,4 L","44,8 L","6,02 L"], correct:1, exp:"Avogadro yasasına göre normal koşullarda (0°C, 1 atm) 1 mol ideal gaz yaklaşık 22,4 litre hacim kaplar."},
+      {type:"mc", topic:"Gazlar", diff:"kolay", q:"İdeal gaz denklemi PV=nRT'de sabit sıcaklık ve mol sayısında basınç artarsa hacim nasıl değişir?", opts:["Artar","Azalır","Değişmez","Önce artar sonra azalır"], correct:1, diagMisc:{0:"boyle-yasa-yon-karisikligi"}, exp:"Boyle yasasına göre sabit sıcaklıkta basınç ile hacim ters orantılıdır; basınç artınca hacim azalır."},
+      {type:"mc", topic:"Çözeltiler", diff:"orta", q:"Bir çözeltinin derişimi arttıkça saf çözücüye göre donma noktası nasıl değişir?", opts:["Yükselir","Düşer","Değişmez","Önce düşer sonra yükselir"], correct:1, diagMisc:{0:"cozelti-donma-kaynama-karisikligi"}, exp:"Çözünen tanecikler çözücü moleküllerinin düzenli kristal yapı oluşturmasını zorlaştırır, bu koligatif özellik donma noktasını düşürür."},
+      {type:"mc", topic:"Çözünürlük", diff:"kolay", q:"Katıların çözünürlüğü genellikle sıcaklıkla nasıl bir ilişki gösterir?", opts:["Her zaman azalır","Genellikle artar","Hiç değişmez","Sadece basınca bağlıdır"], correct:1, diagMisc:{0:"cozunurluk-genelleme"}, exp:"Çoğu katı-sıvı çözeltisinde sıcaklık arttıkça çözünürlük artar, çünkü çözünme genellikle endotermik bir süreçtir."},
+      {type:"mc", topic:"Kimyasal Tepkimeler", diff:"zor", q:"Bir tepkimede sınırlayıcı bileşen kavramı neyi ifade eder?", opts:["En fazla mol miktarına sahip bileşeni","Tepkimeyi ilk bitiren ve ürün miktarını sınırlayan bileşeni","Katalizör görevi gören bileşeni","Tepkimeye hiç girmeyen bileşeni"], correct:1, diagMisc:{0:"sinirlayici-bilesen-karisikligi"}, exp:"Sınırlayıcı bileşen tükendiğinde tepkime durur; bu yüzden oluşacak ürün miktarını bu bileşenin miktarı belirler."},
+      {type:"mc", topic:"Gazlar", diff:"zor", q:"Aynı sıcaklık ve basınçta hafif bir gaz, ağır bir gaza göre bir delikten nasıl yayılır?", opts:["Daha yavaş yayılır","Daha hızlı yayılır","Aynı hızda yayılır","Hiç yayılmaz"], correct:1, diagMisc:{0:"graham-yasa-karisikligi"}, exp:"Graham yayılma yasasına göre gazların yayılma hızı molar kütlenin kareköküyle ters orantılıdır; hafif gaz daha hızlı yayılır."},
+      {type:"mc", topic:"Sürdürülebilirlik", diff:"kolay", q:"Endüstriyel süreçlerde atık ve enerji kullanımını azaltmayı hedefleyen yaklaşıma ne denir?", opts:["Yeşil kimya ve sürdürülebilirlik ilkeleri","Ağır sanayi optimizasyonu","Fosil yakıt verimliliği","Stokiyometrik zenginleştirme"], correct:0, exp:"Sürdürülebilirlik teması, üretim süreçlerinde çevresel etkiyi azaltacak yeşil kimya ilkelerinin uygulanmasını kapsar."},
+      {type:"fill", topic:"Gazlar", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Sabit sıcaklıkta bir gazın basıncı ile hacmi ___ orantılıdır (Boyle Yasası).", bank:["doğru","ters","hiçbir şekilde"], correct:"ters", exp:"Boyle Yasası'na göre sabit sıcaklıkta basınç arttıkça hacim azalır; yani basınç ile hacim ters orantılıdır."},
+      {type:"fill", topic:"Çözeltiler", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"Bir çözeltide çözünen madde miktarı arttıkça çözeltinin kaynama noktası ___.", bank:["yükselir","düşer","değişmez"], correct:"yükselir", exp:"Çözünen tanecikler buhar basıncını düşürdüğü için çözeltinin kaynaması için daha yüksek sıcaklık gerekir; kaynama noktası yükselir."},
+      {type:"match", topic:"Kimyasal Tepkimeler", diff:"orta", q:"Tepkime türünü örneğiyle eşleştir:", pairs:[["Yanma tepkimesi","CH₄ + O₂ → CO₂ + H₂O"],["Nötrleşme tepkimesi","HCl + NaOH → NaCl + H₂O"],["Çökelme tepkimesi","AgNO₃ + NaCl → AgCl(k) + NaNO₃"]], exp:"Yanma oksijenle gerçekleşen tepkime, nötrleşme asit-baz tepkimesi, çökelme ise suda çözünmeyen katı ürünün oluştuğu tepkimedir."},
+      {type:"mc", topic:"Stokiyometri", diff:"orta", q:"2H₂ + O₂ → 2H₂O tepkimesine göre 4 mol H₂ tamamen tepkimeye girerse kaç mol H₂O oluşur?", opts:["2 mol","4 mol","6 mol","8 mol"], correct:1, diagMisc:{0:"katsayi-oran-karisikligi"}, exp:"Denklemdeki katsayı oranına göre 2 mol H₂, 2 mol H₂O verir; orantı kurulduğunda 4 mol H₂'den 4 mol H₂O oluşur."},
+      {type:"mc", topic:"Gazlar", diff:"kolay", q:"Kapalı bir kapta sıcaklık ve hacim sabit tutulup gaz miktarı (mol) artırılırsa basınç nasıl değişir?", opts:["Artar","Azalır","Değişmez","Sıfır olur"], correct:0, exp:"Sabit hacim ve sıcaklıkta mol sayısı arttıkça gaz taneciklerinin çarpışma sıklığı artar, bu da basıncı artırır."},
+      {type:"fill", topic:"Çözünürlük", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Belirli sıcaklıkta çözebileceği maksimum miktarda çözünmüş madde içeren çözeltiye ___ çözelti denir.", bank:["doymuş","doymamış","aşırı doymuş"], correct:"doymuş", exp:"Doymuş çözelti, o sıcaklıkta çözünürlük sınırına ulaşmış, daha fazla çözünen alamayan çözeltidir."},
+      {type:"fill", topic:"Kimyasal Tepkimeler", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"Kapalı bir sistemde tepkimeye giren maddelerin toplam kütlesi, oluşan ürünlerin toplam kütlesine eşittir; bu ilkeye ___ denir.", bank:["kütlenin korunumu yasası","enerjinin korunumu yasası","sabit oranlar yasası"], correct:"kütlenin korunumu yasası", exp:"Lavoisier'in kütlenin korunumu yasasına göre kapalı bir sistemde toplam kütle tepkime öncesi ve sonrasında değişmez."},
+      {type:"match", topic:"Çözeltiler", diff:"orta", q:"Kavramı tanımıyla eşleştir:", pairs:[["Derişik çözelti","Birim hacimde çok çözünen madde içeren çözelti"],["Seyreltik çözelti","Birim hacimde az çözünen madde içeren çözelti"],["Molarite","Çözeltinin litredeki mol cinsinden derişimi"]], exp:"Derişim kavramları çözeltideki çözünen miktarını farklı şekillerde ifade eder; molarite en sık kullanılan derişim birimidir."}
+    ]
+  },
+  11: {
+    label: "11. Sınıf — Çeşitlilik (Denge·Asit-Baz·Çözünürlük Dengesi) · Sürdürülebilirlik",
+    questions: [
+      {type:"mc", topic:"Kimyasal Denge", diff:"kolay", q:"Le Chatelier ilkesine göre dengedeki bir sisteme dışarıdan reaktan eklenirse denge hangi yöne kayar?", opts:["Ürün yönüne","Reaktan yönüne","Kaymaz, denge sabit kalır","Tepkime tamamen durur"], correct:0, diagMisc:{1:"le-chatelier-yon-karisikligi"}, exp:"Le Chatelier ilkesine göre sisteme etki eden değişikliği azaltacak yönde denge kayar; reaktan eklenince denge ürün yönüne kayar."},
+      {type:"mc", topic:"Asit-Baz Dengesi", diff:"zor", q:"pH değeri 3 olan bir çözelti ile pH değeri 5 olan bir çözelti karşılaştırıldığında ilk çözelti için ne söylenebilir?", opts:["Daha bazik","100 kat daha asidik","10 kat daha asidik","Aynı asitliktedir"], correct:1, diagMisc:{2:"ph-dogrusal",3:"ph-dogrusal"}, exp:"pH logaritmik bir ölçektir; pH farkı 2 birim olduğunda hidrojen iyonu derişimi 10²=100 kat farklıdır."},
+      {type:"mc", topic:"Asit-Baz Dengesi", diff:"orta", q:"Zayıf bir asit ile onun konjuge bazının karışımından oluşan ve pH değişimine direnç gösteren sisteme ne denir?", opts:["Elektrolit çözelti","Tampon çözelti","Kolloidal çözelti","Doygun çözelti"], correct:1, exp:"Tampon çözeltiler, az miktarda asit veya baz eklendiğinde pH'ı büyük ölçüde sabit tutabilen zayıf asit/baz-konjuge çift sistemleridir."},
+      {type:"mc", topic:"Çözünürlük Dengesi", diff:"orta", q:"Çözünürlük çarpımı (Ksp) küçük olan bir bileşik için ne söylenebilir?", opts:["Suda çok iyi çözünür","Suda az çözünür","Ksp çözünürlükle ilgisizdir","Her zaman gaz oluşturur"], correct:1, diagMisc:{0:"ksp-buyukluk-karisikligi"}, exp:"Ksp değeri küçük olan bileşikler, iyonlarına çok az ayrıştığı için suda düşük çözünürlük gösterir."},
+      {type:"mc", topic:"Kimyasal Denge", diff:"zor", q:"Bir tepkimenin denge sabiti (K) sıcaklık dışında hangi faktörden etkilenmez?", opts:["Katalizör eklenmesinden","Reaktan derişiminin değişmesinden","Sıcaklık değişiminden","Hiçbiri; K sadece sıcaklığa bağlıdır"], correct:3, diagMisc:{0:"denge-sabiti-degisken-karisikligi",1:"denge-sabiti-degisken-karisikligi"}, exp:"Denge sabiti K yalnızca sıcaklığa bağlıdır; derişim veya katalizör değişimi denge konumunu etkiler ama K değerini değiştirmez."},
+      {type:"mc", topic:"Sürdürülebilirlik", diff:"kolay", q:"Evsel atıklardan fermantasyon yoluyla üretilen ve programda 'yeşil' olarak nitelendirilen enerji kaynağı hangisidir?", opts:["Yeşil hidrojen","Doğalgaz","Kömür gazı","Nükleer enerji"], correct:0, exp:"11. sınıf sürdürülebilirlik temasında, organik atıkların fermantasyonuyla üretilen yeşil hidrojen enerjisi işlenir."},
+      {type:"mc", topic:"Sürdürülebilirlik", diff:"kolay", q:"Mikroplastik ve nanoplastiklerin çevre-sağlık etkileri hangi temanın kapsamında incelenir?", opts:["Etkileşim", "Çeşitlilik", "Sürdürülebilirlik", "Asit-baz dengesi"], correct:2, exp:"Mikroplastik/nanoplastik etkileri, 11. sınıf programının güncel ve eleştirel düşünmeye dayalı Sürdürülebilirlik temasında yer alır."},
+      {type:"mc", topic:"Asit-Baz Dengesi", diff:"zor", q:"Suyun kendi kendine iyonlaşma sabiti Kw'nin 25°C'deki değeri yaklaşık nedir?", opts:["1,0 x 10⁻⁷","1,0 x 10⁻¹⁴","1,0 x 10⁻¹","1,0 x 10⁷"], correct:1, exp:"25°C'de Kw = [H⁺][OH⁻] = 1,0 x 10⁻¹⁴ olup, nötr suda her iki iyon derişimi de 1,0 x 10⁻⁷ M'dir."},
+      {type:"fill", topic:"Kimyasal Denge", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Ekzotermik bir tepkimede sıcaklık artırılırsa denge ___ yönüne kayar.", bank:["reaktan","ürün","hiçbir"], correct:"reaktan", exp:"Le Chatelier ilkesine göre ekzotermik tepkimede sıcaklık artışı, fazla ısıyı tüketecek yönde yani reaktan (geri) yönüne kaymaya sebep olur."},
+      {type:"fill", topic:"Asit-Baz Dengesi", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"pH değeri 7'den küçük olan bir çözelti ___ özellik gösterir.", bank:["asidik","bazik","nötr"], correct:"asidik", exp:"25°C'de pH<7 olan çözeltiler asidik, pH>7 olanlar baziktir, pH=7 nötrdür."},
+      {type:"match", topic:"Çözünürlük Dengesi", diff:"zor", q:"Kavramı tanımıyla eşleştir:", pairs:[["Ksp","Çözünürlük çarpımı sabiti"],["Ortak iyon etkisi","Çözünürlüğü azaltan iyon etkisi"],["Doygun çözelti","Çözünmenin dengeye ulaştığı çözelti"]], exp:"Ksp iyonlarına ayrışma dengesini, ortak iyon etkisi çözünürlüğü azaltan etkiyi, doygun çözelti ise dengedeki çözeltiyi tanımlar."},
+      {type:"mc", topic:"Kimyasal Denge", diff:"orta", q:"Dinamik denge durumunda ileri ve geri tepkime hızları için ne söylenebilir?", opts:["İleri tepkime hızı daha büyüktür","Geri tepkime hızı daha büyüktür","İkisi de birbirine eşittir","İkisi de sıfırdır"], correct:2, diagMisc:{0:"dinamik-denge-hiz-karisikligi",1:"dinamik-denge-hiz-karisikligi"}, exp:"Dinamik dengede ileri ve geri tepkime hızları birbirine eşitlenir; tepkime durmaz ama net derişim değişimi gözlenmez."},
+      {type:"mc", topic:"Asit-Baz Dengesi", diff:"kolay", q:"Turnusol kağıdını maviye çeviren bir çözelti hangi özelliktedir?", opts:["Asidik","Bazik","Nötr","Renksiz"], correct:1, exp:"Bazik çözeltiler kırmızı turnusolü maviye çevirir; asidik çözeltiler ise maviyi kırmızıya çevirir."},
+      {type:"fill", topic:"Çözünürlük Dengesi", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"Az çözünen bir tuzun doymuş çözeltisindeki iyon derişimleri çarpımına o tuzun ___ denir.", bank:["çözünürlük çarpımı (Ksp)","molaritesi","pH değeri"], correct:"çözünürlük çarpımı (Ksp)", exp:"Ksp, az çözünen bir bileşiğin doymuş çözeltisindeki iyon derişimlerinin çarpımıdır ve sabit sıcaklıkta sabittir."},
+      {type:"fill", topic:"Sürdürülebilirlik", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Nanometre boyutundaki malzemelerin özelliklerini inceleyen alana ___ denir.", bank:["nanoteknoloji","biyoteknoloji","petrokimya"], correct:"nanoteknoloji", exp:"Nanoteknoloji, maddelerin nanometre ölçeğindeki özelliklerini inceleyip yeni uygulamalar geliştiren bir alandır."},
+      {type:"match", topic:"Kimyasal Denge", diff:"zor", q:"Kavramı tanımıyla eşleştir:", pairs:[["Homojen denge","Tüm bileşenlerin aynı fazda olduğu denge"],["Heterojen denge","Bileşenlerin farklı fazlarda olduğu denge"],["Le Chatelier ilkesi","Dengeye yapılan etkiyi azaltma eğilimi"]], exp:"Denge tepkimeleri bileşenlerin fazına göre homojen ya da heterojen olabilir; Le Chatelier ilkesi dengenin dış etkilere tepkisini açıklar."}
+    ]
+  },
+  12: {
+    label: "12. Sınıf — Kimya ve Elektrik · Karbon Kimyasına Giriş · Organik Bileşikler · Enerji Kaynakları",
+    questions: [
+      {type:"mc", topic:"Kimya ve Elektrik", diff:"orta", q:"Bir galvanik (voltaik) hücrede elektrik akımını üreten şey nedir?", opts:["Dışarıdan uygulanan elektrik enerjisi","Kendiliğinden gerçekleşen redoks tepkimesi","Sıcaklık farkı","Manyetik alan"], correct:1, diagMisc:{0:"elektroliz-galvanik-karisikligi"}, exp:"Galvanik hücrelerde kendiliğinden gerçekleşen (istemli) bir redoks tepkimesinin kimyasal enerjisi elektrik enerjisine dönüştürülür."},
+      {type:"mc", topic:"Kimya ve Elektrik", diff:"orta", q:"Elektroliz işleminde elektrik enerjisi nasıl kullanılır?", opts:["Kendiliğinden olan tepkimeyi hızlandırmak için","İstemsiz bir tepkimeyi gerçekleştirmek için","Sadece ısı üretmek için","Sadece ışık üretmek için"], correct:1, diagMisc:{0:"elektroliz-galvanik-karisikligi"}, exp:"Elektroliz, dışarıdan verilen elektrik enerjisiyle kendiliğinden gerçekleşmeyen (istemsiz) bir redoks tepkimesini zorlar."},
+      {type:"mc", topic:"Kimya ve Elektrik", diff:"kolay", q:"Demirin paslanması gibi metallerin çevresel etkenlerle bozunmasına ne ad verilir?", opts:["Elektroliz","Korozyon","Redüksiyon","Polimerizasyon"], correct:1, exp:"Korozyon, metallerin oksijen ve nem gibi çevresel etkenlerle elektrokimyasal olarak aşınıp bozunması sürecidir."},
+      {type:"mc", topic:"Karbon Kimyasına Giriş", diff:"kolay", q:"Elmas, grafit ve grafen gibi yapılar karbonun neyine örnektir?", opts:["İzotoplarına","Allotroplarına","İyonlarına","Radikallerine"], correct:1, diagMisc:{0:"izotop-allotrop-karisikligi"}, exp:"Aynı elementin farklı yapısal formlarına allotrop denir; elmas, grafit, fulleren ve grafen karbonun allotroplarıdır."},
+      {type:"mc", topic:"Karbon Kimyasına Giriş", diff:"zor", q:"Karbon atomunun sp3 hibritleşmesi yaptığında molekül geometrisi genellikle nasıldır?", opts:["Doğrusal","Üçgen düzlem","Tetrahedral (dörtyüzlü)","Kare düzlem"], correct:2, diagMisc:{1:"hibritlesme-geometri-karisikligi"}, exp:"sp3 hibritleşmesinde karbon 4 eş enerjili orbital oluşturur ve bağ açıları yaklaşık 109,5° olan tetrahedral geometri ortaya çıkar."},
+      {type:"mc", topic:"Organik Bileşikler", diff:"kolay", q:"–OH fonksiyonel grubunu taşıyan organik bileşik sınıfı hangisidir?", opts:["Alkoller","Karboksilik asitler","Eterler","Esterler"], correct:0, exp:"Hidroksil (–OH) grubunu bir karbon zincirine bağlı olarak taşıyan bileşikler alkol sınıfını oluşturur."},
+      {type:"mc", topic:"Organik Bileşikler", diff:"orta", q:"Bir karboksilik asit ile bir alkolün tepkimesinden hangi fonksiyonel grup ve yan ürün oluşur?", opts:["Eter ve hidrojen gazı","Ester ve su","Alkol ve oksijen gazı","Keton ve amonyak"], correct:1, exp:"Esterleşme tepkimesinde karboksilik asit ve alkol, bir ester ve su molekülü oluşturmak üzere yoğuşma tepkimesi verir."},
+      {type:"mc", topic:"Enerji Kaynakları", diff:"kolay", q:"Aşağıdakilerden hangisi bir alternatif (yenilenebilir) enerji kaynağıdır?", opts:["Petrol","Doğalgaz","Güneş enerjisi","Kömür"], correct:2, exp:"Güneş, rüzgar, biyoyakıt ve hidrojen gibi kaynaklar sınırsız ya da hızlı yenilenebilir oldukları için alternatif enerji kaynağı sayılır; fosil yakıtlar (petrol, kömür, doğalgaz) yenilenemezdir."},
+      {type:"fill", topic:"Organik Bileşikler", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Karboksilik asit ile alkolün tepkimesi sonucu oluşan bileşiğe ___ denir.", bank:["ester","eter","keton"], correct:"ester", exp:"Karboksilik asit ve alkolün yoğuşma tepkimesiyle ester ve su oluşur; bu tepkimeye esterleşme denir."},
+      {type:"fill", topic:"Kimya ve Elektrik", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"Kendiliğinden gerçekleşen redoks tepkimesiyle elektrik üreten hücreye ___ hücre denir.", bank:["galvanik","elektrolitik","fotovoltaik"], correct:"galvanik", exp:"Galvanik (voltaik) hücrelerde istemli redoks tepkimesi kimyasal enerjiyi elektrik enerjisine çevirir; elektrolitik hücreler ise tam tersini yapar."},
+      {type:"match", topic:"Karbon Kimyasına Giriş", diff:"orta", q:"Karbon allotropunu özelliğiyle eşleştir:", pairs:[["Elmas","Çok sert, yalıtkan yapı"],["Grafit","Katmanlı, kayganlaştırıcı yapı"],["Grafen","Tek katmanlı, yüksek iletkenlik"]], exp:"Elmas sp3 hibritleşmesiyle çok sert bir yapı, grafit katmanlı kayan yapı, grafen ise tek atom kalınlığında yüksek iletkenlik gösteren bir allotroptur."},
+      {type:"mc", topic:"Kimya ve Elektrik", diff:"zor", q:"Standart elektrot potansiyeli daha pozitif olan yarı hücre bir pilde hangi görevi üstlenir?", opts:["Anot (yükseltgenme)","Katot (indirgenme)","Tuz köprüsü","Elektrolit"], correct:1, diagMisc:{0:"elektrot-potansiyel-karisikligi"}, exp:"Daha pozitif standart elektrot potansiyeline sahip yarı hücre indirgenmeye daha yatkındır ve pilde katot görevi görür."},
+      {type:"mc", topic:"Enerji Kaynakları", diff:"kolay", q:"Aşağıdakilerden hangisi bir fosil yakıttır?", opts:["Güneş enerjisi","Doğalgaz","Rüzgar enerjisi","Biyoyakıt"], correct:1, exp:"Doğalgaz, petrol ve kömür gibi milyonlarca yılda oluşan yenilenemeyen kaynaklar fosil yakıt olarak sınıflandırılır."},
+      {type:"fill", topic:"Organik Bileşikler", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"Karbon-karbon arasında yalnızca tek bağ içeren doymuş hidrokarbonlara ___ denir.", bank:["alkan","alken","alkin"], correct:"alkan", exp:"Alkanlar yalnızca tek (sigma) bağlarla bağlanmış doymuş hidrokarbonlardır; alken çift, alkin üçlü bağ içerir."},
+      {type:"fill", topic:"Karbon Kimyasına Giriş", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Aynı molekül formülüne sahip fakat atom dizilişi farklı olan bileşiklere ___ denir.", bank:["izomer","allotrop","izotop"], correct:"izomer", exp:"İzomerler aynı molekül formülüne sahip ama atomların farklı dizilişi nedeniyle farklı yapı ve özellik gösteren bileşiklerdir."},
+      {type:"match", topic:"Organik Bileşikler", diff:"orta", q:"Fonksiyonel grubu örneğiyle eşleştir:", pairs:[["Alkol","–OH fonksiyonel grubu"],["Karboksilik asit","–COOH fonksiyonel grubu"],["Keton","Karbonil grubu iki karbon arasında"]], exp:"Fonksiyonel gruplar organik bileşiklerin sınıfını ve kimyasal davranışını belirler."}
+    ]
+  },
+  olympiad: {
+    label: "Olimpiyat Modu — Stokiyometri · Termokimya · Kinetik · Elektrokimya · Atom Yapısı · Organik (müfredat üstü)",
+    questions: [
+      {type:"numeric", topic:"Stokiyometri", diff:"orta", q:"32 gram CH₄ (metan) tamamen yakıldığında kaç mol CO₂ oluşur? (C:12, H:1 g/mol)", correct:2, tolerance:0.05, unit:"mol", exp:"CH₄'ün molar kütlesi 16 g/mol olduğundan 32 g = 2 mol CH₄'tür. CH₄ + 2O₂ → CO₂ + 2H₂O denklemine göre 1 mol CH₄, 1 mol CO₂ verir; 2 mol CH₄'ten 2 mol CO₂ oluşur."},
+      {type:"numeric", topic:"Gaz Hesaplamaları", diff:"orta", q:"0,5 mol ideal gaz 2 atm basınç ve 300 K sıcaklıkta bulunuyor. Bu gazın hacmi kaç litredir? (R=0,082 L·atm/mol·K)", correct:6.15, tolerance:0.2, unit:"L", exp:"İdeal gaz denklemi V=nRT/P kullanılarak V = (0,5 × 0,082 × 300) / 2 = 12,3 / 2 = 6,15 L bulunur."},
+      {type:"numeric", topic:"Termokimya", diff:"zor", q:"Hess yasasına göre A→B tepkimesinin ΔH'si -50 kJ, B→C tepkimesinin ΔH'si +20 kJ ise A→C tepkimesinin ΔH'si kaç kJ'dir?", correct:-30, tolerance:0.5, unit:"kJ", exp:"Hess yasasına göre toplam entalpi değişimi basamakların toplamına eşittir: ΔH(A→C) = -50 + 20 = -30 kJ."},
+      {type:"numeric", topic:"Kimyasal Kinetik", diff:"zor", q:"Bir tepkimenin hız sabiti k, T₁ sıcaklığında 2×10⁻³ s⁻¹ iken T₂'de 8×10⁻³ s⁻¹ olmuştur. Hız sabiti kaç kat artmıştır?", correct:4, tolerance:0.1, unit:"kat", exp:"Oran hesaplanırsa 8×10⁻³ / 2×10⁻³ = 4 bulunur; hız sabiti 4 kat artmıştır."},
+      {type:"numeric", topic:"Elektrokimya", diff:"zor", q:"Bir galvanik hücrede katot potansiyeli +0,34 V, anot potansiyeli -0,76 V ise hücre potansiyeli (E°hücre) kaç volttur?", correct:1.10, tolerance:0.02, unit:"V", exp:"E°hücre = E°katot - E°anot formülüyle E°hücre = 0,34 - (-0,76) = 1,10 V bulunur."},
+      {type:"numeric", topic:"Asit-Baz (ileri)", diff:"orta", q:"0,01 M HCl çözeltisinin pH değeri kaçtır? (HCl suda tamamen iyonlaşır)", correct:2, tolerance:0.05, unit:"pH birimi", exp:"HCl tam iyonlaştığı için [H⁺]=0,01 M olur; pH = -log(0,01) = 2 bulunur."},
+      {type:"mc", topic:"Kimyasal Kinetik", diff:"zor", q:"Bir tepkimenin hız denklemi hız = k[A]²[B] şeklindeyse, tepkime A'ya göre kaçıncı derecedendir?", opts:["1","2","3","0"], correct:1, exp:"[A] üssü 2 olduğu için tepkime A'ya göre 2. derecedendir; toplam tepkime derecesi 2+1=3'tür."},
+      {type:"mc", topic:"Termokimya", diff:"zor", q:"Ekzotermik bir tepkimede ürünlerin toplam entalpisi, reaktanların toplam entalpisine göre nasıldır?", opts:["Daha büyüktür","Daha küçüktür","Eşittir","Karşılaştırılamaz"], correct:1, diagMisc:{0:"ekzotermik-entalpi-karisikligi"}, exp:"Ekzotermik tepkimede sistem çevreye ısı verir; bu yüzden ürünlerin entalpisi reaktanlardan daha düşüktür (ΔH<0)."},
+      {type:"mc", topic:"Elektrokimya", diff:"zor", q:"Nernst denklemi hangi durumda hücre potansiyelinin hesaplanmasını sağlar?", opts:["Standart olmayan derişim ve sıcaklık koşullarında","Sadece 25°C'de","Sadece 1 M derişimde","Hiçbir zaman kullanılmaz"], correct:0, diagMisc:{1:"nernst-kosul-karisikligi",2:"nernst-kosul-karisikligi"}, exp:"Nernst denklemi, standart olmayan (1 M ve 25°C dışı) koşullarda hücre potansiyelini hesaplamak için kullanılır."},
+      {type:"mc", topic:"Atom Yapısı (ileri)", diff:"zor", q:"Bir elektronun kuantum sayıları n=3, l=1 ise bu elektron hangi orbitalde bulunur?", opts:["3s","3p","3d","4p"], correct:1, exp:"l=1 orbital türünü 'p' olarak belirtir; n=3 ile birlikte bu elektron 3p orbitalindedir."},
+      {type:"mc", topic:"Organik Kimya (ileri)", diff:"zor", q:"Bir alkil halojenürün SN2 mekanizmasıyla tepkimesinde nükleofilin saldırısı karbon merkezine hangi yönden gerçekleşir?", opts:["Ayrılan grubun tam karşısından (arkadan saldırı)","Ayrılan grupla aynı yönden","Karbonun üstünden rastgele","Sadece π bağı üzerinden"], correct:0, diagMisc:{1:"sn2-yon-karisikligi"}, exp:"SN2 mekanizmasında nükleofil, ayrılan gruba göre karbon merkezinin tam karşı tarafından saldırarak geçiş hâli oluşturur (Walden inversiyonu)."},
+      {type:"fill", topic:"Kimyasal Kinetik", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"Bir tepkimenin hızını sıcaklığa ve aktivasyon enerjisine bağlayan üstel ifadeye ___ denklemi denir.", bank:["Arrhenius","Nernst","Henderson-Hasselbalch"], correct:"Arrhenius", exp:"Arrhenius denklemi (k = Ae^(-Ea/RT)) hız sabitinin sıcaklık ve aktivasyon enerjisine bağlılığını tanımlar."},
+      {type:"fill", topic:"Termokimya", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"Bir tepkimenin entalpi değişiminin izlenen yoldan bağımsız, yalnızca başlangıç ve son duruma bağlı olmasına ___ yasası denir.", bank:["Hess","Boyle","Graham"], correct:"Hess", exp:"Hess yasasına göre toplam entalpi değişimi, tepkimenin basamaklarından bağımsız olarak yalnızca başlangıç ve bitiş durumuna bağlıdır."},
+      {type:"match", topic:"Elektrokimya", diff:"zor", q:"Kavramı tanımıyla eşleştir:", pairs:[["Anot","Yükseltgenmenin gerçekleştiği elektrot"],["Katot","İndirgenmenin gerçekleştiği elektrot"],["Tuz köprüsü","İyon akışı sağlayıp devreyi tamamlayan yapı"]], exp:"Galvanik hücrede anot yükseltgenme, katot indirgenme yeridir; tuz köprüsü elektriksel nötrlüğü korur."},
+      {type:"match", topic:"Kimyasal Kinetik", diff:"orta", q:"Tepkime derecesini tanımıyla eşleştir:", pairs:[["Sıfırıncı derece","Hız derişimden bağımsızdır"],["Birinci derece","Hız bir derişimle doğru orantılıdır"],["İkinci derece","Hız bir derişimin karesiyle orantılıdır"]], exp:"Tepkime derecesi, hız denklemindeki derişim üslerinin toplamına göre sınıflandırılır."}
+    ]
+  }
+};
+
+// Literatürde belgelenmiş kimya kavram yanılgıları veritabanı.
+// Her yanlış şık, rastgele değil; bilinen bir kavram yanılgısına kasıtlı olarak bağlanır.
+const MISCONCEPTIONS = {
+  "yorunge-sabit": { title: "Elektronların sabit yörüngede dolaştığını sanma", fix: "Modern atom modeli, elektronun belirli bir yörüngede değil, bulunma olasılığının yüksek olduğu orbital adı verilen bulutsu bölgelerde olduğunu öngörür." },
+  "periyot-yaricap-yon": { title: "Periyotta atom yarıçapının artan çekirdek yüküne rağmen arttığını sanma", fix: "Aynı periyotta soldan sağa gidildikçe proton sayısı artar, çekirdek elektronları daha güçlü çeker ve atom yarıçapı küçülür." },
+  "iyonik-molekul": { title: "İyonik bileşiklerin moleküller halinde bulunduğunu sanma", fix: "İyonik bileşikler (NaCl gibi) molekül oluşturmaz; zıt yüklü iyonların düzenli dizildiği bir kristal örgü oluşturur." },
+  "elektronegatiflik-yer": { title: "Elektronegatifliğin periyodik tablodaki artış yönünü yanlış hatırlama", fix: "Elektronegatiflik bir periyotta sağa, bir grupta yukarı çıkıldıkça artar; bu yüzden en yüksek değerler sağ üst köşede bulunur." },
+  "metalik-bag-sabit": { title: "Metaldeki elektronların sabit konumda olduğunu sanma", fix: "Metalik bağda değerlik elektronları serbestçe hareket eden bir 'elektron denizi' oluşturur; bu hareketlilik iletkenliği sağlar." },
+  "lewis-ok-karisikligi": { title: "Lewis bağ gösterimini tepkime okuyla karıştırma", fix: "Lewis yapılarında bağ elektronları bir çizgi ya da nokta çifti ile gösterilir; ok işareti ise tepkimenin yönünü belirtir, farklı bir gösterimdir." },
+  "denge-esitlik": { title: "Kimyasal dengeyi 'madde miktarlarının eşitlenmesi' sanma", fix: "Denge, ileri ve geri tepkime hızlarının birbirine eşitlendiği dinamik bir durumdur; derişimlerin eşit olması gerekmez." },
+  "katalizor-denge-degistirir": { title: "Katalizörün denge konumunu değiştirdiğini sanma", fix: "Katalizör yalnızca dengeye ulaşma hızını artırır; denge sabitini (K) veya denge derişimlerini değiştirmez." },
+  "yukseltgenme-oksijen": { title: "Yükseltgenmeyi sadece oksijenle birleşme sanma", fix: "Yükseltgenme, bir türün elektron kaybetmesidir; oksijen olmadan da (örneğin metal-metal elektron aktarımıyla) gerçekleşebilir." },
+  "mol-kutle-karisikligi": { title: "Mol kavramını doğrudan kütle (gram) ile eşitleme", fix: "Mol, tanecik sayısını ifade eden bir birimdir (6,02×10²³ tanecik); kütleyle ilişkisi molar kütle üzerinden kurulur." },
+  "sicaklik-isi-karisikligi": { title: "Sıcaklık ile ısıyı aynı kavram sanma", fix: "Sıcaklık ortalama kinetik enerjinin göstergesidir; ısı ise sıcaklık farkı nedeniyle transfer edilen enerji miktarıdır." },
+  "cozunurluk-genelleme": { title: "Tüm maddelerin çözünürlüğünün sıcaklıkla arttığını sanma", fix: "Çoğu katı için bu genellikle doğrudur, ancak bazı gazların ve bazı bileşiklerin çözünürlüğü sıcaklık arttıkça azalabilir." },
+  "asit-guc-derisim-karisikligi": { title: "Asit gücünü derişimle karıştırma", fix: "Asit gücü (kuvvetli/zayıf), iyonlaşma derecesiyle ilgilidir; derişim ise çözeltideki miktarla ilgilidir. Zayıf bir asit derişik, kuvvetli bir asit seyreltik olabilir." },
+  "ph-dogrusal": { title: "pH ölçeğinin doğrusal olduğunu sanma", fix: "pH logaritmik bir ölçektir; pH farkı 1 birim, hidrojen iyonu derişiminde 10 kat farka karşılık gelir." },
+  "elektroliz-galvanik-karisikligi": { title: "Elektroliz ile galvanik hücreyi karıştırma", fix: "Galvanik hücre kendiliğinden gerçekleşen bir tepkimeyle elektrik üretir; elektroliz ise dışarıdan verilen elektrikle istemsiz bir tepkimeyi gerçekleştirir." },
+  "hiz-katsayidan-okuma": { title: "Tepkime hız derecesini denklem katsayılarından doğrudan okuma", fix: "Hız derecesi deneysel olarak belirlenir; denge denklemindeki stokiyometrik katsayılardan doğrudan okunamaz." },
+  "organik-karbon-genelleme": { title: "Karbon içeren her bileşiğin organik olduğunu sanma", fix: "CO₂ ve karbonatlar gibi bazı karbon bileşikleri, tarihsel ve yapısal nedenlerle inorganik kabul edilir." },
+  "izomer-allotrop-karisikligi": { title: "İzomer ile allotropu karıştırma", fix: "İzomerler aynı molekül formülüne sahip farklı yapıdaki bileşiklerdir; allotrop ise aynı elementin farklı yapısal formlarıdır (elmas-grafit gibi)." },
+  "nernst-kosul-karisikligi": { title: "Standart potansiyellerin her koşulda geçerli olduğunu sanma", fix: "Standart elektrot potansiyelleri yalnızca 1 M derişim ve 25°C gibi standart koşullar için geçerlidir; farklı koşullarda Nernst denklemi kullanılır." },
+  "hidrojen-bag-guclu-sanma": { title: "Hidrojen bağını kovalent bağ kadar güçlü bir bağ sanma", fix: "Hidrojen bağı, moleküller arası bir çekim kuvvetidir ve kovalent bağdan çok daha zayıftır; ancak suyun yüksek kaynama noktası gibi özellikleri açıklar." },
+  "yukseltgenme-indirgenme-karisikligi": { title: "Yükseltgenme ve indirgenmeyi birbirine karıştırma", fix: "Yükseltgenme elektron kaybı, indirgenme ise elektron kazanımıdır; bu iki kavram yönleri ters olduğu için sık karıştırılır." },
+  "boyle-yasa-yon-karisikligi": { title: "Boyle yasasında basınç ile hacmin aynı yönde değiştiğini sanma", fix: "Boyle yasasına göre sabit sıcaklıkta basınç ile hacim ters orantılıdır; basınç artınca hacim azalır." },
+  "cozelti-donma-kaynama-karisikligi": { title: "Çözünen madde eklenince donma noktasının yükseldiğini sanma", fix: "Çözünen tanecikler donma noktasını düşürür, kaynama noktasını ise yükseltir; bu iki koligatif etki birbirine ters yönlüdür." },
+  "sinirlayici-bilesen-karisikligi": { title: "Sınırlayıcı bileşeni en fazla miktarda bulunan bileşen sanma", fix: "Sınırlayıcı bileşen, tükendiğinde tepkimeyi durdurup ürün miktarını sınırlayan bileşendir; en fazla miktarda bulunan bileşen olmak zorunda değildir." },
+  "graham-yasa-karisikligi": { title: "Hafif gazların ağır gazlara göre daha yavaş yayıldığını sanma", fix: "Graham yayılma yasasına göre yayılma hızı molar kütlenin kareköküyle ters orantılıdır; hafif gaz daha hızlı yayılır." },
+  "le-chatelier-yon-karisikligi": { title: "Le Chatelier'de eklenen maddeyle aynı yönde denge kayacağını sanma", fix: "Sisteme reaktan eklenince denge, eklenen fazlalığı tüketecek şekilde ürün yönüne kayar; eklenen maddeyle aynı yönde kaymaz." },
+  "ksp-buyukluk-karisikligi": { title: "Küçük Ksp değerinin yüksek çözünürlük anlamına geldiğini sanma", fix: "Ksp küçükse bileşik iyonlarına az ayrışır, yani suda az çözünür; büyük Ksp yüksek çözünürlüğe işaret eder." },
+  "denge-sabiti-degisken-karisikligi": { title: "Denge sabitinin derişim veya katalizörle değiştiğini sanma", fix: "Denge sabiti K yalnızca sıcaklığa bağlıdır; derişim veya katalizör değişimi denge konumunu etkiler ama K değerini değiştirmez." },
+  "dinamik-denge-hiz-karisikligi": { title: "Dinamik dengede ileri tepkimenin hâlâ daha hızlı olduğunu sanma", fix: "Dinamik dengede ileri ve geri tepkime hızları birbirine eşitlenir; hiçbiri diğerinden büyük değildir." },
+  "izotop-allotrop-karisikligi": { title: "Allotropları izotoplarla karıştırma", fix: "Allotroplar aynı elementin farklı yapısal formlarıdır (elmas-grafit gibi); izotoplar ise aynı elementin farklı nötron sayısına sahip atomlarıdır." },
+  "hibritlesme-geometri-karisikligi": { title: "Molekül geometrisini hibritleşme türünü dikkate almadan tahmin etme", fix: "Molekül geometrisi merkez atomun hibritleşmesine bağlıdır; sp3 hibritleşmesi tetrahedral (dörtyüzlü) geometri, sp2 ise üçgen düzlem geometri verir." },
+  "elektrot-potansiyel-karisikligi": { title: "Daha pozitif potansiyele sahip yarı hücrenin anot olacağını sanma", fix: "Daha pozitif standart elektrot potansiyeline sahip yarı hücre indirgenmeye daha yatkındır ve pilde katot görevi görür." },
+  "ekzotermik-entalpi-karisikligi": { title: "Ekzotermik tepkimede ürün entalpisinin daha yüksek olduğunu sanma", fix: "Ekzotermik tepkimede sistem çevreye ısı verir; ürünlerin toplam entalpisi reaktanlardan daha düşüktür (ΔH<0)." },
+  "sn2-yon-karisikligi": { title: "SN2 mekanizmasında nükleofilin ayrılan grupla aynı yönden saldırdığını sanma", fix: "SN2 mekanizmasında nükleofil, ayrılan gruba göre karbon merkezinin tam karşı tarafından saldırır (arkadan saldırı, Walden inversiyonu)." },
+  "katsayi-oran-karisikligi": { title: "Tepkime denklemindeki katsayı oranını dikkate almadan mol hesabı yapma", fix: "Denklemdeki katsayılar mol oranını belirler; ürün miktarı hesaplanırken bu oran mutlaka dikkate alınmalıdır." }
+};
+
+let state = {
+  grade: null, diff: 'all', topic: 'all', timed: false, livesMode: false,
+  pool: [], idx: 0, score: 0, wrongCount: 0, livesLeft: 3, answered: false,
+  timerId: null, timeLeft: 20,
+  matchState: null,
+  topicStats: {},
+  sessionMisconceptions: [],
+  aiFeedback: null
+};
+
+const gradeBtns = document.querySelectorAll('.grade-btn');
+const themeLine = document.getElementById('themeLine');
+const setupScreen = document.getElementById('setupScreen');
+const gameScreen = document.getElementById('gameScreen');
+const resultScreen = document.getElementById('resultScreen');
+const startBtn = document.getElementById('startBtn');
+const retryBtn = document.getElementById('retryBtn');
+const reconfigBtn = document.getElementById('reconfigBtn');
+const nextBtn = document.getElementById('nextBtn');
+const diffChips = document.querySelectorAll('#diffChips .chip');
+const topicSelect = document.getElementById('topicSelect');
+const timedToggle = document.getElementById('timedToggle');
+const livesToggle = document.getElementById('livesToggle');
+const warnLine = document.getElementById('warnLine');
+const answerArea = document.getElementById('answerArea');
+const explainBox = document.getElementById('explainBox');
+
+const TYPE_LABEL = { mc: "ÇOKTAN SEÇMELİ", fill: "BOŞLUK DOLDURMA", match: "EŞLEŞTİRME", numeric: "HESAPLAMA" };
+const olympiadBtn = document.getElementById('olympiadBtn');
+
+gradeBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    gradeBtns.forEach(b => b.classList.remove('active'));
+    olympiadBtn.classList.remove('active');
+    btn.classList.add('active');
+    state.grade = btn.dataset.grade;
+    themeLine.textContent = BANK[state.grade].label;
+    populateTopics();
+    showSetup();
+  });
+});
+
+olympiadBtn.addEventListener('click', () => {
+  gradeBtns.forEach(b => b.classList.remove('active'));
+  olympiadBtn.classList.add('active');
+  state.grade = 'olympiad';
+  themeLine.textContent = BANK['olympiad'].label;
+  populateTopics();
+  showSetup();
+});
+
+function populateTopics(){
+  const qs = BANK[state.grade].questions;
+  const topics = [...new Set(qs.map(q => q.topic))];
+  topicSelect.innerHTML = '<option value="all">Tüm konular</option>' +
+    topics.map(t => `<option value="${t}">${t}</option>`).join('');
+  state.topic = 'all';
+}
+
+diffChips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    diffChips.forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    state.diff = chip.dataset.diff;
+    checkPoolSize();
+  });
+});
+
+topicSelect.addEventListener('change', () => {
+  state.topic = topicSelect.value;
+  checkPoolSize();
+});
+
+function getPool(){
+  const qs = BANK[state.grade].questions;
+  return qs.filter(q => {
+    const okDiff = state.diff === 'all' || q.diff === state.diff;
+    const okTopic = state.topic === 'all' || q.topic === state.topic;
+    return okDiff && okTopic;
+  });
+}
+
+function checkPoolSize(){
+  const pool = getPool();
+  if(pool.length === 0){
+    warnLine.classList.add('show');
+    startBtn.setAttribute('disabled','true');
+  } else {
+    warnLine.classList.remove('show');
+    startBtn.removeAttribute('disabled');
+  }
+  return pool;
+}
+
+function showSetup(){
+  setupScreen.classList.remove('hidden');
+  gameScreen.classList.add('hidden');
+  resultScreen.classList.add('hidden');
+  checkPoolSize();
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function beginGame(){
+  state.timed = timedToggle.checked;
+  state.livesMode = livesToggle.checked;
+  state.pool = shuffle(getPool());
+  state.idx = 0;
+  state.score = 0;
+  state.wrongCount = 0;
+  state.livesLeft = 3;
+  state.topicStats = {};
+  state.sessionMisconceptions = [];
+  state.aiFeedback = null;
+
+  document.getElementById('livesDisplay').classList.toggle('hidden', !state.livesMode);
+  document.getElementById('timerWrap').classList.toggle('hidden', !state.timed);
+
+  setupScreen.classList.add('hidden');
+  resultScreen.classList.add('hidden');
+  gameScreen.classList.remove('hidden');
+  renderQuestion();
+}
+
+startBtn.addEventListener('click', () => {
+  if(!state.grade){ gradeBtns[0].click(); }
+  if(checkPoolSize().length === 0) return;
+  beginGame();
+});
+
+retryBtn.addEventListener('click', () => { beginGame(); });
+reconfigBtn.addEventListener('click', () => { showSetup(); });
+nextBtn.addEventListener('click', () => { advance(); });
+
+function advance(){
+  state.idx++;
+  if(state.idx >= state.pool.length){
+    showResult(false);
+  } else {
+    renderQuestion();
+  }
+}
+
+function updateLivesDisplay(){
+  if(!state.livesMode) return;
+  const hearts = '❤️'.repeat(state.livesLeft) + '🤍'.repeat(3 - state.livesLeft);
+  document.getElementById('livesDisplay').textContent = hearts;
+}
+
+function stopTimer(){
+  if(state.timerId){ clearInterval(state.timerId); state.timerId = null; }
+}
+
+function timerDurationFor(q){
+  if(q.type === 'match') return 35;
+  if(q.type === 'numeric') return 60;
+  return 20;
+}
+
+function startTimer(q){
+  if(!state.timed) return;
+  const dur = timerDurationFor(q);
+  state.timeLeft = dur;
+  const timerNum = document.getElementById('timerNum');
+  const timerFill = document.getElementById('timerFill');
+  timerNum.textContent = state.timeLeft;
+  timerFill.style.transform = 'scaleX(1)';
+  timerFill.style.transition = 'none';
+  requestAnimationFrame(() => {
+    timerFill.style.transition = `transform ${dur}s linear`;
+    timerFill.style.transform = 'scaleX(0)';
+  });
+  stopTimer();
+  state.timerId = setInterval(() => {
+    state.timeLeft--;
+    timerNum.textContent = Math.max(state.timeLeft,0);
+    if(state.timeLeft <= 0){
+      stopTimer();
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+// ---- shared resolution ----
+function resolveAnswer(isCorrect, prefix){
+  stopTimer();
+  state.answered = true;
+  if(isCorrect){
+    state.score++;
+  } else {
+    state.wrongCount++;
+  }
+
+  let lostLife = false;
+  if(!isCorrect && state.livesMode){
+    state.livesLeft--;
+    updateLivesDisplay();
+    lostLife = true;
+  }
+
+  const q = state.pool[state.idx];
+  if(!state.topicStats[q.topic]) state.topicStats[q.topic] = { correct: 0, total: 0 };
+  state.topicStats[q.topic].total++;
+  if(isCorrect) state.topicStats[q.topic].correct++;
+
+  explainBox.textContent = (prefix ? prefix + " " : "") + q.exp;
+  explainBox.classList.add('show');
+  if(prefix) explainBox.classList.add('timeout'); else explainBox.classList.remove('timeout');
+  document.getElementById('scoreChip').textContent = `Skor: ${state.score}`;
+
+  const total = state.pool.length;
+  document.getElementById('progressFill').style.width = `${((state.idx+1)/total)*100}%`;
+
+  if(lostLife && state.livesLeft <= 0){
+    nextBtn.classList.remove('show');
+    setTimeout(() => showResult(true), 900);
+    return;
+  }
+  nextBtn.classList.add('show');
+  nextBtn.textContent = (state.idx+1 >= total) ? 'Sonucu Gör →' : 'Sıradaki →';
+}
+
+function handleTimeout(){
+  if(state.answered) return;
+  const q = state.pool[state.idx];
+  if(q.type === 'mc'){
+    document.querySelectorAll('.opt').forEach(b => {
+      b.setAttribute('disabled','true');
+      if(b.textContent === q.opts[q.correct]) b.classList.add('correct');
+    });
+  } else if(q.type === 'fill'){
+    document.querySelectorAll('.opt.bank').forEach(b => b.setAttribute('disabled','true'));
+    const slot = document.getElementById('blankSlot');
+    if(slot){ slot.textContent = q.correct; slot.classList.add('wrong'); }
+  } else if(q.type === 'match'){
+    revealAllMatches(false);
+  } else if(q.type === 'numeric'){
+    const display = document.getElementById('numDisplay');
+    if(display){
+      display.classList.add('wrong');
+      display.textContent = `${state.numericBuffer || '0'}  (Doğru: ${q.correct}${q.unit ? ' ' + q.unit : ''})`;
+    }
+    document.querySelectorAll('.key-btn, .btn-submit-num').forEach(b => b.setAttribute('disabled','true'));
+  }
+  resolveAnswer(false, "Süre doldu!");
+}
+
+// ---- render dispatch ----
+function renderQuestion(){
+  state.answered = false;
+  state.matchState = null;
+  stopTimer();
+  const total = state.pool.length;
+  const q = state.pool[state.idx];
+
+  document.getElementById('qCount').textContent = `Soru ${state.idx+1}/${total}`;
+  document.getElementById('scoreChip').textContent = `Skor: ${state.score}`;
+  document.getElementById('progressFill').style.width = `${(state.idx/total)*100}%`;
+  const qTopicEl = document.getElementById('qTopic');
+  qTopicEl.textContent = '';
+  const topicText = document.createTextNode(q.topic);
+  qTopicEl.appendChild(topicText);
+  const rightSpan = document.createElement('span');
+  const typeBadge = document.createElement('span');
+  typeBadge.className = 'q-type-badge';
+  typeBadge.textContent = TYPE_LABEL[q.type] || '';
+  const diffTag = document.createElement('span');
+  diffTag.className = 'q-diff';
+  diffTag.textContent = ' · ' + q.diff.toUpperCase();
+  rightSpan.appendChild(typeBadge);
+  rightSpan.appendChild(diffTag);
+  qTopicEl.appendChild(rightSpan);
+
+  document.getElementById('qText').textContent = q.q;
+  updateLivesDisplay();
+
+  explainBox.classList.remove('show','timeout');
+  explainBox.textContent = '';
+  nextBtn.classList.remove('show');
+  answerArea.innerHTML = '';
+
+  if(q.type === 'fill'){
+    renderFill(q);
+  } else if(q.type === 'match'){
+    renderMatch(q);
+  } else if(q.type === 'numeric'){
+    renderNumeric(q);
+  } else {
+    renderMC(q);
+  }
+
+  startTimer(q);
+}
+
+function renderMC(q){
+  const optOrder = shuffle(q.opts.map((_,i)=>i));
+  optOrder.forEach(oi => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = q.opts[oi];
+    b.addEventListener('click', () => {
+      if(state.answered) return;
+      const allOpts = answerArea.querySelectorAll('.opt');
+      allOpts.forEach(x => x.setAttribute('disabled','true'));
+      allOpts.forEach(x => { if(x.textContent === q.opts[q.correct]) x.classList.add('correct'); });
+      const correct = oi === q.correct;
+      if(!correct){
+        b.classList.add('wrong');
+        if(q.diagMisc && q.diagMisc[oi]){
+          state.sessionMisconceptions.push(q.diagMisc[oi]);
+        }
+      }
+      resolveAnswer(correct);
+    });
+    answerArea.appendChild(b);
+  });
+}
+
+function renderFill(q){
+  const sentWrap = document.createElement('p');
+  sentWrap.className = 'fill-sentence';
+  const parts = q.sentence.split('___');
+  sentWrap.appendChild(document.createTextNode(parts[0]));
+  const blank = document.createElement('span');
+  blank.className = 'blank-slot';
+  blank.id = 'blankSlot';
+  blank.textContent = '______';
+  sentWrap.appendChild(blank);
+  sentWrap.appendChild(document.createTextNode(parts[1] || ''));
+  answerArea.appendChild(sentWrap);
+
+  const bankRow = document.createElement('div');
+  bankRow.className = 'bank-row';
+  shuffle(q.bank).forEach(word => {
+    const b = document.createElement('button');
+    b.className = 'opt bank';
+    b.textContent = word;
+    b.addEventListener('click', () => {
+      if(state.answered) return;
+      const allBank = bankRow.querySelectorAll('.opt');
+      allBank.forEach(x => x.setAttribute('disabled','true'));
+      blank.textContent = word;
+      const correct = word === q.correct;
+      blank.classList.add(correct ? 'correct' : 'wrong');
+      if(!correct) b.classList.add('wrong'); else b.classList.add('correct');
+      if(!correct){
+        allBank.forEach(x => { if(x.textContent === q.correct) x.classList.add('correct'); });
+      }
+      resolveAnswer(correct);
+    });
+    bankRow.appendChild(b);
+  });
+  answerArea.appendChild(bankRow);
+}
+
+function renderMatch(q){
+  const hint = document.createElement('div');
+  hint.className = 'match-hint';
+  hint.textContent = 'Önce soldan bir terim, sonra sağdan doğru tanımı seç.';
+  answerArea.appendChild(hint);
+
+  const leftItems = q.pairs.map((p,i) => ({text:p[0], idx:i}));
+  const rightItemsShuffled = shuffle(q.pairs.map((p,i) => ({text:p[1], idx:i})));
+
+  state.matchState = { matched: new Set(), wrongAttempts: 0, selectedLeft: null, total: q.pairs.length };
+
+  const wrap = document.createElement('div');
+  wrap.className = 'match-wrap';
+  const colL = document.createElement('div');
+  colL.className = 'match-col';
+  const colR = document.createElement('div');
+  colR.className = 'match-col';
+
+  leftItems.forEach(item => {
+    const b = document.createElement('button');
+    b.className = 'match-item';
+    b.textContent = item.text;
+    b.dataset.idx = item.idx;
+    b.addEventListener('click', () => {
+      if(state.answered || b.classList.contains('locked')) return;
+      colL.querySelectorAll('.match-item').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+      state.matchState.selectedLeft = { idx: item.idx, el: b };
+    });
+    colL.appendChild(b);
+  });
+
+  rightItemsShuffled.forEach(item => {
+    const b = document.createElement('button');
+    b.className = 'match-item';
+    b.textContent = item.text;
+    b.dataset.idx = item.idx;
+    b.addEventListener('click', () => {
+      if(state.answered || b.classList.contains('locked')) return;
+      const sel = state.matchState.selectedLeft;
+      if(!sel) return;
+      if(sel.idx === item.idx){
+        sel.el.classList.remove('selected');
+        sel.el.classList.add('locked');
+        b.classList.add('locked');
+        state.matchState.matched.add(item.idx);
+        state.matchState.selectedLeft = null;
+        if(state.matchState.matched.size === state.matchState.total){
+          const correct = state.matchState.wrongAttempts === 0;
+          const prefix = correct ? null : `${state.matchState.wrongAttempts} yanlış eşleştirme yaptın.`;
+          resolveAnswer(correct, prefix);
+        }
+      } else {
+        state.matchState.wrongAttempts++;
+        sel.el.classList.add('wrong-flash');
+        b.classList.add('wrong-flash');
+        setTimeout(() => {
+          sel.el.classList.remove('wrong-flash','selected');
+          b.classList.remove('wrong-flash');
+        }, 400);
+        state.matchState.selectedLeft = null;
+      }
+    });
+    colR.appendChild(b);
+  });
+
+  wrap.appendChild(colL);
+  wrap.appendChild(colR);
+  answerArea.appendChild(wrap);
+}
+
+function revealAllMatches(){
+  const colL = answerArea.querySelectorAll('.match-col')[0];
+  const colR = answerArea.querySelectorAll('.match-col')[1];
+  if(!colL || !colR) return;
+  colL.querySelectorAll('.match-item').forEach(el => { el.classList.add('locked'); el.classList.remove('selected'); });
+  colR.querySelectorAll('.match-item').forEach(el => { el.classList.add('locked'); el.classList.remove('selected'); });
+}
+
+function renderNumeric(q){
+  state.numericBuffer = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'numeric-wrap';
+
+  const display = document.createElement('div');
+  display.className = 'num-display';
+  display.id = 'numDisplay';
+  display.textContent = '0';
+  wrap.appendChild(display);
+
+  if(q.unit){
+    const unitLine = document.createElement('div');
+    unitLine.className = 'num-unit';
+    unitLine.textContent = 'Birim: ' + q.unit;
+    wrap.appendChild(unitLine);
+  }
+
+  const keypad = document.createElement('div');
+  keypad.className = 'keypad';
+  const keys = ['7','8','9','4','5','6','1','2','3','-','0','.'];
+  keys.forEach(k => {
+    const b = document.createElement('button');
+    b.className = 'key-btn';
+    b.textContent = k;
+    b.addEventListener('click', () => {
+      if(state.answered) return;
+      if(k === '-'){
+        state.numericBuffer = state.numericBuffer.startsWith('-') ? state.numericBuffer.slice(1) : '-' + state.numericBuffer;
+      } else if(k === '.'){
+        if(!state.numericBuffer.includes('.')) state.numericBuffer += '.';
+      } else {
+        if(state.numericBuffer.length < 12) state.numericBuffer += k;
+      }
+      display.textContent = state.numericBuffer || '0';
+    });
+    keypad.appendChild(b);
+  });
+  wrap.appendChild(keypad);
+
+  const backBtn = document.createElement('button');
+  backBtn.className = 'key-btn wide';
+  backBtn.textContent = '⌫ Sil';
+  backBtn.addEventListener('click', () => {
+    if(state.answered) return;
+    state.numericBuffer = state.numericBuffer.slice(0, -1);
+    display.textContent = state.numericBuffer || '0';
+  });
+  const backWrap = document.createElement('div');
+  backWrap.className = 'keypad';
+  backWrap.style.marginBottom = '10px';
+  backWrap.appendChild(backBtn);
+  wrap.appendChild(backWrap);
+
+  const submitBtn = document.createElement('button');
+  submitBtn.className = 'btn-submit-num';
+  submitBtn.textContent = 'Cevapla';
+  submitBtn.addEventListener('click', () => {
+    if(state.answered) return;
+    if(state.numericBuffer === '' || state.numericBuffer === '-') return;
+    const val = parseFloat(state.numericBuffer);
+    const tol = (q.tolerance !== undefined) ? q.tolerance : Math.max(0.01, Math.abs(q.correct) * 0.05);
+    const correct = Math.abs(val - q.correct) <= tol;
+    display.classList.add(correct ? 'correct' : 'wrong');
+    keypad.querySelectorAll('button').forEach(b => b.setAttribute('disabled','true'));
+    backBtn.setAttribute('disabled','true');
+    submitBtn.setAttribute('disabled','true');
+    if(!correct){
+      display.textContent = `${state.numericBuffer}  (Doğru: ${q.correct}${q.unit ? ' ' + q.unit : ''})`;
+    }
+    resolveAnswer(correct);
+  });
+  wrap.appendChild(submitBtn);
+
+  answerArea.appendChild(wrap);
+}
+
+function showResult(isGameOver){
+  stopTimer();
+  const total = state.pool.length;
+  gameScreen.classList.add('hidden');
+  resultScreen.classList.remove('hidden');
+  resultScreen.classList.toggle('gameover', !!isGameOver);
+  document.getElementById('resultTag').textContent = isGameOver ? 'OYUN BİTTİ — CANIN KALMADI' : 'SONUÇ';
+  document.getElementById('resultScore').textContent = `${state.score}/${state.idx + 1}`;
+
+  let msg;
+  if(isGameOver){
+    msg = `3 yanlış yaptın ve canların bitti. ${state.idx+1} sorudan ${state.score} tanesini doğru bildin. Tekrar dene!`;
+  } else {
+    document.getElementById('resultScore').textContent = `${state.score}/${total}`;
+    const ratio = total ? state.score/total : 0;
+    if(ratio === 1) msg = "Mükemmel! Bu filtredeki tüm sorulara doğru cevap verdin.";
+    else if(ratio >= 0.75) msg = "Çok iyi! Birkaç kavramı tekrar gözden geçirmek işini pekiştirir.";
+    else if(ratio >= 0.5) msg = "Fena değil. Yanlış çıkan konuları ders kitabından tekrar etmeni öneririm.";
+    else msg = "Bu konuları baştan çalışmakta fayda var — tekrar dene!";
+  }
+  document.getElementById('resultMsg').textContent = msg;
+  renderTopicPerf();
+  renderMiscReport();
+  saveMiscToSharedMap();
+  loadAndRenderMiscMap();
+}
+
+function renderMiscReport(){
+  const wrap = document.getElementById('miscReport');
+  const rows = document.getElementById('miscReportRows');
+  const uniqueIds = [...new Set(state.sessionMisconceptions)];
+  if(uniqueIds.length === 0){
+    wrap.classList.add('hidden');
+    return;
+  }
+  wrap.classList.remove('hidden');
+  rows.innerHTML = '';
+  uniqueIds.forEach(id => {
+    const m = MISCONCEPTIONS[id];
+    if(!m) return;
+    const row = document.createElement('div');
+    row.className = 'topic-row';
+    const head = document.createElement('div');
+    head.className = 'topic-row-head';
+    const name = document.createElement('span');
+    name.className = 't-name';
+    name.textContent = '⚠️ ' + m.title;
+    head.appendChild(name);
+    const desc = document.createElement('div');
+    desc.style.fontSize = '12.5px';
+    desc.style.color = '#4a4f46';
+    desc.style.lineHeight = '1.5';
+    desc.style.marginTop = '3px';
+    desc.textContent = m.fix;
+    row.appendChild(head);
+    row.appendChild(desc);
+    rows.appendChild(row);
+  });
+
+  const aiBtn = document.getElementById('aiTipBtn');
+  const aiBox = document.getElementById('aiTipBox');
+  aiBox.classList.remove('show');
+  aiBox.textContent = '';
+  aiBtn.disabled = false;
+  aiBtn.textContent = '🤖 Yapay Zekadan Kişiye Özel Tavsiye Al';
+  aiBtn.onclick = async () => {
+    aiBtn.disabled = true;
+    aiBtn.textContent = 'Hazırlanıyor...';
+    aiBox.classList.remove('hidden');
+    aiBox.classList.add('show');
+    aiBox.textContent = 'Kişiselleştirilmiş tavsiyen hazırlanıyor...';
+
+    const weakTopicEntries = Object.entries(state.topicStats)
+      .filter(([,s]) => s.total > 0 && (s.correct/s.total) < 0.6)
+      .map(([t]) => t);
+    const miscTitles = uniqueIds.map(id => MISCONCEPTIONS[id] ? MISCONCEPTIONS[id].title : id);
+
+    let usedAI = false;
+    try {
+      const miscList = miscTitles.join('; ');
+      const weakTopics = weakTopicEntries.join(', ') || 'belirgin bir zayıf konu yok';
+      const prompt = `Bir lise kimya öğrencisi bir kimya oyunu/testi çözdü. Tespit edilen kavram yanılgıları şunlar: ${miscList || 'yok'}. Zayıf olduğu konular: ${weakTopics}. Bu öğrenciye 2-3 kısa paragrafta, samimi ve motive edici bir dille, Türkçe olarak kişiye özel bir çalışma tavsiyesi ver. Her tespit edilen yanılgı için somut, spesifik bir çalışma önerisi sun (örnek bir kaynak türü, bir alıştırma yöntemi ya da bir zihinsel model). Genel geçer motivasyon cümleleri yerine kavram yanılgısına özel öneriler üret.`;
+
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+      if(!response.ok) throw new Error('API yanıtı başarısız: ' + response.status);
+      const data = await response.json();
+      const text = (data.content || [])
+        .map(item => item.type === 'text' ? item.text : '')
+        .filter(Boolean)
+        .join('\n');
+      if(!text) throw new Error('Boş yanıt');
+      aiBox.textContent = '🤖 ' + text;
+      usedAI = true;
+    } catch (err){
+      // Ağ/CORS/API erişimi yoksa (ör. dosya indirilip çevrimdışı açıldığında) yerel motoru kullan.
+      aiBox.textContent = '📋 ' + generateLocalTip(uniqueIds, weakTopicEntries) +
+        '\n\n(Not: Bu tavsiye çevrimdışı yerel motor tarafından oluşturuldu. Canlı yapay zeka tavsiyesi için bu oyunu Claude içinde açık tutarken deneyebilirsin.)';
+    }
+    aiBtn.disabled = false;
+    aiBtn.textContent = usedAI ? '🔄 Tekrar Tavsiye Al' : '🔄 Tavsiyeyi Yenile';
+  };
+}
+
+function generateLocalTip(uniqueIds, weakTopics){
+  if(uniqueIds.length === 0){
+    return "Tebrikler, belirgin bir kavram yanılgısına rastlamadık! Şu an için genel tekrar yeterli olur; zayıf konu tespit edilmediği için mevcut seviyeni korumaya odaklanabilirsin.";
+  }
+  const parts = [];
+  parts.push(`Bu oturumda ${uniqueIds.length} farklı kavram yanılgısı tespit edildi. Bunlar tesadüfi hatalar değil, kimya eğitiminde sık görülen düşünce kalıpları — yani doğru şekilde çalışılırsa kolayca düzeltilebilir.`);
+  uniqueIds.forEach(id => {
+    const m = MISCONCEPTIONS[id];
+    if(!m) return;
+    parts.push(`• ${m.title}: ${m.fix} Bunu pekiştirmek için bu konuyla ilgili 3-4 farklı örnek üzerinde "neden böyle?" sorusunu kendine sorarak çalış; sadece doğru cevabı ezberlemek yerine altındaki mantığı kur.`);
+  });
+  if(weakTopics.length > 0){
+    parts.push(`Ayrıca şu konularda genel bir tekrar yapman işine yarar: ${weakTopics.join(', ')}.`);
+  }
+  parts.push("Unutma: bir kavram yanılgısını fark etmek, onu düzeltmenin en zor kısmıdır — bu noktayı zaten geçtin.");
+  return parts.join('\n\n');
+}
+
+async function saveMiscToSharedMap(){
+  const uniqueIds = [...new Set(state.sessionMisconceptions)];
+  const statusEl = document.getElementById('connStatusText');
+  const setStatus = (msg) => { if(statusEl) statusEl.textContent = msg; };
+  setStatus('Veri gönderiliyor...');
+  try {
+    const doc = {
+      fields: jsToFirestoreFields({
+        grade: String(state.grade),
+        diff: state.diff,
+        topic: state.topic,
+        score: state.score,
+        total: state.pool.length,
+        misconceptions: uniqueIds,
+        ts: new Date()
+      })
+    };
+    const res = await fetch(`${FIRESTORE_BASE}/sessions?key=${FIREBASE_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(doc)
+    });
+    if(!res.ok){
+      const errText = await res.text();
+      console.warn('Oturum verisi kaydedilemedi:', res.status, errText);
+      setStatus(`❌ Kaydedilemedi. HTTP ${res.status}. Detay: ${errText.slice(0, 200)}`);
+    } else {
+      setStatus('✅ Bu oturum Firebase veritabanına başarıyla kaydedildi.');
+    }
+  } catch(e) {
+    console.warn('Oturum verisi kaydedilemedi:', e);
+    setStatus(`❌ Bağlantı kurulamadı: ${e.message || e}. (Bu ortam dış bağlantıya izin vermiyor olabilir; dosyayı Safari'de açmayı dene.)`);
+  }
+}
+
+async function loadAndRenderMiscMap(){
+  const wrap = document.getElementById('miscMap');
+  const note = document.getElementById('miscMapNote');
+  const rows = document.getElementById('miscMapRows');
+  try {
+    const res = await fetch(`${FIRESTORE_BASE}/sessions?key=${FIREBASE_API_KEY}&pageSize=300`);
+    if(!res.ok){
+      const errText = await res.text();
+      console.warn('Harita verisi okunamadı:', res.status, errText);
+      wrap.classList.add('hidden');
+      return;
+    }
+    const data = await res.json();
+    const docs = data.documents || [];
+    const agg = {};
+    let total = 0;
+    docs.forEach(d => {
+      total++;
+      const parsed = firestoreFieldsToJs(d.fields);
+      (parsed.misconceptions || []).forEach(id => {
+        agg[id] = (agg[id] || 0) + 1;
+      });
+    });
+    const entries = Object.entries(agg).filter(([k]) => MISCONCEPTIONS[k]);
+    if(entries.length === 0){
+      note.textContent = total > 0
+        ? `Şu ana kadar ${total} oturum kaydedildi ama henüz belirgin bir yanılgı deseni yok.`
+        : 'Henüz veri birikmedi — bu, kaydedilen ilk oturumlardan biri.';
+      rows.innerHTML = '';
+      wrap.classList.remove('hidden');
+      return;
+    }
+    entries.sort((a,b) => b[1] - a[1]);
+    const maxCount = entries[0][1];
+    note.textContent = `Bu artifact'ı kullanan tüm öğrencilerden Firebase'e toplanan, isimsiz gerçek veridir. Şu ana kadar ${total} oturum kaydedildi.`;
+    rows.innerHTML = '';
+    entries.slice(0, 8).forEach(([id, count]) => {
+      const m = MISCONCEPTIONS[id];
+      const row = document.createElement('div');
+      row.className = 'topic-row';
+      const head = document.createElement('div');
+      head.className = 'topic-row-head';
+      const name = document.createElement('span');
+      name.className = 't-name';
+      name.textContent = m.title;
+      const frac = document.createElement('span');
+      frac.className = 't-frac';
+      frac.textContent = `${count} kez`;
+      head.appendChild(name);
+      head.appendChild(frac);
+      const bar = document.createElement('div');
+      bar.className = 'topic-bar';
+      const fill = document.createElement('div');
+      const ratio = count / maxCount;
+      fill.className = 'topic-bar-fill' + (ratio > 0.66 ? ' weak' : (ratio > 0.33 ? ' mid' : ''));
+      fill.style.width = `${ratio*100}%`;
+      bar.appendChild(fill);
+      row.appendChild(head);
+      row.appendChild(bar);
+      rows.appendChild(row);
+    });
+    wrap.classList.remove('hidden');
+  } catch(e) {
+    console.warn('Harita verisi okunamadı:', e);
+    wrap.classList.add('hidden');
+  }
+}
+
+function renderTopicPerf(){
+  const wrap = document.getElementById('topicPerf');
+  const rowsEl = document.getElementById('topicPerfRows');
+  const topics = Object.keys(state.topicStats);
+  if(topics.length === 0){
+    wrap.classList.add('hidden');
+    return;
+  }
+  wrap.classList.remove('hidden');
+  rowsEl.innerHTML = '';
+  topics.forEach(topic => {
+    const stat = state.topicStats[topic];
+    const ratio = stat.total ? stat.correct / stat.total : 0;
+    const row = document.createElement('div');
+    row.className = 'topic-row';
+
+    const head = document.createElement('div');
+    head.className = 'topic-row-head';
+    const name = document.createElement('span');
+    name.className = 't-name';
+    name.textContent = topic;
+    const frac = document.createElement('span');
+    frac.className = 't-frac';
+    frac.textContent = `${stat.correct}/${stat.total}`;
+    head.appendChild(name);
+    head.appendChild(frac);
+
+    const bar = document.createElement('div');
+    bar.className = 'topic-bar';
+    const fill = document.createElement('div');
+    fill.className = 'topic-bar-fill' + (ratio < 0.5 ? ' weak' : (ratio < 1 ? ' mid' : ''));
+    fill.style.width = `${ratio*100}%`;
+    bar.appendChild(fill);
+
+    row.appendChild(head);
+    row.appendChild(bar);
+
+    if(ratio < 0.5){
+      const actionRow = document.createElement('div');
+      actionRow.style.display = 'flex';
+      actionRow.style.gap = '6px';
+      actionRow.style.marginTop = '8px';
+
+      const practiceBtn = document.createElement('button');
+      practiceBtn.className = 'btn-ghost';
+      practiceBtn.style.width = 'auto';
+      practiceBtn.style.flex = '1';
+      practiceBtn.style.fontSize = '11px';
+      practiceBtn.textContent = '📚 Örnek Soru Çöz';
+
+      const videoBtn = document.createElement('button');
+      videoBtn.className = 'btn-ghost';
+      videoBtn.style.width = 'auto';
+      videoBtn.style.flex = '1';
+      videoBtn.style.fontSize = '11px';
+      videoBtn.textContent = '🎥 Konu Anlatımı';
+      videoBtn.addEventListener('click', () => {
+        const url = 'https://www.youtube.com/results?search_query=' + encodeURIComponent('EBA MEB ' + topic + ' konu anlatımı kimya');
+        window.open(url, '_blank');
+      });
+
+      const practiceBox = document.createElement('div');
+      practiceBox.className = 'explain';
+      practiceBox.style.marginTop = '8px';
+
+      practiceBtn.addEventListener('click', () => {
+        const isOpen = practiceBox.classList.contains('show');
+        if(isOpen){
+          practiceBox.classList.remove('show');
+          practiceBox.innerHTML = '';
+          practiceBtn.textContent = '📚 Örnek Soru Çöz';
+          return;
+        }
+        renderPracticeQuestion(topic, practiceBox);
+        practiceBox.classList.add('show');
+        practiceBtn.textContent = '📚 Kapat';
+      });
+
+      actionRow.appendChild(practiceBtn);
+      actionRow.appendChild(videoBtn);
+      row.appendChild(actionRow);
+      row.appendChild(practiceBox);
+    }
+
+    rowsEl.appendChild(row);
+  });
+}
+
+function renderPracticeQuestion(topic, container){
+  const pool = (BANK[state.grade] ? BANK[state.grade].questions : []).filter(q => q.topic === topic && q.type === 'mc');
+  container.innerHTML = '';
+  if(pool.length === 0){
+    const msg = document.createElement('p');
+    msg.style.margin = '0';
+    msg.style.fontSize = '12.5px';
+    msg.textContent = 'Bu konu için ek örnek soru bulunamadı.';
+    container.appendChild(msg);
+    return;
+  }
+  const q = pool[Math.floor(Math.random() * pool.length)];
+  const qText = document.createElement('p');
+  qText.style.fontWeight = '700';
+  qText.style.fontSize = '13.5px';
+  qText.style.margin = '0 0 10px';
+  qText.textContent = q.q;
+  container.appendChild(qText);
+
+  q.opts.forEach((optText, oi) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.style.marginBottom = '6px';
+    b.textContent = optText;
+    b.addEventListener('click', () => {
+      container.querySelectorAll('.opt').forEach(x => x.setAttribute('disabled','true'));
+      container.querySelectorAll('.opt').forEach(x => { if(x.textContent === q.opts[q.correct]) x.classList.add('correct'); });
+      if(oi !== q.correct) b.classList.add('wrong');
+      const expEl = document.createElement('p');
+      expEl.style.fontSize = '12px';
+      expEl.style.marginTop = '8px';
+      expEl.style.color = '#3d4239';
+      expEl.style.lineHeight = '1.5';
+      expEl.textContent = q.exp;
+      container.appendChild(expEl);
+    });
+    container.appendChild(b);
+  });
+}
+
+// default select grade 9
+gradeBtns[0].click();
+</script>
+</body>
+</html>
