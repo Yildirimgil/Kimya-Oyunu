@@ -361,6 +361,23 @@
     <p class="sub">Zorluk, konu ve oyun modunu seç, sonra başlat. Sorular çoktan seçmeli, boşluk doldurma ve eşleştirme olarak karışık gelir.</p>
 
     <div class="field">
+      <span class="field-label">Sınıfın — isteğe bağlı</span>
+      <select class="topic-select" id="classInput">
+        <option value="">Sınıf seçme</option>
+        <option value="9A">9-A</option><option value="9B">9-B</option>
+        <option value="10A">10-A</option><option value="10B">10-B</option>
+        <option value="11A">11-A</option><option value="11B">11-B</option>
+        <option value="12A">12-A</option><option value="12B">12-B</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Okul Numaran — isteğe bağlı</span>
+      <input type="text" inputmode="numeric" pattern="[0-9]*" id="numberInput" placeholder="örn. 24" maxlength="3" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid #d8dcd0;font-size:14px;box-sizing:border-box;">
+      <small style="display:block;margin-top:4px;color:#8a8e80;font-size:11px;">Öğretmenin sınıfını takip edebilmesi için. İstersen boş bırakabilirsin.</small>
+    </div>
+
+    <div class="field">
       <span class="field-label">Zorluk</span>
       <div class="chip-row" id="diffChips">
         <button class="chip active" data-diff="all">Tümü</button>
@@ -390,6 +407,43 @@
 
     <div class="warn-line" id="warnLine">Bu filtreyle eşleşen soru yok, başka bir zorluk/konu seç.</div>
     <button class="btn-primary" id="startBtn">Sınavı Başlat</button>
+    <button class="btn-secondary" id="teacherPanelBtn" style="margin-top:10px;">👩‍🏫 Öğretmen Paneli</button>
+  </div>
+
+  <div id="teacherScreen" class="hidden setup-panel">
+    <h2>👩‍🏫 Öğretmen Paneli</h2>
+    <p class="sub">Bu görünüm, tüm öğrencilerin (isimsiz, toplu) verisinden oluşur — giriş sistemi olmadığı için tek bir sınıfa değil, oyunu oynayan herkese aittir.</p>
+    <div class="topic-perf" id="teacherSummary">
+      <div class="topic-perf-title"><span>Genel Durum</span></div>
+      <div class="comp-note" id="teacherSummaryNote">Yükleniyor...</div>
+    </div>
+
+    <div class="topic-perf" id="teacherClassPanel">
+      <div class="topic-perf-title"><span>🏫 Sınıf Görünümü</span></div>
+      <div class="field">
+        <span class="field-label">Sınıf seç</span>
+        <select class="topic-select" id="teacherClassSelect">
+          <option value="">Yükleniyor...</option>
+        </select>
+      </div>
+      <div class="comp-note" id="teacherClassHeatNote" style="margin-top:8px;"></div>
+      <div id="teacherClassHeatRows"></div>
+      <div class="comp-note" style="margin-top:10px;">👤 Öğrenci listesi (numarayla, oynama sırasına göre):</div>
+      <div id="teacherClassStudentRows"></div>
+    </div>
+
+    <div class="topic-perf" id="teacherTrend">
+      <div class="topic-perf-title"><span>📈 Zaman İçinde Yanılgı Eğilimi</span></div>
+      <div class="comp-note">Her nokta, o güne ait oturumlarda ortalama tespit edilen yanılgı sayısıdır. Düşen bir çizgi, zamanla daha az yanılgıya düşüldüğünü gösterir.</div>
+      <div id="teacherTrendChart"></div>
+    </div>
+    <div class="topic-perf" id="teacherOptimize">
+      <div class="topic-perf-title"><span>🔧 Parametreleri Veriden Optimize Et</span></div>
+      <div class="comp-note">Motorun şu anki katsayıları (LR₊=6, LR₋=0.55) elle seçildi. Bu buton, topluluktaki tüm ham kanıt günlüklerini farklı katsayı kombinasyonlarıyla yeniden oynatıp hangisinin en düşük (en iyi kalibre) Brier skorunu verdiğini bir ızgara aramayla bulur.</div>
+      <button class="btn-secondary" id="teacherOptimizeBtn">Optimizasyonu Çalıştır</button>
+      <div class="comp-note" id="teacherOptimizeResult" style="margin-top:8px;"></div>
+    </div>
+    <button class="btn-secondary" id="teacherBackBtn" style="margin-top:14px;">← Sınav Kurulumuna Dön</button>
   </div>
 
   <div id="gameScreen" class="hidden">
@@ -431,12 +485,35 @@
       <div class="explain hidden" id="aiTipBox"></div>
     </div>
 
+    <div class="topic-perf hidden" id="calibReport">
+      <div class="topic-perf-title">
+        <span>📊 Motor Kalibrasyon Raporu</span>
+      </div>
+      <div class="comp-note" id="calibNote"></div>
+    </div>
+
     <div class="topic-perf hidden" id="miscMap">
       <div class="topic-perf-title">
         <span>🗺️ Türkiye Kavram Yanılgıları Haritası</span>
       </div>
       <div class="comp-note" id="miscMapNote"></div>
       <div id="miscMapRows"></div>
+    </div>
+
+    <div class="topic-perf hidden" id="topicHeatmap">
+      <div class="topic-perf-title">
+        <span>🌡️ Konu Bazlı Yoğunluk Haritası</span>
+      </div>
+      <div class="comp-note">Not: Bu oyunda öğrenci/sınıf girişi olmadığından bu harita tek bir sınıfa değil, oyunu oynayan HERKESE ait toplu (isimsiz) veriye dayanır — yine de hangi konularda genel olarak en çok yanılgı üretildiğini gösterir.</div>
+      <div id="topicHeatmapRows"></div>
+    </div>
+
+    <div class="topic-perf hidden" id="miscDiscovery">
+      <div class="topic-perf-title">
+        <span>🔍 Olası Yeni Yanılgı Adayları</span>
+      </div>
+      <div class="comp-note">Henüz kütüphanede tanımlı olmayan, birden çok öğrencinin bağımsız olarak düştüğü örüntüler — doğrulanmamış adaylar, öğretmen/araştırmacı incelemesi içindir.</div>
+      <div id="miscDiscoveryRows"></div>
     </div>
 
     <div class="topic-perf" id="connStatus">
@@ -452,8 +529,8 @@
 </div>
 
 <script>
-const FIREBASE_PROJECT_ID = "kimya-oyunu";
-const FIREBASE_API_KEY = "AIzaSyAhnD1L6MwDRISi2xlN_JD19jRVsu2x4AM";
+const FIREBASE_PROJECT_ID = "kavram-yanilgisi";
+const FIREBASE_API_KEY = "AIzaSyBIMgacT_t63CHk-8Q_NHj7SFGVKpc8GuE";
 const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents`;
 
 // Firebase JS SDK yerine doğrudan Firestore REST API kullanıyoruz;
@@ -638,13 +715,445 @@ const MISCONCEPTIONS = {
   "katsayi-oran-karisikligi": { title: "Tepkime denklemindeki katsayı oranını dikkate almadan mol hesabı yapma", fix: "Denklemdeki katsayılar mol oranını belirler; ürün miktarı hesaplanırken bu oran mutlaka dikkate alınmalıdır." }
 };
 
+// Kök neden (önkoşul kavram) haritası: bir yanılgının, aynı sınıf müfredatı içinde
+// hangi ÖNCEKİ konudaki eksik/hatalı bir temele dayanabileceğini belirtir.
+// SADECE geriye dönük teşhis için kullanılır — öğrenci o önkoşul konuyu bu oturumda
+// GERÇEKTEN işlemişse gösterilir; hiç görmediği bir konu için asla tahmin/uyarı üretilmez.
+const MISCONCEPTION_PREREQ = {
+  "iyonik-molekul": "Atomdan Periyodik Tabloya",
+  "metalik-bag-sabit": "Atomdan Periyodik Tabloya",
+  "lewis-ok-karisikligi": "Atomdan Periyodik Tabloya",
+  "boyle-yasa-yon-karisikligi": "Stokiyometri",
+  "graham-yasa-karisikligi": "Stokiyometri",
+  "sinirlayici-bilesen-karisikligi": "Stokiyometri",
+  "katsayi-oran-karisikligi": "Kimyasal Tepkimeler",
+  "cozelti-donma-kaynama-karisikligi": "Çözünürlük",
+  "ksp-buyukluk-karisikligi": "Kimyasal Denge"
+};
+
+// Katman 3: Bilişsel Çatışma Soruları (Ters Soru Üretimi)
+// Bir öğrenci bir yanılgıya İLK KEZ düştüğünde, motor onu düzeltmek yerine kendi
+// mantığının çelişkisiyle yüzleştiren, bilerek kurgulanmış bir takip sorusu sorar.
+// Öğrenci bunu kendi başına fark ettiğinde (cognitive conflict), ezberden çok daha
+// kalıcı bir öğrenme gerçekleşir — literatürde "bilişsel çatışma" tekniği olarak bilinir.
+const CONFLICT_QUESTIONS = {
+  "boyle-yasa-yon-karisikligi": {
+    q: "Az önceki mantığını bir kez daha sınayalım: Sabit sıcaklıkta bir gazın hacmi artırılırsa basıncına ne olur?",
+    opts: ["Basınç da artar", "Basınç azalır", "Basınç değişmez", "Önce artar sonra azalır"],
+    correct: 1,
+    exp: "Hacim artınca gaz tanecikleri kabın duvarına daha seyrek çarpar; bu yüzden basınç azalır — Boyle yasasının ters orantılı yapısı tam olarak budur."
+  },
+  "mol-kutle-karisikligi": {
+    q: "Bir kez daha düşünelim: 1 mol demir (Fe, molar kütlesi 56 g/mol) kaç gram gelir?",
+    opts: ["18 gram", "1 gram", "56 gram", "6,02×10²³ gram"],
+    correct: 2,
+    exp: "Bir molün kütlesi, o maddenin molar kütlesine eşittir ve her madde için farklıdır — sabit bir sayı (18 gibi) değildir."
+  },
+  "katsayi-oran-karisikligi": {
+    q: "N₂ + 3H₂ → 2NH₃ tepkimesinde 2 mol N₂ tamamen tepkimeye girerse kaç mol NH₃ oluşur?",
+    opts: ["2 mol", "4 mol", "6 mol", "3 mol"],
+    correct: 1,
+    exp: "Denklemdeki katsayı oranına göre (1 N₂ : 2 NH₃), 2 mol N₂ tepkimeye girdiğinde 4 mol NH₃ oluşur — oran korunmalıdır."
+  },
+  "yukseltgenme-indirgenme-karisikligi": {
+    q: "Bir metal atomu elektron kaybediyorsa, bu işlem ne olarak adlandırılır?",
+    opts: ["İndirgenme", "Yükseltgenme", "Nötrleşme", "Hidroliz"],
+    correct: 1,
+    exp: "Elektron kaybı yükseltgenmedir; indirgenme ise elektron kazanımıdır — yönleri ters olduğu için sık karıştırılır."
+  },
+  "ksp-buyukluk-karisikligi": {
+    q: "Ksp değeri daha küçük olan bir bileşik, suda daha mı çok yoksa daha mı az çözünür?",
+    opts: ["Daha çok çözünür", "Daha az çözünür", "Çözünürlükle ilgisi yok", "İkisi de aynı çözünür"],
+    correct: 1,
+    exp: "Küçük Ksp, bileşiğin iyonlarına ayrışma eğiliminin düşük olduğunu, yani az çözündüğünü gösterir."
+  },
+  "le-chatelier-yon-karisikligi": {
+    q: "Dengedeki bir sisteme reaktan eklenirse, denge hangi yöne kayar?",
+    opts: ["Eklenen reaktan yönüne (geri)", "Ürün yönüne (ileri)", "Kaymaz", "Rastgele bir yöne"],
+    correct: 1,
+    exp: "Sistem eklenen fazlalığı tüketmeye çalışır; bu yüzden denge ürün (ileri) yönüne kayar — eklenen maddeyle AYNI yöne değil."
+  },
+  "graham-yasa-karisikligi": {
+    q: "Aynı sıcaklıkta, molar kütlesi küçük olan bir gaz mı yoksa büyük olan mı daha hızlı yayılır?",
+    opts: ["Molar kütlesi büyük olan", "Molar kütlesi küçük olan", "İkisi aynı hızda yayılır", "Molar kütleyle ilgisi yoktur"],
+    correct: 1,
+    exp: "Graham yasasına göre yayılma hızı molar kütlenin kareköküyle ters orantılıdır; hafif gaz her zaman daha hızlı yayılır."
+  },
+  "sinirlayici-bilesen-karisikligi": {
+    q: "1 mol A : 1 mol B oranı isteyen bir tepkimede elimizde 10 mol A ve 1 mol B varsa, hangisi sınırlayıcıdır?",
+    opts: ["A (çünkü daha fazla)", "B (çünkü önce tükenir)", "İkisi de sınırlayıcı değildir", "Miktarla ilgisi yoktur"],
+    correct: 1,
+    exp: "Sınırlayıcı bileşen, en fazla miktarda bulunan değil, orana göre önce tükenecek olandır — burada B önce biter."
+  },
+  "cozelti-donma-kaynama-karisikligi": {
+    q: "Suya tuz eklendiğinde donma noktası nasıl değişir?",
+    opts: ["Yükselir", "Düşer", "Değişmez", "Önce düşer sonra yükselir"],
+    correct: 1,
+    exp: "Çözünen tanecikler donma noktasını düşürür (kaynama noktasını ise yükseltir) — bu iki koligatif etki birbirine ters yönlüdür."
+  },
+  "denge-sabiti-degisken-karisikligi": {
+    q: "Bir tepkimeye katalizör eklenirse denge sabiti K'nın değeri değişir mi?",
+    opts: ["Evet, artar", "Evet, azalır", "Hayır, değişmez", "Tepkimeye göre değişir"],
+    correct: 2,
+    exp: "Katalizör yalnızca dengeye ulaşma hızını etkiler; K yalnızca sıcaklığa bağlıdır, katalizörle değişmez."
+  }
+};
+
+// ===================================================================================
+// KAVRAM YANILGISI TEŞHİS MOTORU v2
+// Katman 1: Bayesçi inanç güncellemesi (küçük veriyle çalışan olasılıksal teşhis)
+// Katman 2: Geriye dönük kök neden bağlantısı (yukarıdaki MISCONCEPTION_PREREQ)
+// Katman 3: Yeni yanılgı keşif katmanı (etiketlenmemiş yanlışların toplu analizi)
+// Katman 4: Nüks/unutma takibi (localStorage ile oturumlar arası kalıcılık)
+// ===================================================================================
+
+const BAYES_PRIOR = 0.20;            // bir öğrencinin rastgele bu yanılgıyı taşıma ön olasılığı
+const BAYES_LR_POSITIVE = 6;         // yanılgıya işaret eden şık seçildiğinde olabilirlik oranı çarpanı
+const BAYES_LR_NEGATIVE = 0.55;      // aynı konuda doğru cevap verildiğinde olabilirlik oranı çarpanı
+const BAYES_CONFIRM_THRESHOLD = 0.55; // raporda "teşhis edildi" sayılması için gereken olasılık eşiği
+const CORRELATION_MIN_COUNT = 3;      // Katman B: bir korelasyonun "güvenilir" sayılması için gereken minimum ortak görülme
+const CORRELATION_PRIOR_BOOST = 0.30; // Katman B: ilişkili bir yanılgı için yükseltilmiş başlangıç olasılığı (0.55 eşiğinin altında kalır, tek başına teşhis oluşturmaz)
+const DISCOVERY_THRESHOLD = 3;        // bir "adaylık" için toplu veride gereken minimum tekrar sayısı
+const MISC_HISTORY_KEY = 'kimyaOyunuMiscHistory_v1';
+
+function pToOdds(p){ return p / (1 - p); }
+function oddsToP(o){ return o / (1 + o); }
+
+function ensureBelief(miscId){
+  if(!state.beliefs[miscId]){
+    // Katman B: eğer bu yanılgı, bu oturumda zaten teşhis edilmiş başka bir yanılgıyla
+    // topluluk verisinde sık birlikte görülüyorsa, başlangıç olasılığını hafifçe yukarı çek.
+    // Bu KESİN bir teşhis değildir — sadece "izlemeye değer" bir ön-sinyal, eşiği tek başına geçemez.
+    let startP = BAYES_PRIOR;
+    const confirmedIds = Object.keys(state.beliefs).filter(id => state.beliefs[id].p >= BAYES_CONFIRM_THRESHOLD);
+    confirmedIds.forEach(cid => {
+      const related = communityCorrelations[cid];
+      if(related && related[miscId] >= CORRELATION_MIN_COUNT){
+        startP = Math.max(startP, CORRELATION_PRIOR_BOOST);
+      }
+    });
+    state.beliefs[miscId] = { p: startP, evidence: 0, questions: [], correlationBoosted: startP > BAYES_PRIOR };
+  }
+  return state.beliefs[miscId];
+}
+
+// Öğrenci, bir yanılgıyı doğrudan işaret eden yanlış şıkkı seçtiğinde çağrılır.
+function registerMisconceptionEvidence(miscId, q){
+  const b = ensureBelief(miscId);
+  const isFirstEvidence = b.evidence === 0;
+  state.beliefTrials.push({ miscId, pBefore: b.p, outcome: 1, topic: q.topic }); // Katman 8: kalibrasyon kaydı
+  state.evidenceLog.push({ miscId, kind: 'pos', idx: state.idx }); // Katman A/C/D: ham günlük
+  b.p = oddsToP(pToOdds(b.p) * BAYES_LR_POSITIVE);
+  b.evidence++;
+  b.questions.push({ topic: q.topic, q: (q.q || '').slice(0, 70) });
+  state.sessionMisconceptions.push(miscId); // ham log (geriye dönük uyumluluk için)
+  if(isFirstEvidence) maybeInjectConflictQuestion(miscId, q);
+}
+
+// Katman 3: bir yanılgı ilk kez teşhis edildiğinde, elde hazır bir çatışma sorusu varsa
+// onu bir sonraki soru olarak havuza ekler (aynı yanılgı için oturumda sadece bir kez).
+function maybeInjectConflictQuestion(miscId, originQ){
+  if(!CONFLICT_QUESTIONS[miscId]) return;
+  if(state.conflictAsked.has(miscId)) return;
+  state.conflictAsked.add(miscId);
+  const c = CONFLICT_QUESTIONS[miscId];
+  const conflictQ = {
+    type: 'mc',
+    topic: originQ.topic,
+    diff: originQ.diff || 'orta',
+    q: c.q,
+    opts: c.opts,
+    correct: c.correct,
+    exp: '🧩 Bilişsel çatışma sorusu: ' + c.exp,
+    _isConflict: true,
+    _conflictMisc: miscId
+  };
+  state.pool.splice(state.idx + 1, 0, conflictQ);
+}
+
+// Çatışma sorusu doğru çözüldüğünde, öğrencinin kendi çelişkisini fark ettiğinin
+// güçlü bir kanıtı sayılır — normal bir doğru cevaptan daha kuvvetli negatif kanıt uygulanır.
+function applyConflictResolutionEvidence(miscId, wasCorrect, topic){
+  const b = state.beliefs[miscId];
+  if(!b) return;
+  state.beliefTrials.push({ miscId, pBefore: b.p, outcome: wasCorrect ? 0 : 1, topic }); // Katman 8
+  state.evidenceLog.push({ miscId, kind: wasCorrect ? 'conflict_neg' : 'conflict_pos', idx: state.idx });
+  if(wasCorrect){
+    b.p = oddsToP(pToOdds(b.p) * (BAYES_LR_NEGATIVE * 0.5));
+  } else {
+    b.p = oddsToP(pToOdds(b.p) * BAYES_LR_POSITIVE);
+    b.evidence++;
+  }
+}
+
+// Bir konuda doğru cevap verildiğinde, o konuyla ilişkili yanılgıların olasılığını hafifçe azaltır.
+function decayBeliefsForTopic(topic){
+  Object.entries(state.beliefs).forEach(([id, b]) => {
+    const relatesToTopic = b.questions.some(q => q.topic === topic);
+    if(relatesToTopic){
+      state.beliefTrials.push({ miscId: id, pBefore: b.p, outcome: 0, topic }); // Katman 8: kalibrasyon kaydı
+      state.evidenceLog.push({ miscId: id, kind: 'neg', idx: state.idx });
+      b.p = oddsToP(pToOdds(b.p) * BAYES_LR_NEGATIVE);
+    }
+  });
+}
+
+// ===================================================================================
+// Katman 7: Adaptif Soru Sıralaması (basit bir Computerized Adaptive Testing mantığı)
+// Her cevaptan sonra, kalan soru havuzunu "en bilgilendirici" sıraya göre yeniden dizer:
+// hangi yanılgının olasılığı en belirsizse (0.5'e en yakınsa), onu doğrulayacak/çürütecek
+// soruyu öne alır. Böylece motor sabit bir sırada değil, teşhisi en hızlı netleştirecek
+// şekilde soru seçer — büyük veri gerektirmeyen, hafif bir CAT (adaptif test) uyarlamasıdır.
+// ===================================================================================
+function adaptivePriorityScore(q){
+  let score = Math.random() * 0.3; // hafif rastgelelik, tekdüzeliği önler
+  if(q.diagMisc){
+    const relatedIds = [...new Set(Object.values(q.diagMisc))];
+    relatedIds.forEach(id => {
+      const b = state.beliefs[id];
+      if(b){
+        const uncertainty = 1 - Math.abs(b.p - 0.5) * 2; // 0..1, p=0.5'te en yüksek
+        score += Math.max(uncertainty, 0) * 2;
+      }
+    });
+  }
+  // Bir yanılgının önkoşul konusundan gelen bir soru, o yanılgı henüz belirsizken önceliklendirilir.
+  Object.entries(MISCONCEPTION_PREREQ).forEach(([id, prereqTopic]) => {
+    if(prereqTopic === q.topic){
+      const b = state.beliefs[id];
+      if(b && b.p >= 0.25 && b.p < BAYES_CONFIRM_THRESHOLD) score += 1;
+    }
+  });
+  if(q._isConflict) score += 1000; // bekleyen bir çatışma sorusu her zaman hemen sıradaki soru olmalı
+  return score;
+}
+
+function adaptiveReorderRemaining(){
+  const remaining = state.pool.slice(state.idx + 1);
+  if(remaining.length <= 1) return;
+  const scored = remaining.map(q => ({ q, score: adaptivePriorityScore(q) }));
+  scored.sort((a, b) => b.score - a.score);
+  state.pool = state.pool.slice(0, state.idx + 1).concat(scored.map(s => s.q));
+}
+
+// Henüz kütüphanede tanımlı olmayan (diagMisc etiketi taşımayan) bir yanlış şık seçildiğinde
+// bunu "keşif" verisine kaydeder — motor sadece bilinen yanılgıları değil, olası yeni
+// yanılgı adaylarını da toplu veri üzerinden fark edebilsin diye.
+function registerUnlabeledWrong(q, optText){
+  const qKey = (q.topic + '|' + (q.q || '')).slice(0, 90);
+  state.sessionUnlabeled.push(`${q.topic}||${qKey}||${optText}`.slice(0, 160));
+}
+
+// ===================================================================================
+// Katman A: Veri-Odaklı Parametre Öğrenimi
+// Sabit LR (olabilirlik oranı) katsayılarını elle seçmek yerine, topluluktaki tüm
+// oturumların ham kanıt günlüklerini farklı katsayı kombinasyonlarıyla "yeniden oynatıp"
+// (replay) hangi kombinasyonun en düşük (en iyi kalibre) Brier skorunu verdiğini basit
+// bir ızgara arama (grid search) ile bulur. Bu, motoru "sabit kurallı" olmaktan çıkarıp
+// gerçek anlamda veriden öğrenen bir sisteme dönüştürür.
+// ===================================================================================
+function decodeEvidenceLog(strArr){
+  return (strArr || []).map(s => {
+    const parts = String(s).split('|');
+    return { miscId: parts[0], kind: parts[1], idx: Number(parts[2]) };
+  });
+}
+
+function lrForEvent(kind, lrPos, lrNeg){
+  if(kind === 'pos' || kind === 'conflict_pos') return { lr: lrPos, outcome: 1 };
+  if(kind === 'conflict_neg') return { lr: lrNeg * 0.5, outcome: 0 };
+  return { lr: lrNeg, outcome: 0 }; // 'neg'
+}
+
+function replayEvidenceLog(evidenceLog, lrPos, lrNeg){
+  const beliefs = {};
+  const trials = [];
+  evidenceLog.forEach(e => {
+    if(beliefs[e.miscId] === undefined) beliefs[e.miscId] = BAYES_PRIOR;
+    const pBefore = beliefs[e.miscId];
+    const { lr, outcome } = lrForEvent(e.kind, lrPos, lrNeg);
+    trials.push({ pBefore, outcome });
+    beliefs[e.miscId] = oddsToP(pToOdds(pBefore) * lr);
+  });
+  return trials;
+}
+
+function brierFromTrials(trials){
+  if(!trials || trials.length === 0) return null;
+  return trials.reduce((s, t) => s + Math.pow(t.pBefore - t.outcome, 2), 0) / trials.length;
+}
+
+function optimizeBayesParameters(sessionDocs){
+  const logs = sessionDocs.map(d => decodeEvidenceLog(d.evidenceLog)).filter(l => l.length > 0);
+  if(logs.length === 0) return null;
+
+  const candidatesPos = [3, 4, 5, 6, 7, 8, 10, 12];
+  const candidatesNeg = [0.3, 0.4, 0.5, 0.55, 0.6, 0.7];
+  let best = { lrPos: BAYES_LR_POSITIVE, lrNeg: BAYES_LR_NEGATIVE, brier: Infinity };
+  let currentBrier = null;
+
+  candidatesPos.forEach(lrPos => {
+    candidatesNeg.forEach(lrNeg => {
+      let allTrials = [];
+      logs.forEach(log => { allTrials = allTrials.concat(replayEvidenceLog(log, lrPos, lrNeg)); });
+      const brier = brierFromTrials(allTrials);
+      if(brier === null) return;
+      if(Math.abs(lrPos - BAYES_LR_POSITIVE) < 1e-9 && Math.abs(lrNeg - BAYES_LR_NEGATIVE) < 1e-9) currentBrier = brier;
+      if(brier < best.brier) best = { lrPos, lrNeg, brier };
+    });
+  });
+  return { best, currentBrier, sessionsUsed: logs.length, totalTrials: logs.reduce((s,l)=>s+l.length,0) };
+}
+
+// ===================================================================================
+// Katman C: Nicel Açıklanabilirlik (XAI) — log-odds ayrıştırması
+// Bayesçi güncelleme çarpımsal olduğu için (odds_yeni = odds_eski × LR), LOG-ODDS uzayında
+// TOPLAMSAL hale gelir: log(odds_son) - log(odds_başlangıç) = Σ log(LR_i). Bu da her kanıtın
+// son olasılığa yüzde kaç katkı yaptığını KESİN olarak (tahmini değil) hesaplamamızı sağlar —
+// literatürdeki "özellik katkısı" (feature attribution) mantığının Bayesçi bir uyarlaması.
+// ===================================================================================
+function explainBeliefContributions(miscId){
+  const events = state.evidenceLog.filter(e => e.miscId === miscId);
+  if(events.length === 0) return [];
+  const logLRs = events.map(e => {
+    const { lr } = lrForEvent(e.kind, BAYES_LR_POSITIVE, BAYES_LR_NEGATIVE);
+    return Math.log(lr);
+  });
+  const totalAbs = logLRs.reduce((s, v) => s + Math.abs(v), 0);
+  return events.map((e, i) => ({
+    kind: e.kind,
+    pct: totalAbs > 0 ? Math.round((Math.abs(logLRs[i]) / totalAbs) * 100) : 0,
+    direction: logLRs[i] >= 0 ? 'destekleyici' : 'karşıt'
+  }));
+}
+
+// ===================================================================================
+// Katman D: Eğitim/Test Ayrımı Simülasyonu
+// Oturumdaki kanıtları kronolojik sıraya göre ikiye böler: ilk yarı "eğitim", ikinci yarı
+// "test". Eğitim yarısıyla öğrenilen inançların, motorun O ANA KADAR HİÇ GÖRMEDİĞİ test
+// yarısındaki gerçek sonuçları ne kadar iyi tahmin ettiğini ölçer — klasik makine öğrenmesi
+// doğrulama (train/test split) yöntemine daha yakın, overfitting riskini azaltan bir yapı.
+// ===================================================================================
+function computeTrainTestCalibration(){
+  const log = state.evidenceLog;
+  if(log.length < 6) return null; // anlamlı bir bölünme için yeterli veri yok
+  const maxIdx = Math.max(...log.map(e => e.idx));
+  const splitPoint = maxIdx / 2;
+  const trainLog = log.filter(e => e.idx <= splitPoint);
+  const testLog = log.filter(e => e.idx > splitPoint);
+  if(trainLog.length === 0 || testLog.length === 0) return null;
+
+  const trainedBeliefs = {};
+  trainLog.forEach(e => {
+    if(trainedBeliefs[e.miscId] === undefined) trainedBeliefs[e.miscId] = BAYES_PRIOR;
+    const { lr } = lrForEvent(e.kind, BAYES_LR_POSITIVE, BAYES_LR_NEGATIVE);
+    trainedBeliefs[e.miscId] = oddsToP(pToOdds(trainedBeliefs[e.miscId]) * lr);
+  });
+
+  let sumSq = 0, n = 0;
+  testLog.forEach(e => {
+    const predicted = trainedBeliefs[e.miscId] !== undefined ? trainedBeliefs[e.miscId] : BAYES_PRIOR;
+    const { outcome } = lrForEvent(e.kind, BAYES_LR_POSITIVE, BAYES_LR_NEGATIVE);
+    sumSq += Math.pow(predicted - outcome, 2);
+    n++;
+  });
+  return { outOfSampleBrier: n > 0 ? sumSq / n : null, n, trainN: trainLog.length };
+}
+
+function getConfirmedMisconceptions(){
+  return Object.entries(state.beliefs)
+    .filter(([, b]) => b.p >= BAYES_CONFIRM_THRESHOLD)
+    .sort((a, b) => b[1].p - a[1].p)
+    .map(([id, b]) => ({ id, belief: b }));
+}
+
+// Katman 8: Kalibrasyon / Doğruluk Raporu (Brier Skoru)
+// Motor her "kanıt" olayında (yanılgıyı doğrulayan/çürüten bir cevap), o olaydan HEMEN
+// ÖNCEKİ olasılık tahminini (pBefore) ve gerçekleşen sonucu (outcome: 1=doğrulandı, 0=çürütüldü)
+// state.beliefTrials içine kaydeder. Oturum sonunda bu çiftlerin gerçek Brier skoru hesaplanır:
+// Brier = ortalama((tahmin - gerçekleşen)²) — düşük skor, iyi kalibre edilmiş bir motor demektir.
+// Karşılaştırma için, motor hiç öğrenmeseydi (her zaman sabit ön-olasılığı tahmin etseydi)
+// elde edilecek "naif" Brier skoru da hesaplanır.
+function computeCalibrationReport(){
+  const trials = state.beliefTrials;
+  if(trials.length === 0) return null;
+  const brier = trials.reduce((sum, t) => sum + Math.pow(t.pBefore - t.outcome, 2), 0) / trials.length;
+  const baselineBrier = trials.reduce((sum, t) => sum + Math.pow(BAYES_PRIOR - t.outcome, 2), 0) / trials.length;
+  const improvement = baselineBrier > 0 ? ((baselineBrier - brier) / baselineBrier) * 100 : 0;
+  return { brier, baselineBrier, n: trials.length, improvement };
+}
+
+// Bir yanılgının hangi soru(lar)dan doğduğunu (kök konusunu) bulur — nüks/geçmiş takibi için kullanılır.
+function findTopicForMisconception(miscId){
+  for(const gradeKey of Object.keys(BANK)){
+    const qs = BANK[gradeKey].questions;
+    for(const q of qs){
+      if(q.diagMisc && Object.values(q.diagMisc).includes(miscId)) return q.topic;
+    }
+  }
+  return null;
+}
+
+function loadMiscHistory(){
+  try { return JSON.parse(localStorage.getItem(MISC_HISTORY_KEY) || '{}'); }
+  catch(e){ return {}; }
+}
+function saveMiscHistory(hist){
+  try { localStorage.setItem(MISC_HISTORY_KEY, JSON.stringify(hist)); } catch(e){}
+}
+
+// Oturum sonunda yerel geçmişle birleştirir: nüks (relapse) tespiti yapar ve
+// "çözülmüş" yanılgıların zamanla nasıl davrandığını (unutma eğrisi verisi) kaydeder.
+// Bu cihazda/tarayıcıda oynayan aynı öğrenci için anlamlıdır (giriş sistemi olmadığından).
+function updateHistoryAndDetectRelapses(confirmed){
+  const hist = loadMiscHistory();
+  const now = Date.now();
+  const relapseIds = new Set();
+  const confirmedIds = new Set(confirmed.map(c => c.id));
+
+  confirmed.forEach(({ id, belief }) => {
+    const entry = hist[id];
+    if(entry && entry.resolvedAt){
+      relapseIds.add(id);
+      entry.relapseCount = (entry.relapseCount || 0) + 1;
+      entry.resolvedAt = null;
+    } else if(!entry){
+      hist[id] = { firstSeen: now, relapseCount: 0, resolvedAt: null };
+    }
+    hist[id].lastSeen = now;
+    hist[id].lastConfidence = belief.p;
+  });
+
+  // Daha önce görülmüş ama bu oturumda teyit edilmeyen bir yanılgı: kökeni olan konu bu
+  // oturumda tekrar işlendiyse (yani öğrenci tekrar sınandı) ve tetiklenmediyse, "çözüldü" say.
+  Object.keys(hist).forEach(id => {
+    const entry = hist[id];
+    if(confirmedIds.has(id) || entry.resolvedAt) return;
+    const originTopic = findTopicForMisconception(id);
+    if(originTopic && state.topicStats[originTopic]){
+      entry.resolvedAt = now;
+    }
+  });
+
+  saveMiscHistory(hist);
+  return relapseIds;
+}
+
+// ===================================================================================
+
 let state = {
   grade: null, diff: 'all', topic: 'all', timed: false, livesMode: false,
+  className: '', studentNumber: '',
   pool: [], idx: 0, score: 0, wrongCount: 0, livesLeft: 3, answered: false,
   timerId: null, timeLeft: 20,
   matchState: null,
   topicStats: {},
   sessionMisconceptions: [],
+  beliefs: {},
+  sessionUnlabeled: [],
+  beliefTrials: [],
+  conflictAsked: new Set(),
+  evidenceLog: [], // Katman A/C/D: her kanıt olayının ham, sıralı günlüğü — yeniden oynatma (replay) için
   aiFeedback: null
 };
 
@@ -736,6 +1245,7 @@ function showSetup(){
   setupScreen.classList.remove('hidden');
   gameScreen.classList.add('hidden');
   resultScreen.classList.add('hidden');
+  document.getElementById('teacherScreen').classList.add('hidden');
   checkPoolSize();
 }
 
@@ -751,6 +1261,8 @@ function shuffle(arr){
 function beginGame(){
   state.timed = timedToggle.checked;
   state.livesMode = livesToggle.checked;
+  state.className = (document.getElementById('classInput').value || '').trim().slice(0, 10);
+  state.studentNumber = (document.getElementById('numberInput').value || '').replace(/\D/g, '').slice(0, 3);
   state.pool = shuffle(getPool());
   state.idx = 0;
   state.score = 0;
@@ -758,6 +1270,11 @@ function beginGame(){
   state.livesLeft = 3;
   state.topicStats = {};
   state.sessionMisconceptions = [];
+  state.beliefs = {};
+  state.sessionUnlabeled = [];
+  state.beliefTrials = [];
+  state.conflictAsked = new Set();
+  state.evidenceLog = [];
   state.aiFeedback = null;
 
   document.getElementById('livesDisplay').classList.toggle('hidden', !state.livesMode);
@@ -773,6 +1290,44 @@ startBtn.addEventListener('click', () => {
   if(!state.grade){ gradeBtns[0].click(); }
   if(checkPoolSize().length === 0) return;
   beginGame();
+});
+
+document.getElementById('teacherPanelBtn').addEventListener('click', () => {
+  setupScreen.classList.add('hidden');
+  document.getElementById('teacherScreen').classList.remove('hidden');
+  loadTeacherPanel();
+});
+document.getElementById('teacherBackBtn').addEventListener('click', () => {
+  document.getElementById('teacherScreen').classList.add('hidden');
+  showSetup();
+});
+
+document.getElementById('teacherOptimizeBtn').addEventListener('click', () => {
+  const out = document.getElementById('teacherOptimizeResult');
+  if(teacherDocsCache.length === 0){
+    out.textContent = 'Önce panelin yüklenmesini bekle (veri henüz gelmedi).';
+    return;
+  }
+  out.textContent = 'Izgara arama çalışıyor...';
+  setTimeout(() => { // arayüzün donmaması için hesaplamayı bir sonraki tick'e it
+    const result = optimizeBayesParameters(teacherDocsCache);
+    if(!result){
+      out.textContent = 'Optimizasyon için yeterli ham kanıt günlüğü yok (henüz hiç oturum kaydedilmemiş olabilir).';
+      return;
+    }
+    const { best, currentBrier, sessionsUsed, totalTrials } = result;
+    const lines = [];
+    lines.push(`${sessionsUsed} oturumun ham kanıt günlüğü (${totalTrials} kanıt) üzerinden ızgara arama yapıldı.`);
+    lines.push(`Şu anki sabit katsayılar (LR₊=${BAYES_LR_POSITIVE}, LR₋=${BAYES_LR_NEGATIVE}) ile Brier skoru: ${currentBrier !== null ? currentBrier.toFixed(4) : 'hesaplanamadı'}.`);
+    lines.push(`En iyi bulunan kombinasyon: LR₊=${best.lrPos}, LR₋=${best.lrNeg} → Brier skoru: ${best.brier.toFixed(4)}.`);
+    if(currentBrier !== null && currentBrier > best.brier){
+      const impr = ((currentBrier - best.brier) / currentBrier * 100).toFixed(1);
+      lines.push(`Bu, şu anki katsayılara göre yaklaşık %${impr} iyileşme demek — kodda BAYES_LR_POSITIVE ve BAYES_LR_NEGATIVE sabitlerini bu değerlerle güncelleyip motoru "yeniden eğitebilirsin".`);
+    } else {
+      lines.push('Şu anki katsayılar zaten (denenen aralıkta) en iyi veya ona çok yakın — henüz güncelleme gerekmiyor.');
+    }
+    out.innerHTML = lines.map(l => `<div style="margin-bottom:6px;">${l}</div>`).join('');
+  }, 10);
 });
 
 retryBtn.addEventListener('click', () => { beginGame(); });
@@ -848,7 +1403,11 @@ function resolveAnswer(isCorrect, prefix){
   const q = state.pool[state.idx];
   if(!state.topicStats[q.topic]) state.topicStats[q.topic] = { correct: 0, total: 0 };
   state.topicStats[q.topic].total++;
-  if(isCorrect) state.topicStats[q.topic].correct++;
+  if(isCorrect){
+    state.topicStats[q.topic].correct++;
+    decayBeliefsForTopic(q.topic);
+  }
+  adaptiveReorderRemaining(); // Katman 7: kalan soruları güncel inançlara göre yeniden sırala
 
   explainBox.textContent = (prefix ? prefix + " " : "") + q.exp;
   explainBox.classList.add('show');
@@ -910,7 +1469,7 @@ function renderQuestion(){
   const rightSpan = document.createElement('span');
   const typeBadge = document.createElement('span');
   typeBadge.className = 'q-type-badge';
-  typeBadge.textContent = TYPE_LABEL[q.type] || '';
+  typeBadge.textContent = q._isConflict ? '🧩 BİLİŞSEL ÇATIŞMA' : (TYPE_LABEL[q.type] || '');
   const diffTag = document.createElement('span');
   diffTag.className = 'q-diff';
   diffTag.textContent = ' · ' + q.diff.toUpperCase();
@@ -951,10 +1510,16 @@ function renderMC(q){
       allOpts.forEach(x => x.setAttribute('disabled','true'));
       allOpts.forEach(x => { if(x.textContent === q.opts[q.correct]) x.classList.add('correct'); });
       const correct = oi === q.correct;
-      if(!correct){
+      if(q._isConflict){
+        // Bilişsel çatışma sorusu: doğru çözülürse güçlü olumsuz kanıt, yanlış çözülürse ek olumlu kanıt.
+        b.classList.toggle('wrong', !correct);
+        applyConflictResolutionEvidence(q._conflictMisc, correct, q.topic);
+      } else if(!correct){
         b.classList.add('wrong');
         if(q.diagMisc && q.diagMisc[oi]){
-          state.sessionMisconceptions.push(q.diagMisc[oi]);
+          registerMisconceptionEvidence(q.diagMisc[oi], q);
+        } else {
+          registerUnlabeledWrong(q, q.opts[oi]);
         }
       }
       resolveAnswer(correct);
@@ -1178,40 +1743,126 @@ function showResult(isGameOver){
   }
   document.getElementById('resultMsg').textContent = msg;
   renderTopicPerf();
+  finalizeMisconceptionFlow();
+}
+
+// Sıralama önemli: önce toplulukdaki mevcut veriyi oku (akran karşılaştırması ve keşif
+// adayları için), sonra kişisel raporu göster, sonra bu oturumu kaydet (kendi verimizle
+// karşılaştırmayı çarpıtmamak için), en son topluluk görünümünü tazele.
+async function finalizeMisconceptionFlow(){
+  await loadAndRenderMiscMap();
   renderMiscReport();
-  saveMiscToSharedMap();
+  renderCalibrationReport();
+  await saveMiscToSharedMap();
   loadAndRenderMiscMap();
 }
 
 function renderMiscReport(){
   const wrap = document.getElementById('miscReport');
   const rows = document.getElementById('miscReportRows');
-  const uniqueIds = [...new Set(state.sessionMisconceptions)];
+  const confirmed = getConfirmedMisconceptions(); // Bayesçi eşik geçen yanılgılar
+  const uniqueIds = confirmed.map(c => c.id);
+
   if(uniqueIds.length === 0){
     wrap.classList.add('hidden');
     return;
   }
   wrap.classList.remove('hidden');
   rows.innerHTML = '';
-  uniqueIds.forEach(id => {
+
+  const relapseIds = updateHistoryAndDetectRelapses(confirmed);
+
+  confirmed.forEach(({ id, belief }) => {
     const m = MISCONCEPTIONS[id];
     if(!m) return;
     const row = document.createElement('div');
     row.className = 'topic-row';
+
     const head = document.createElement('div');
     head.className = 'topic-row-head';
     const name = document.createElement('span');
     name.className = 't-name';
     name.textContent = '⚠️ ' + m.title;
+    const confBadge = document.createElement('span');
+    confBadge.className = 't-frac';
+    confBadge.textContent = `%${Math.round(belief.p * 100)} güven`;
     head.appendChild(name);
+    head.appendChild(confBadge);
+    row.appendChild(head);
+
     const desc = document.createElement('div');
     desc.style.fontSize = '12.5px';
     desc.style.color = '#4a4f46';
     desc.style.lineHeight = '1.5';
     desc.style.marginTop = '3px';
     desc.textContent = m.fix;
-    row.appendChild(head);
     row.appendChild(desc);
+
+    // Katman 1 açıklanabilirlik: bu teşhis kaç kanıta ve hangi sorulara dayanıyor.
+    const evidenceLine = document.createElement('div');
+    evidenceLine.style.fontSize = '11px';
+    evidenceLine.style.color = '#8a8e80';
+    evidenceLine.style.marginTop = '5px';
+    evidenceLine.textContent = `🔎 Neden bu teşhis: ${belief.evidence} soruda bu yanılgıya işaret eden şık seçildi (${belief.questions.map(q => q.topic).join(', ')}).`;
+    row.appendChild(evidenceLine);
+
+    // Katman 2: geriye dönük kök neden — sadece önkoşul konu bu oturumda işlendiyse.
+    const prereqTopic = MISCONCEPTION_PREREQ[id];
+    if(prereqTopic && state.topicStats[prereqTopic]){
+      const rootLine = document.createElement('div');
+      rootLine.style.fontSize = '11.5px';
+      rootLine.style.color = 'var(--teal-dark)';
+      rootLine.style.marginTop = '5px';
+      rootLine.textContent = `↩️ Kök neden ipucu: Bu hatanın kökeni muhtemelen "${prereqTopic}" konusundaki bir eksikle ilgili — orayı tekrar gözden geçirmek işini kolaylaştırabilir.`;
+      row.appendChild(rootLine);
+    }
+
+    // Katman 4: nüks (relapse) rozetı.
+    if(relapseIds.has(id)){
+      const relapseLine = document.createElement('div');
+      relapseLine.style.fontSize = '11.5px';
+      relapseLine.style.color = 'var(--coral)';
+      relapseLine.style.marginTop = '5px';
+      relapseLine.style.fontWeight = '700';
+      relapseLine.textContent = '🔁 Nüks: Bu yanılgı daha önce çözülmüş görünüyordu, bu oturumda tekrar ortaya çıktı. Kalıcı öğrenme için bir kez daha üzerine gitmek iyi olur.';
+      row.appendChild(relapseLine);
+    }
+
+    // Katman 5: akran karşılaştırması — toplulukdaki (Firestore) veriyle kıyaslama.
+    if(communityTotal > 0 && communityAgg[id]){
+      const pct = Math.round((communityAgg[id] / communityTotal) * 100);
+      const peerLine = document.createElement('div');
+      peerLine.style.fontSize = '11.5px';
+      peerLine.style.color = '#8a8e80';
+      peerLine.style.marginTop = '5px';
+      peerLine.textContent = `👥 Bu yanılgıya, veritabanına kaydedilen oturumların yaklaşık %${pct}'i de düşmüş — yalnız değilsin.`;
+      row.appendChild(peerLine);
+    }
+
+    // Katman B: bu yanılgının başlangıç olasılığı, topluluk verisinden öğrenilen bir
+    // korelasyon nedeniyle yükseltildiyse bunu şeffafça belirt.
+    if(belief.correlationBoosted){
+      const corrLine = document.createElement('div');
+      corrLine.style.fontSize = '11.5px';
+      corrLine.style.color = '#8a8e80';
+      corrLine.style.marginTop = '5px';
+      corrLine.textContent = '🔗 Bu yanılgı, topluluk verisinde daha önce teşhis edilen başka bir yanılgınla sık birlikte görülüyor — bu ilişki dikkate alınarak daha erken fark edildi.';
+      row.appendChild(corrLine);
+    }
+
+    // Katman C: log-odds ayrıştırmasıyla nicel açıklanabilirlik — her kanıtın son
+    // olasılığa yüzde kaç katkı yaptığını KESİN olarak gösterir (tahmini değil).
+    const contributions = explainBeliefContributions(id);
+    if(contributions.length > 0){
+      const contribLine = document.createElement('div');
+      contribLine.style.fontSize = '11px';
+      contribLine.style.color = '#8a8e80';
+      contribLine.style.marginTop = '5px';
+      const parts = contributions.map((c, i) => `Kanıt ${i+1} (${c.direction}) %${c.pct}`);
+      contribLine.textContent = `📐 Katkı dağılımı (log-odds): ${parts.join(', ')}.`;
+      row.appendChild(contribLine);
+    }
+
     rows.appendChild(row);
   });
 
@@ -1285,20 +1936,83 @@ function generateLocalTip(uniqueIds, weakTopics){
   return parts.join('\n\n');
 }
 
+// Topluluk (Firestore'dan okunan toplu) veriler — akran karşılaştırması ve
+// yeni yanılgı keşif katmanı bu değişkenleri kullanır.
+let communityAgg = {};
+let communityTotal = 0;
+let communityUnlabeledAgg = {};
+let communityBrier = null; // { brier, n } — topluluk genelinde toplanmış kalibrasyon verisi
+let communityCorrelations = {}; // Katman B: { miscId: { ilişkiliMiscId: birlikte_görülme_sayısı } }
+
+// Katman B: Yanılgılar Arası Korelasyon Öğrenimi
+// Topluluktaki tüm oturumların "hangi yanılgılar birlikte tespit edildi" verisinden
+// basit bir eş-oluşum (co-occurrence) tablosu çıkarır. Bu, yanılgıları birbirinden
+// bağımsız ele almak yerine aralarındaki bilinen ilişkiyi (örn. "mol-kütle karışıklığı
+// olan genelde limit reaktifi de karıştırır") modele dahil eder.
+function computeMisconceptionCorrelations(sessionDocs){
+  const co = {};
+  sessionDocs.forEach(doc => {
+    const ids = (doc.misconceptions || []).filter(id => MISCONCEPTIONS[id]);
+    for(let i = 0; i < ids.length; i++){
+      for(let j = 0; j < ids.length; j++){
+        if(i === j) continue;
+        if(!co[ids[i]]) co[ids[i]] = {};
+        co[ids[i]][ids[j]] = (co[ids[i]][ids[j]] || 0) + 1;
+      }
+    }
+  });
+  return co;
+}
+
+function renderCalibrationReport(){
+  const wrap = document.getElementById('calibReport');
+  const note = document.getElementById('calibNote');
+  const report = computeCalibrationReport();
+  if(!report || report.n < 3){
+    wrap.classList.add('hidden');
+    return;
+  }
+  wrap.classList.remove('hidden');
+  const lines = [];
+  lines.push(`Bu oturumda motor ${report.n} kez bir tahminde bulunup sonrasında test edildi.`);
+  lines.push(`Bu oturumun Brier skoru: ${report.brier.toFixed(3)} (0'a ne kadar yakınsa o kadar iyi kalibre edilmiş demektir).`);
+  lines.push(`Motor hiç öğrenmeseydi (sabit ön-olasılık kullansaydı) skor ${report.baselineBrier.toFixed(3)} olurdu — yani motor tahminlerini rastgele sabit bir tahmine göre yaklaşık %${Math.max(report.improvement,0).toFixed(0)} daha isabetli hale getirdi.`);
+  if(communityBrier && communityBrier.n >= 10){
+    lines.push(`Topluluktaki tüm kayıtlı kanıtlar (n=${communityBrier.n}) üzerinden hesaplanan genel Brier skoru: ${communityBrier.brier.toFixed(3)} — bu, tek bir oturumdan çok daha güvenilir bir istatistiktir.`);
+  } else {
+    lines.push('Topluluk genelinde güvenilir bir kalibrasyon istatistiği için henüz yeterli veri yok (en az 10 kanıt gerekiyor).');
+  }
+  // Katman D: eğitim/test ayrımı — bu oturumun ikinci yarısı, motorun ilk yarıdan
+  // ÖĞRENDİĞİ inançlarla ne kadar iyi tahmin edildiğini gösterir (dışa-örneklem doğrulama).
+  const tt = computeTrainTestCalibration();
+  if(tt && tt.outOfSampleBrier !== null){
+    lines.push(`📊 Eğitim/Test ayrımı: Oturumun ilk yarısıyla "öğrenilen" inançlar, hiç görülmemiş ikinci yarı üzerinde test edildiğinde Brier skoru ${tt.outOfSampleBrier.toFixed(3)} çıktı (n=${tt.n}) — bu, motorun sadece ezberlemediğini, gerçekten genelleyebildiğini gösteren bağımsız bir doğrulamadır.`);
+  }
+  note.innerHTML = lines.map(l => `<div style="margin-bottom:6px;">${l}</div>`).join('');
+}
+
 async function saveMiscToSharedMap(){
-  const uniqueIds = [...new Set(state.sessionMisconceptions)];
+  const uniqueIds = getConfirmedMisconceptions().map(c => c.id); // sadece Bayesçi eşiği geçenler
   const statusEl = document.getElementById('connStatusText');
   const setStatus = (msg) => { if(statusEl) statusEl.textContent = msg; };
   setStatus('Veri gönderiliyor...');
+  const trials = state.beliefTrials;
+  const brierSumSq = trials.reduce((sum, t) => sum + Math.pow(t.pBefore - t.outcome, 2), 0);
   try {
     const doc = {
       fields: jsToFirestoreFields({
         grade: String(state.grade),
         diff: state.diff,
         topic: state.topic,
+        className: state.className || '',
+        studentNumber: state.studentNumber || '',
         score: state.score,
         total: state.pool.length,
         misconceptions: uniqueIds,
+        unlabeled: state.sessionUnlabeled.slice(0, 30), // keşif katmanı: etiketlenmemiş yanlış şıklar
+        brierSumSq: brierSumSq,        // Katman 8: topluluk çapında kalibrasyon için ham veri
+        brierN: trials.length,
+        evidenceLog: state.evidenceLog.slice(0, 60).map(e => `${e.miscId}|${e.kind}|${e.idx}`), // Katman A/D
         ts: new Date()
       })
     };
@@ -1335,57 +2049,363 @@ async function loadAndRenderMiscMap(){
     const data = await res.json();
     const docs = data.documents || [];
     const agg = {};
+    const unlabeledAgg = {};
+    const parsedDocs = [];
     let total = 0;
+    let brierSumSqTotal = 0;
+    let brierNTotal = 0;
     docs.forEach(d => {
       total++;
       const parsed = firestoreFieldsToJs(d.fields);
+      parsedDocs.push(parsed);
       (parsed.misconceptions || []).forEach(id => {
         agg[id] = (agg[id] || 0) + 1;
       });
+      (parsed.unlabeled || []).forEach(key => {
+        unlabeledAgg[key] = (unlabeledAgg[key] || 0) + 1;
+      });
+      if(parsed.brierN){
+        brierSumSqTotal += Number(parsed.brierSumSq) || 0;
+        brierNTotal += Number(parsed.brierN) || 0;
+      }
     });
+    communityAgg = agg;
+    communityTotal = total;
+    communityUnlabeledAgg = unlabeledAgg;
+    communityBrier = brierNTotal > 0 ? { brier: brierSumSqTotal / brierNTotal, n: brierNTotal } : null;
+    communityCorrelations = computeMisconceptionCorrelations(parsedDocs); // Katman B
+
     const entries = Object.entries(agg).filter(([k]) => MISCONCEPTIONS[k]);
     if(entries.length === 0){
       note.textContent = total > 0
         ? `Şu ana kadar ${total} oturum kaydedildi ama henüz belirgin bir yanılgı deseni yok.`
         : 'Henüz veri birikmedi — bu, kaydedilen ilk oturumlardan biri.';
       rows.innerHTML = '';
-      wrap.classList.remove('hidden');
-      return;
+    } else {
+      entries.sort((a,b) => b[1] - a[1]);
+      const maxCount = entries[0][1];
+      note.textContent = `Bu artifact'ı kullanan tüm öğrencilerden Firebase'e toplanan, isimsiz gerçek veridir. Şu ana kadar ${total} oturum kaydedildi.`;
+      rows.innerHTML = '';
+      entries.slice(0, 8).forEach(([id, count]) => {
+        const m = MISCONCEPTIONS[id];
+        const row = document.createElement('div');
+        row.className = 'topic-row';
+        const head = document.createElement('div');
+        head.className = 'topic-row-head';
+        const name = document.createElement('span');
+        name.className = 't-name';
+        name.textContent = m.title;
+        const frac = document.createElement('span');
+        frac.className = 't-frac';
+        frac.textContent = `${count} kez`;
+        head.appendChild(name);
+        head.appendChild(frac);
+        const bar = document.createElement('div');
+        bar.className = 'topic-bar';
+        const fill = document.createElement('div');
+        const ratio = count / maxCount;
+        fill.className = 'topic-bar-fill' + (ratio > 0.66 ? ' weak' : (ratio > 0.33 ? ' mid' : ''));
+        fill.style.width = `${ratio*100}%`;
+        bar.appendChild(fill);
+        row.appendChild(head);
+        row.appendChild(bar);
+        rows.appendChild(row);
+      });
     }
-    entries.sort((a,b) => b[1] - a[1]);
-    const maxCount = entries[0][1];
-    note.textContent = `Bu artifact'ı kullanan tüm öğrencilerden Firebase'e toplanan, isimsiz gerçek veridir. Şu ana kadar ${total} oturum kaydedildi.`;
-    rows.innerHTML = '';
-    entries.slice(0, 8).forEach(([id, count]) => {
-      const m = MISCONCEPTIONS[id];
-      const row = document.createElement('div');
-      row.className = 'topic-row';
-      const head = document.createElement('div');
-      head.className = 'topic-row-head';
-      const name = document.createElement('span');
-      name.className = 't-name';
-      name.textContent = m.title;
-      const frac = document.createElement('span');
-      frac.className = 't-frac';
-      frac.textContent = `${count} kez`;
-      head.appendChild(name);
-      head.appendChild(frac);
-      const bar = document.createElement('div');
-      bar.className = 'topic-bar';
-      const fill = document.createElement('div');
-      const ratio = count / maxCount;
-      fill.className = 'topic-bar-fill' + (ratio > 0.66 ? ' weak' : (ratio > 0.33 ? ' mid' : ''));
-      fill.style.width = `${ratio*100}%`;
-      bar.appendChild(fill);
-      row.appendChild(head);
-      row.appendChild(bar);
-      rows.appendChild(row);
-    });
     wrap.classList.remove('hidden');
+    renderMiscDiscovery(unlabeledAgg);
+    renderTopicHeatmap(agg);
   } catch(e) {
     console.warn('Harita verisi okunamadı:', e);
     wrap.classList.add('hidden');
   }
+}
+
+// Katman 2: Konu Bazlı Yoğunluk Haritası (Yanılgı "Bulaşıcılığı" Görünümü)
+// Not: giriş/sınıf sistemi olmadığı için bu, tek bir sınıfın değil TÜM kullanıcıların
+// toplu verisidir — yine de hangi KONULARIN en çok yanılgı ürettiğini gösterip
+// öğretmene "bu konuda sınıfın geneli zorlanıyor" tarzı bir sinyal verir.
+function renderTopicHeatmap(agg){
+  const wrap = document.getElementById('topicHeatmap');
+  const rows = document.getElementById('topicHeatmapRows');
+  if(!wrap || !rows) return;
+  const topicCounts = {};
+  Object.entries(agg).forEach(([id, count]) => {
+    if(!MISCONCEPTIONS[id]) return;
+    const topic = findTopicForMisconception(id) || 'Diğer';
+    topicCounts[topic] = (topicCounts[topic] || 0) + count;
+  });
+  const entries = Object.entries(topicCounts).sort((a,b) => b[1]-a[1]);
+  if(entries.length === 0){ wrap.classList.add('hidden'); return; }
+  wrap.classList.remove('hidden');
+  const maxCount = entries[0][1];
+  rows.innerHTML = '';
+  entries.forEach(([topic, count]) => {
+    const ratio = count / maxCount;
+    // Yeşilden kırmızıya ısı skalası: az yoğun -> yeşilimsi, çok yoğun -> kırmızımsı
+    const hue = 120 - Math.round(ratio * 120); // 120=yeşil, 0=kırmızı
+    const cell = document.createElement('div');
+    cell.style.display = 'flex';
+    cell.style.justifyContent = 'space-between';
+    cell.style.alignItems = 'center';
+    cell.style.padding = '8px 12px';
+    cell.style.marginBottom = '6px';
+    cell.style.borderRadius = '8px';
+    cell.style.background = `hsl(${hue}, 70%, 88%)`;
+    cell.style.borderLeft = `4px solid hsl(${hue}, 70%, 55%)`;
+    const label = document.createElement('span');
+    label.style.fontSize = '12.5px';
+    label.style.fontWeight = '600';
+    label.textContent = topic;
+    const val = document.createElement('span');
+    val.style.fontSize = '12px';
+    val.textContent = `${count} yanılgı`;
+    cell.appendChild(label);
+    cell.appendChild(val);
+    rows.appendChild(cell);
+  });
+}
+
+// ===================================================================================
+// Katman 9: Öğretmen Paneli — toplu (isimsiz) veriden basit bir zaman-içi eğilim grafiği
+// ve genel özet çıkarır. Harici grafik kütüphanesi kullanılmaz (projenin bağımsızlık
+// ilkesiyle tutarlı); trend çizgisi elle SVG olarak çizilir.
+// ===================================================================================
+let teacherDocsCache = []; // Katman A: öğretmen paneli için önbelleğe alınmış oturum verisi
+
+async function loadTeacherPanel(){
+  const summaryNote = document.getElementById('teacherSummaryNote');
+  const trendChart = document.getElementById('teacherTrendChart');
+  summaryNote.textContent = 'Yükleniyor...';
+  trendChart.innerHTML = '';
+  try {
+    const res = await fetch(`${FIRESTORE_BASE}/sessions?key=${FIREBASE_API_KEY}&pageSize=300`);
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const docs = (data.documents || []).map(d => firestoreFieldsToJs(d.fields));
+    teacherDocsCache = docs; // Katman A: optimize butonu bu önbelleği kullanır
+    populateClassSelect(docs); // Sınıf Görünümü: seçiciyi doldur
+    if(docs.length === 0){
+      summaryNote.textContent = 'Henüz kaydedilmiş oturum yok.';
+      return;
+    }
+    const dayBuckets = {};
+    docs.forEach(d => {
+      if(!d.ts) return;
+      const day = String(d.ts).slice(0, 10); // YYYY-MM-DD
+      if(!dayBuckets[day]) dayBuckets[day] = { count: 0, miscSum: 0 };
+      dayBuckets[day].count++;
+      dayBuckets[day].miscSum += (d.misconceptions || []).length;
+    });
+    const days = Object.keys(dayBuckets).sort();
+    const avgPerDay = days.map(day => dayBuckets[day].miscSum / dayBuckets[day].count);
+
+    const totalSessions = docs.length;
+    const totalMiscDetections = docs.reduce((s, d) => s + (d.misconceptions || []).length, 0);
+    const avgOverall = totalSessions ? (totalMiscDetections / totalSessions).toFixed(2) : '0';
+    let summaryHtml = `Toplam <b>${totalSessions}</b> oturum kaydedildi. Oturum başına ortalama <b>${avgOverall}</b> yanılgı tespit ediliyor.`;
+    // Kalibrasyon istatistiğini bu panelin kendi az önce çektiği veriden hesapla
+    // (loadAndRenderMiscMap hiç çalışmamış olsa bile panel bağımsız çalışabilsin diye).
+    const localBrierN = docs.reduce((s, d) => s + (Number(d.brierN) || 0), 0);
+    const localBrierSumSq = docs.reduce((s, d) => s + (Number(d.brierSumSq) || 0), 0);
+    if(localBrierN >= 10){
+      summaryHtml += `<br>Topluluk genelinde motor kalibrasyon (Brier) skoru: <b>${(localBrierSumSq/localBrierN).toFixed(3)}</b> (n=${localBrierN} kanıt).`;
+    }
+    summaryNote.innerHTML = summaryHtml;
+
+    if(days.length < 2){
+      trendChart.innerHTML = '<div class="comp-note">Bir trend çizgisi çizmek için en az 2 farklı günde veri gerekiyor — daha fazla oturum biriktikçe burada bir eğilim çizgisi belirecek.</div>';
+      return;
+    }
+    trendChart.innerHTML = buildTrendSVG(days, avgPerDay);
+  } catch(e){
+    console.warn('Öğretmen paneli yüklenemedi:', e);
+    summaryNote.textContent = 'Veri okunamadı (bağlantı sorunu olabilir).';
+  }
+}
+
+function buildTrendSVG(days, values){
+  const w = 320, h = 140, pad = 24;
+  const maxV = Math.max(...values, 1);
+  const stepX = (w - pad * 2) / (days.length - 1 || 1);
+  const coords = values.map((v, i) => ({
+    x: pad + i * stepX,
+    y: h - pad - (v / maxV) * (h - pad * 2)
+  }));
+  const points = coords.map(c => `${c.x},${c.y}`).join(' ');
+  const dots = coords.map(c => `<circle cx="${c.x}" cy="${c.y}" r="3" fill="var(--teal-dark, #2b6f6b)" />`).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;">
+    <polyline points="${points}" fill="none" stroke="var(--teal-dark, #2b6f6b)" stroke-width="2" />
+    ${dots}
+    <text x="${pad}" y="${h-4}" font-size="9" fill="#8a8e80">${days[0]}</text>
+    <text x="${w-pad-42}" y="${h-4}" font-size="9" fill="#8a8e80">${days[days.length-1]}</text>
+  </svg>`;
+}
+
+// ===================================================================================
+// Sınıf Görünümü: öğretmenin kendi sınıfını (öğrencilerin girdiği "Sınıf" alanına göre)
+// seçip o sınıfa özel konu ısı haritasını ve öğrenci listesini görmesini sağlar.
+// Not: isim yerine okul numarası kullanılıyor; giriş sistemi olmadığı için bu bilgi
+// öğrencinin kendi girdiği, doğrulanmamış bir alandır.
+// ===================================================================================
+const CLASS_LIST = ['9A','9B','10A','10B','11A','11B','12A','12B'];
+
+function populateClassSelect(docs){
+  const sel = document.getElementById('teacherClassSelect');
+  const counts = {};
+  docs.forEach(d => { const c = (d.className || '').trim(); if(c) counts[c] = (counts[c] || 0) + 1; });
+  sel.innerHTML = '';
+  // Sabit sınıf listesi her zaman gösterilir (verisi olmasa da seçilebilsin)
+  CLASS_LIST.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = `${c.slice(0, -1)}-${c.slice(-1)} (${counts[c] || 0} oturum)`;
+    sel.appendChild(opt);
+  });
+  // Listede olmayan eski/özel sınıf kayıtları varsa onlar da eklensin
+  Object.keys(counts).filter(c => !CLASS_LIST.includes(c)).sort().forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = `${c} (${counts[c]} oturum)`;
+    sel.appendChild(opt);
+  });
+  // Verisi olan ilk sınıfı varsayılan seç, yoksa ilkini
+  const firstWithData = CLASS_LIST.find(c => counts[c]) || Object.keys(counts)[0] || CLASS_LIST[0];
+  sel.value = firstWithData;
+  renderClassView(docs, firstWithData);
+}
+
+function renderClassView(docs, className){
+  const heatNote = document.getElementById('teacherClassHeatNote');
+  const heatRows = document.getElementById('teacherClassHeatRows');
+  const studentRows = document.getElementById('teacherClassStudentRows');
+  const classDocs = docs.filter(d => (d.className || '').trim() === className);
+
+  if(classDocs.length === 0){
+    heatNote.textContent = 'Bu sınıfa ait kayıt bulunamadı.';
+    heatRows.innerHTML = '';
+    studentRows.innerHTML = '';
+    return;
+  }
+
+  // Sınıfa özel yanılgı yoğunluğu (aynı ısı haritası mantığı, sadece bu sınıfın verisiyle)
+  const classAgg = {};
+  classDocs.forEach(d => (d.misconceptions || []).forEach(id => { classAgg[id] = (classAgg[id] || 0) + 1; }));
+  const topicCounts = {};
+  Object.entries(classAgg).forEach(([id, count]) => {
+    if(!MISCONCEPTIONS[id]) return;
+    const topic = findTopicForMisconception(id) || 'Diğer';
+    topicCounts[topic] = (topicCounts[topic] || 0) + count;
+  });
+  const topicEntries = Object.entries(topicCounts).sort((a,b) => b[1]-a[1]);
+  heatNote.textContent = `${className} sınıfından toplam ${classDocs.length} oturum kaydedildi. Konu bazlı yoğunluk:`;
+  heatRows.innerHTML = '';
+  if(topicEntries.length === 0){
+    heatRows.innerHTML = '<div class="comp-note">Bu sınıfta henüz teşhis edilmiş bir yanılgı yok.</div>';
+  } else {
+    const maxCount = topicEntries[0][1];
+    topicEntries.forEach(([topic, count]) => {
+      const ratio = count / maxCount;
+      const hue = 120 - Math.round(ratio * 120);
+      const cell = document.createElement('div');
+      cell.style.cssText = `display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin-bottom:6px;border-radius:8px;background:hsl(${hue},70%,88%);border-left:4px solid hsl(${hue},70%,55%);`;
+      cell.innerHTML = `<span style="font-size:12.5px;font-weight:600;">${topic}</span><span style="font-size:12px;">${count} yanılgı</span>`;
+      heatRows.appendChild(cell);
+    });
+  }
+
+  // Öğrenci listesi: numaraya göre grupla, her öğrencinin kaç oturum oynadığını,
+  // kaç farklı yanılgı tespit edildiğini ve en son ne zaman oynadığını göster.
+  const byStudent = {};
+  classDocs.forEach(d => {
+    const num = (d.studentNumber || '').trim() || '(numara girilmemiş)';
+    if(!byStudent[num]) byStudent[num] = { sessions: 0, miscCount: 0, lastTs: null };
+    byStudent[num].sessions++;
+    byStudent[num].miscCount += (d.misconceptions || []).length;
+    if(d.ts && (!byStudent[num].lastTs || d.ts > byStudent[num].lastTs)) byStudent[num].lastTs = d.ts;
+  });
+  const studentEntries = Object.entries(byStudent).sort((a,b) => {
+    const an = /^\d+$/.test(a[0]) ? Number(a[0]) : Infinity;
+    const bn = /^\d+$/.test(b[0]) ? Number(b[0]) : Infinity;
+    return an - bn;
+  });
+  studentRows.innerHTML = '';
+  studentEntries.forEach(([num, s]) => {
+    const row = document.createElement('div');
+    row.className = 'topic-row';
+    const head = document.createElement('div');
+    head.className = 'topic-row-head';
+    const name = document.createElement('span');
+    name.className = 't-name';
+    name.textContent = `No: ${num}`;
+    const frac = document.createElement('span');
+    frac.className = 't-frac';
+    frac.textContent = `${s.sessions} oturum · ${s.miscCount} yanılgı`;
+    head.appendChild(name);
+    head.appendChild(frac);
+    row.appendChild(head);
+    if(s.lastTs){
+      const lastLine = document.createElement('div');
+      lastLine.style.fontSize = '11px';
+      lastLine.style.color = '#8a8e80';
+      lastLine.style.marginTop = '3px';
+      lastLine.textContent = `Son oturum: ${String(s.lastTs).slice(0,16).replace('T',' ')}`;
+      row.appendChild(lastLine);
+    }
+    studentRows.appendChild(row);
+  });
+}
+
+document.getElementById('numberInput').addEventListener('input', (e) => {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 3); // sadece rakam, en fazla 3 hane
+});
+
+document.getElementById('teacherClassSelect').addEventListener('change', (e) => {
+  renderClassView(teacherDocsCache, e.target.value);
+});
+
+// Katman 3: Yeni yanılgı keşif katmanı. Diagnostik olarak henüz etiketlenmemiş bir yanlış
+// şık, farklı öğrenciler tarafından yeterince tekrar seçildiyse, bunu olası bir dokümante
+// edilmemiş kavram yanılgısı ADAYI olarak (kesin teşhis değil) öğretmene/araştırmacıya gösterir.
+function renderMiscDiscovery(unlabeledAgg){
+  const wrap = document.getElementById('miscDiscovery');
+  const rows = document.getElementById('miscDiscoveryRows');
+  if(!wrap || !rows) return;
+  const candidates = Object.entries(unlabeledAgg)
+    .filter(([, count]) => count >= DISCOVERY_THRESHOLD)
+    .sort((a,b) => b[1] - a[1])
+    .slice(0, 5);
+  if(candidates.length === 0){
+    wrap.classList.add('hidden');
+    return;
+  }
+  wrap.classList.remove('hidden');
+  rows.innerHTML = '';
+  candidates.forEach(([key, count]) => {
+    const parts = key.split('||');
+    const topic = parts[0] || '—';
+    const optText = parts[2] || key;
+    const row = document.createElement('div');
+    row.className = 'topic-row';
+    const head = document.createElement('div');
+    head.className = 'topic-row-head';
+    const name = document.createElement('span');
+    name.className = 't-name';
+    name.textContent = `🔍 [${topic}] "${optText}"`;
+    const frac = document.createElement('span');
+    frac.className = 't-frac';
+    frac.textContent = `${count} öğrenci`;
+    head.appendChild(name);
+    head.appendChild(frac);
+    row.appendChild(head);
+    const note = document.createElement('div');
+    note.style.fontSize = '11px';
+    note.style.color = '#8a8e80';
+    note.style.marginTop = '3px';
+    note.textContent = 'Henüz kütüphanede adlandırılmış bir yanılgıya bağlanmadı — birden çok öğrenci bağımsız olarak bu şıkkı seçtiği için olası yeni bir yanılgı adayı olarak işaretlendi.';
+    row.appendChild(note);
+    rows.appendChild(row);
+  });
 }
 
 function renderTopicPerf(){
