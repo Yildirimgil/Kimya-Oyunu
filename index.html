@@ -373,7 +373,7 @@
 
     <div class="field">
       <span class="field-label">Okul Numaran — isteğe bağlı</span>
-      <input type="text" inputmode="numeric" pattern="[0-9]*" id="numberInput" placeholder="örn. 24" maxlength="3" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid #d8dcd0;font-size:14px;box-sizing:border-box;">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" id="numberInput" placeholder="örn. 1245" maxlength="5" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid #d8dcd0;font-size:14px;box-sizing:border-box;">
       <small style="display:block;margin-top:4px;color:#8a8e80;font-size:11px;">Öğretmenin sınıfını takip edebilmesi için. İstersen boş bırakabilirsin.</small>
     </div>
 
@@ -1267,7 +1267,7 @@ function beginGame(){
   state.timed = timedToggle.checked;
   state.livesMode = livesToggle.checked;
   state.className = (document.getElementById('classInput').value || '').trim().slice(0, 10);
-  state.studentNumber = (document.getElementById('numberInput').value || '').replace(/\D/g, '').slice(0, 3);
+  state.studentNumber = (document.getElementById('numberInput').value || '').replace(/\D/g, '').slice(0, 5);
   state.pool = shuffle(getPool());
   state.idx = 0;
   state.score = 0;
@@ -2338,7 +2338,7 @@ function renderClassView(docs, className){
 }
 
 document.getElementById('numberInput').addEventListener('input', (e) => {
-  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 3); // sadece rakam, en fazla 3 hane
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 5); // sadece rakam, en fazla 5 hane
 });
 
 document.getElementById('teacherClassSelect').addEventListener('change', (e) => {
