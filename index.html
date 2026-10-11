@@ -361,9 +361,9 @@
     <p class="sub">Zorluk, konu ve oyun modunu seç, sonra başlat. Sorular çoktan seçmeli, boşluk doldurma ve eşleştirme olarak karışık gelir.</p>
 
     <div class="field">
-      <span class="field-label">Sınıfın — isteğe bağlı</span>
+      <span class="field-label">Sınıfın *</span>
       <select class="topic-select" id="classInput">
-        <option value="">Sınıf seçme</option>
+        <option value="">Sınıfını seç</option>
         <option value="9A">9-A</option><option value="9B">9-B</option>
         <option value="10A">10-A</option><option value="10B">10-B</option>
         <option value="11A">11-A</option><option value="11B">11-B</option>
@@ -372,9 +372,9 @@
     </div>
 
     <div class="field">
-      <span class="field-label">Okul Numaran — isteğe bağlı</span>
+      <span class="field-label">Okul Numaran *</span>
       <input type="text" inputmode="numeric" pattern="[0-9]*" id="numberInput" placeholder="örn. 1245" maxlength="5" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid #d8dcd0;font-size:14px;box-sizing:border-box;">
-      <small style="display:block;margin-top:4px;color:#8a8e80;font-size:11px;">Öğretmenin sınıfını takip edebilmesi için. İstersen boş bırakabilirsin.</small>
+      <small style="display:block;margin-top:4px;color:#8a8e80;font-size:11px;">Sınıf ve numara zorunludur; öğretmenin takip edebilmesi için istenir, ad-soyad istenmez.</small>
     </div>
 
     <div class="field">
@@ -406,6 +406,7 @@
     </div>
 
     <div class="warn-line" id="warnLine">Bu filtreyle eşleşen soru yok, başka bir zorluk/konu seç.</div>
+    <div class="warn-line" id="identWarn">Başlamak için sınıfını seç ve okul numaranı yaz.</div>
     <button class="btn-primary" id="startBtn">Sınavı Başlat</button>
     <button class="btn-secondary" id="teacherPanelBtn" style="margin-top:10px;">👩‍🏫 Öğretmen Paneli</button>
   </div>
@@ -1291,7 +1292,31 @@ function beginGame(){
   renderQuestion();
 }
 
+const identWarn = document.getElementById('identWarn');
+function identMissing(){
+  const cls = document.getElementById('classInput').value;
+  const num = (document.getElementById('numberInput').value || '').replace(/\D/g, '');
+  return { cls: !cls, num: !num };
+}
+['classInput','numberInput'].forEach(id => {
+  const el = document.getElementById(id);
+  const clear = () => { el.style.borderColor = ''; identWarn.classList.remove('show'); };
+  el.addEventListener('input', clear);
+  el.addEventListener('change', clear);
+});
+
 startBtn.addEventListener('click', () => {
+  // Sınıf ve numara girilmeden oyun başlamaz.
+  const miss = identMissing();
+  if(miss.cls || miss.num){
+    identWarn.textContent = miss.cls && miss.num ? 'Başlamak için sınıfını seç ve okul numaranı yaz.'
+      : (miss.cls ? 'Başlamak için sınıfını seçmelisin.' : 'Başlamak için okul numaranı yazmalısın.');
+    identWarn.classList.add('show');
+    if(miss.cls) document.getElementById('classInput').style.borderColor = 'var(--coral)';
+    if(miss.num) document.getElementById('numberInput').style.borderColor = 'var(--coral)';
+    (miss.cls ? document.getElementById('classInput') : document.getElementById('numberInput')).focus();
+    return;
+  }
   if(!state.grade){ gradeBtns[0].click(); }
   if(checkPoolSize().length === 0) return;
   beginGame();
