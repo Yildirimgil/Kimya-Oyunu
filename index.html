@@ -481,15 +481,8 @@
     <div class="topic-perf hidden" id="miscReport">
       <div class="topic-perf-title">Kavram Yanılgısı Analizin</div>
       <div id="miscReportRows"></div>
-      <button class="btn-secondary" id="aiTipBtn">🤖 Yapay Zekadan Kişiye Özel Tavsiye Al</button>
+      <button class="btn-secondary" id="aiTipBtn">💡 Kişiye Özel Çalışma Tavsiyesi Al</button>
       <div class="explain hidden" id="aiTipBox"></div>
-    </div>
-
-    <div class="topic-perf hidden" id="calibReport">
-      <div class="topic-perf-title">
-        <span>📊 Motor Kalibrasyon Raporu</span>
-      </div>
-      <div class="comp-note" id="calibNote"></div>
     </div>
 
     <div class="topic-perf hidden" id="miscMap">
@@ -573,11 +566,11 @@ const BANK = {
     label: "9. Sınıf — Kimya Hayattır · Atomdan Periyodik Tabloya · Etkileşimler",
     questions: [
       {type:"mc", topic:"Atomdan Periyodik Tabloya", diff:"orta", q:"Modern atom teorisine göre elektronlar atom çekirdeği etrafında nasıl bulunur?", opts:["Belirli dairesel yörüngelerde sabit hızla","Bulunma olasılığının yüksek olduğu orbitallerde","Çekirdeğin içinde protonlarla iç içe","Sadece en dış katmanda sabit biçimde"], correct:1, diagMisc:{0:"yorunge-sabit"}, exp:"Modern atom teorisi (kuantum modeli), elektronun tam konumunu değil, bulunma olasılığının yüksek olduğu bölgeleri yani orbitalleri tanımlar."},
-      {type:"mc", topic:"Atomdan Periyodik Tabloya", diff:"kolay", q:"Aynı periyotta soldan sağa gidildikçe atom yarıçapı genellikle nasıl değişir?", opts:["Artar","Azalır","Değişmez","Önce artar sonra azalır"], correct:1, diagMisc:{0:"periyot-yaricap-yon"}, exp:"Aynı periyotta proton sayısı arttıkça çekirdeğin çekim kuvveti güçlenir ve elektronlar çekirdeğe daha sıkı bağlanır, bu yüzden atom yarıçapı azalır."},
-      {type:"mc", topic:"Etkileşimler", diff:"kolay", q:"NaCl (sofra tuzu) bileşiğindeki bağ türü nedir?", opts:["Kovalent bağ","Metalik bağ","İyonik bağ","Hidrojen bağı"], correct:2, diagMisc:{0:"iyonik-molekul"}, exp:"Na metali elektron verip katyon, Cl ametali elektron alıp anyon olur; zıt yüklü iyonlar arasındaki elektrostatik çekim iyonik bağı oluşturur."},
+      {type:"mc", topic:"Atomdan Periyodik Tabloya", diff:"kolay", q:"Aynı periyotta soldan sağa gidildikçe atom yarıçapı genellikle nasıl değişir?", opts:["Artar","Azalır","Değişmez","Önce artar sonra azalır"], correct:1, diagMisc:{0:"periyot-yaricap-yon",2:"ayni-kabuk-ayni-boyut"}, exp:"Aynı periyotta proton sayısı arttıkça çekirdeğin çekim kuvveti güçlenir ve elektronlar çekirdeğe daha sıkı bağlanır, bu yüzden atom yarıçapı azalır."},
+      {type:"mc", topic:"Etkileşimler", diff:"kolay", q:"NaCl (sofra tuzu) bileşiğindeki bağ türü nedir?", opts:["Kovalent bağ","Metalik bağ","İyonik bağ","Hidrojen bağı"], correct:2, diagMisc:{0:"iyonik-molekul",1:"metal-iceren-metalik-bag"}, exp:"Na metali elektron verip katyon, Cl ametali elektron alıp anyon olur; zıt yüklü iyonlar arasındaki elektrostatik çekim iyonik bağı oluşturur."},
       {type:"mc", topic:"Etkileşimler", diff:"zor", q:"Bir molekülün polar mı apolar mı olduğunu belirlemede aşağıdakilerden hangisi doğrudan etkili değildir?", opts:["Bağ polarlığı","Molekül geometrisi","Molekülün molar kütlesi","Ortaklanmamış elektron çiftlerinin konumu"], correct:2, exp:"Polarlık, bağların polarlığına ve molekülün geometrik simetrisine bağlıdır; molar kütlenin polarlıkla doğrudan bir ilişkisi yoktur."},
-      {type:"mc", topic:"Kimya Hayattır", diff:"kolay", q:"Yeşil kimya yaklaşımının temel amacı nedir?", opts:["Üretim hızını en üst düzeye çıkarmak","Kimyasal süreçlerde çevreye zararı azaltıp sürdürülebilirliği artırmak","Sadece doğal maddelerle çalışmak","Laboratuvar maliyetini sıfırlamak"], correct:1, exp:"Yeşil kimya; daha az atık, daha güvenli maddeler ve daha az enerjiyle üretim yaparak çevresel etkiyi azaltmayı hedefler."},
-      {type:"mc", topic:"Atomdan Periyodik Tabloya", diff:"orta", q:"Elektronegatifliği en yüksek element periyodik tabloda genellikle nerede bulunur?", opts:["Sol alt köşede","Sağ üst köşede (soy gazlar hariç)","Tablonun tam ortasında","Alkali metallerde"], correct:1, diagMisc:{0:"elektronegatiflik-yer"}, exp:"Elektronegatiflik periyotta sağa, grupta yukarı çıkıldıkça artar; bu yüzden en yüksek değerler sağ üst köşede (F gibi) görülür."},
+      {type:"mc", topic:"Kimya Hayattır", diff:"kolay", q:"Yeşil kimya yaklaşımının temel amacı nedir?", opts:["Üretim hızını en üst düzeye çıkarmak","Kimyasal süreçlerde çevreye zararı azaltıp sürdürülebilirliği artırmak","Sadece doğal maddelerle çalışmak","Laboratuvar maliyetini sıfırlamak"], correct:1, diagMisc:{2:"dogal-ise-yesil"}, exp:"Yeşil kimya; daha az atık, daha güvenli maddeler ve daha az enerjiyle üretim yaparak çevresel etkiyi azaltmayı hedefler."},
+      {type:"mc", topic:"Atomdan Periyodik Tabloya", diff:"orta", q:"Elektronegatifliği en yüksek element periyodik tabloda genellikle nerede bulunur?", opts:["Sol alt köşede","Sağ üst köşede (soy gazlar hariç)","Tablonun tam ortasında","Alkali metallerde"], correct:1, diagMisc:{0:"elektronegatiflik-yer",3:"reaktiflik-elektronegatiflik-karisikligi"}, exp:"Elektronegatiflik periyotta sağa, grupta yukarı çıkıldıkça artar; bu yüzden en yüksek değerler sağ üst köşede (F gibi) görülür."},
       {type:"mc", topic:"Etkileşimler", diff:"orta", q:"Metalik bağın iletkenlik özelliğini açıklayan model nedir?", opts:["Sabit elektron modeli","Serbest dolaşan elektron denizi modeli","İyon çifti modeli","Kovalent ağ modeli"], correct:1, diagMisc:{0:"metalik-bag-sabit"}, exp:"Metal atomlarının değerlik elektronları serbestçe hareket eden bir 'elektron denizi' oluşturur; bu hareketlilik elektrik ve ısı iletkenliğini sağlar."},
       {type:"mc", topic:"Kimya Hayattır", diff:"kolay", q:"Kimyasal madde güvenliğinde bir maddenin tehlike sınıfını gösteren uluslararası sembol sistemine ne ad verilir?", opts:["GHS piktogramları","SI birim sistemi","IUPAC adlandırma sistemi","Periyodik sınıflandırma"], correct:0, exp:"GHS (Küresel Uyumlaştırılmış Sistem) piktogramları, kimyasalların yanıcılık, toksisite gibi tehlikelerini standart sembollerle gösterir."},
       {type:"fill", topic:"Etkileşimler", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Metal atomu ile ametal atomu arasında elektron alışverişi sonucu oluşan bağa ___ bağ denir.", bank:["iyonik","kovalent","metalik"], correct:"iyonik", exp:"Metal elektron vererek katyon, ametal elektron alarak anyon olur; zıt yüklü iyonlar arasındaki çekim iyonik bağı oluşturur."},
@@ -593,18 +586,18 @@ const BANK = {
   10: {
     label: "10. Sınıf — Etkileşim (Tepkimeler·Gazlar) · Çeşitlilik (Çözeltiler) · Sürdürülebilirlik",
     questions: [
-      {type:"mc", topic:"Kimyasal Tepkimeler", diff:"orta", q:"Bir redoks tepkimesinde yükseltgenme ne anlama gelir?", opts:["Elektron alma","Elektron verme","Proton alma","Proton verme"], correct:1, diagMisc:{0:"yukseltgenme-indirgenme-karisikligi"}, exp:"Yükseltgenme, bir türün elektron kaybetmesi ve yükseltgenme basamağının artmasıdır; indirgenme ise elektron kazanmadır."},
-      {type:"mc", topic:"Stokiyometri", diff:"kolay", q:"1 mol herhangi bir gazın normal koşullarda (NKA) kapladığı hacim yaklaşık kaç litredir?", opts:["11,2 L","22,4 L","44,8 L","6,02 L"], correct:1, exp:"Avogadro yasasına göre normal koşullarda (0°C, 1 atm) 1 mol ideal gaz yaklaşık 22,4 litre hacim kaplar."},
+      {type:"mc", topic:"Kimyasal Tepkimeler", diff:"orta", q:"Bir redoks tepkimesinde yükseltgenme ne anlama gelir?", opts:["Elektron alma","Elektron verme","Proton alma","Proton verme"], correct:1, diagMisc:{0:"yukseltgenme-indirgenme-karisikligi",2:"redoks-asit-baz-karisikligi",3:"redoks-asit-baz-karisikligi"}, exp:"Yükseltgenme, bir türün elektron kaybetmesi ve yükseltgenme basamağının artmasıdır; indirgenme ise elektron kazanmadır."},
+      {type:"mc", topic:"Stokiyometri", diff:"kolay", q:"1 mol herhangi bir gazın normal koşullarda (NKA) kapladığı hacim yaklaşık kaç litredir?", opts:["11,2 L","22,4 L","44,8 L","6,02 L"], correct:1, diagMisc:{3:"mol-avogadro-hacim-karisikligi"}, exp:"Avogadro yasasına göre normal koşullarda (0°C, 1 atm) 1 mol ideal gaz yaklaşık 22,4 litre hacim kaplar."},
       {type:"mc", topic:"Gazlar", diff:"kolay", q:"İdeal gaz denklemi PV=nRT'de sabit sıcaklık ve mol sayısında basınç artarsa hacim nasıl değişir?", opts:["Artar","Azalır","Değişmez","Önce artar sonra azalır"], correct:1, diagMisc:{0:"boyle-yasa-yon-karisikligi"}, exp:"Boyle yasasına göre sabit sıcaklıkta basınç ile hacim ters orantılıdır; basınç artınca hacim azalır."},
       {type:"mc", topic:"Çözeltiler", diff:"orta", q:"Bir çözeltinin derişimi arttıkça saf çözücüye göre donma noktası nasıl değişir?", opts:["Yükselir","Düşer","Değişmez","Önce düşer sonra yükselir"], correct:1, diagMisc:{0:"cozelti-donma-kaynama-karisikligi"}, exp:"Çözünen tanecikler çözücü moleküllerinin düzenli kristal yapı oluşturmasını zorlaştırır, bu koligatif özellik donma noktasını düşürür."},
       {type:"mc", topic:"Çözünürlük", diff:"kolay", q:"Katıların çözünürlüğü genellikle sıcaklıkla nasıl bir ilişki gösterir?", opts:["Her zaman azalır","Genellikle artar","Hiç değişmez","Sadece basınca bağlıdır"], correct:1, diagMisc:{0:"cozunurluk-genelleme"}, exp:"Çoğu katı-sıvı çözeltisinde sıcaklık arttıkça çözünürlük artar, çünkü çözünme genellikle endotermik bir süreçtir."},
       {type:"mc", topic:"Kimyasal Tepkimeler", diff:"zor", q:"Bir tepkimede sınırlayıcı bileşen kavramı neyi ifade eder?", opts:["En fazla mol miktarına sahip bileşeni","Tepkimeyi ilk bitiren ve ürün miktarını sınırlayan bileşeni","Katalizör görevi gören bileşeni","Tepkimeye hiç girmeyen bileşeni"], correct:1, diagMisc:{0:"sinirlayici-bilesen-karisikligi"}, exp:"Sınırlayıcı bileşen tükendiğinde tepkime durur; bu yüzden oluşacak ürün miktarını bu bileşenin miktarı belirler."},
-      {type:"mc", topic:"Gazlar", diff:"zor", q:"Aynı sıcaklık ve basınçta hafif bir gaz, ağır bir gaza göre bir delikten nasıl yayılır?", opts:["Daha yavaş yayılır","Daha hızlı yayılır","Aynı hızda yayılır","Hiç yayılmaz"], correct:1, diagMisc:{0:"graham-yasa-karisikligi"}, exp:"Graham yayılma yasasına göre gazların yayılma hızı molar kütlenin kareköküyle ters orantılıdır; hafif gaz daha hızlı yayılır."},
+      {type:"mc", topic:"Gazlar", diff:"zor", q:"Aynı sıcaklık ve basınçta hafif bir gaz, ağır bir gaza göre bir delikten nasıl yayılır?", opts:["Daha yavaş yayılır","Daha hızlı yayılır","Aynı hızda yayılır","Hiç yayılmaz"], correct:1, diagMisc:{0:"graham-yasa-karisikligi",2:"ayni-sicaklik-ayni-hiz"}, exp:"Graham yayılma yasasına göre gazların yayılma hızı molar kütlenin kareköküyle ters orantılıdır; hafif gaz daha hızlı yayılır."},
       {type:"mc", topic:"Sürdürülebilirlik", diff:"kolay", q:"Endüstriyel süreçlerde atık ve enerji kullanımını azaltmayı hedefleyen yaklaşıma ne denir?", opts:["Yeşil kimya ve sürdürülebilirlik ilkeleri","Ağır sanayi optimizasyonu","Fosil yakıt verimliliği","Stokiyometrik zenginleştirme"], correct:0, exp:"Sürdürülebilirlik teması, üretim süreçlerinde çevresel etkiyi azaltacak yeşil kimya ilkelerinin uygulanmasını kapsar."},
       {type:"fill", topic:"Gazlar", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Sabit sıcaklıkta bir gazın basıncı ile hacmi ___ orantılıdır (Boyle Yasası).", bank:["doğru","ters","hiçbir şekilde"], correct:"ters", exp:"Boyle Yasası'na göre sabit sıcaklıkta basınç arttıkça hacim azalır; yani basınç ile hacim ters orantılıdır."},
       {type:"fill", topic:"Çözeltiler", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"Bir çözeltide çözünen madde miktarı arttıkça çözeltinin kaynama noktası ___.", bank:["yükselir","düşer","değişmez"], correct:"yükselir", exp:"Çözünen tanecikler buhar basıncını düşürdüğü için çözeltinin kaynaması için daha yüksek sıcaklık gerekir; kaynama noktası yükselir."},
       {type:"match", topic:"Kimyasal Tepkimeler", diff:"orta", q:"Tepkime türünü örneğiyle eşleştir:", pairs:[["Yanma tepkimesi","CH₄ + O₂ → CO₂ + H₂O"],["Nötrleşme tepkimesi","HCl + NaOH → NaCl + H₂O"],["Çökelme tepkimesi","AgNO₃ + NaCl → AgCl(k) + NaNO₃"]], exp:"Yanma oksijenle gerçekleşen tepkime, nötrleşme asit-baz tepkimesi, çökelme ise suda çözünmeyen katı ürünün oluştuğu tepkimedir."},
-      {type:"mc", topic:"Stokiyometri", diff:"orta", q:"2H₂ + O₂ → 2H₂O tepkimesine göre 4 mol H₂ tamamen tepkimeye girerse kaç mol H₂O oluşur?", opts:["2 mol","4 mol","6 mol","8 mol"], correct:1, diagMisc:{0:"katsayi-oran-karisikligi"}, exp:"Denklemdeki katsayı oranına göre 2 mol H₂, 2 mol H₂O verir; orantı kurulduğunda 4 mol H₂'den 4 mol H₂O oluşur."},
+      {type:"mc", topic:"Stokiyometri", diff:"orta", q:"2H₂ + O₂ → 2H₂O tepkimesine göre 4 mol H₂ tamamen tepkimeye girerse kaç mol H₂O oluşur?", opts:["2 mol","4 mol","6 mol","8 mol"], correct:1, diagMisc:{0:"katsayi-oran-karisikligi",3:"katsayi-carpan-karisikligi"}, exp:"Denklemdeki katsayı oranına göre 2 mol H₂, 2 mol H₂O verir; orantı kurulduğunda 4 mol H₂'den 4 mol H₂O oluşur."},
       {type:"mc", topic:"Gazlar", diff:"kolay", q:"Kapalı bir kapta sıcaklık ve hacim sabit tutulup gaz miktarı (mol) artırılırsa basınç nasıl değişir?", opts:["Artar","Azalır","Değişmez","Sıfır olur"], correct:0, exp:"Sabit hacim ve sıcaklıkta mol sayısı arttıkça gaz taneciklerinin çarpışma sıklığı artar, bu da basıncı artırır."},
       {type:"fill", topic:"Çözünürlük", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Belirli sıcaklıkta çözebileceği maksimum miktarda çözünmüş madde içeren çözeltiye ___ çözelti denir.", bank:["doymuş","doymamış","aşırı doymuş"], correct:"doymuş", exp:"Doymuş çözelti, o sıcaklıkta çözünürlük sınırına ulaşmış, daha fazla çözünen alamayan çözeltidir."},
       {type:"fill", topic:"Kimyasal Tepkimeler", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"Kapalı bir sistemde tepkimeye giren maddelerin toplam kütlesi, oluşan ürünlerin toplam kütlesine eşittir; bu ilkeye ___ denir.", bank:["kütlenin korunumu yasası","enerjinin korunumu yasası","sabit oranlar yasası"], correct:"kütlenin korunumu yasası", exp:"Lavoisier'in kütlenin korunumu yasasına göre kapalı bir sistemde toplam kütle tepkime öncesi ve sonrasında değişmez."},
@@ -614,18 +607,18 @@ const BANK = {
   11: {
     label: "11. Sınıf — Çeşitlilik (Denge·Asit-Baz·Çözünürlük Dengesi) · Sürdürülebilirlik",
     questions: [
-      {type:"mc", topic:"Kimyasal Denge", diff:"kolay", q:"Le Chatelier ilkesine göre dengedeki bir sisteme dışarıdan reaktan eklenirse denge hangi yöne kayar?", opts:["Ürün yönüne","Reaktan yönüne","Kaymaz, denge sabit kalır","Tepkime tamamen durur"], correct:0, diagMisc:{1:"le-chatelier-yon-karisikligi"}, exp:"Le Chatelier ilkesine göre sisteme etki eden değişikliği azaltacak yönde denge kayar; reaktan eklenince denge ürün yönüne kayar."},
-      {type:"mc", topic:"Asit-Baz Dengesi", diff:"zor", q:"pH değeri 3 olan bir çözelti ile pH değeri 5 olan bir çözelti karşılaştırıldığında ilk çözelti için ne söylenebilir?", opts:["Daha bazik","100 kat daha asidik","10 kat daha asidik","Aynı asitliktedir"], correct:1, diagMisc:{2:"ph-dogrusal",3:"ph-dogrusal"}, exp:"pH logaritmik bir ölçektir; pH farkı 2 birim olduğunda hidrojen iyonu derişimi 10²=100 kat farklıdır."},
+      {type:"mc", topic:"Kimyasal Denge", diff:"kolay", q:"Le Chatelier ilkesine göre dengedeki bir sisteme dışarıdan reaktan eklenirse denge hangi yöne kayar?", opts:["Ürün yönüne","Reaktan yönüne","Kaymaz, denge sabit kalır","Tepkime tamamen durur"], correct:0, diagMisc:{1:"le-chatelier-yon-karisikligi",3:"denge-tepkime-durur"}, exp:"Le Chatelier ilkesine göre sisteme etki eden değişikliği azaltacak yönde denge kayar; reaktan eklenince denge ürün yönüne kayar."},
+      {type:"mc", topic:"Asit-Baz Dengesi", diff:"zor", q:"pH değeri 3 olan bir çözelti ile pH değeri 5 olan bir çözelti karşılaştırıldığında ilk çözelti için ne söylenebilir?", opts:["Daha bazik","100 kat daha asidik","10 kat daha asidik","Aynı asitliktedir"], correct:1, diagMisc:{0:"ph-yon-karisikligi",2:"ph-dogrusal",3:"ph-dogrusal"}, exp:"pH logaritmik bir ölçektir; pH farkı 2 birim olduğunda hidrojen iyonu derişimi 10²=100 kat farklıdır."},
       {type:"mc", topic:"Asit-Baz Dengesi", diff:"orta", q:"Zayıf bir asit ile onun konjuge bazının karışımından oluşan ve pH değişimine direnç gösteren sisteme ne denir?", opts:["Elektrolit çözelti","Tampon çözelti","Kolloidal çözelti","Doygun çözelti"], correct:1, exp:"Tampon çözeltiler, az miktarda asit veya baz eklendiğinde pH'ı büyük ölçüde sabit tutabilen zayıf asit/baz-konjuge çift sistemleridir."},
       {type:"mc", topic:"Çözünürlük Dengesi", diff:"orta", q:"Çözünürlük çarpımı (Ksp) küçük olan bir bileşik için ne söylenebilir?", opts:["Suda çok iyi çözünür","Suda az çözünür","Ksp çözünürlükle ilgisizdir","Her zaman gaz oluşturur"], correct:1, diagMisc:{0:"ksp-buyukluk-karisikligi"}, exp:"Ksp değeri küçük olan bileşikler, iyonlarına çok az ayrıştığı için suda düşük çözünürlük gösterir."},
       {type:"mc", topic:"Kimyasal Denge", diff:"zor", q:"Bir tepkimenin denge sabiti (K) sıcaklık dışında hangi faktörden etkilenmez?", opts:["Katalizör eklenmesinden","Reaktan derişiminin değişmesinden","Sıcaklık değişiminden","Hiçbiri; K sadece sıcaklığa bağlıdır"], correct:3, diagMisc:{0:"denge-sabiti-degisken-karisikligi",1:"denge-sabiti-degisken-karisikligi"}, exp:"Denge sabiti K yalnızca sıcaklığa bağlıdır; derişim veya katalizör değişimi denge konumunu etkiler ama K değerini değiştirmez."},
       {type:"mc", topic:"Sürdürülebilirlik", diff:"kolay", q:"Evsel atıklardan fermantasyon yoluyla üretilen ve programda 'yeşil' olarak nitelendirilen enerji kaynağı hangisidir?", opts:["Yeşil hidrojen","Doğalgaz","Kömür gazı","Nükleer enerji"], correct:0, exp:"11. sınıf sürdürülebilirlik temasında, organik atıkların fermantasyonuyla üretilen yeşil hidrojen enerjisi işlenir."},
       {type:"mc", topic:"Sürdürülebilirlik", diff:"kolay", q:"Mikroplastik ve nanoplastiklerin çevre-sağlık etkileri hangi temanın kapsamında incelenir?", opts:["Etkileşim", "Çeşitlilik", "Sürdürülebilirlik", "Asit-baz dengesi"], correct:2, exp:"Mikroplastik/nanoplastik etkileri, 11. sınıf programının güncel ve eleştirel düşünmeye dayalı Sürdürülebilirlik temasında yer alır."},
-      {type:"mc", topic:"Asit-Baz Dengesi", diff:"zor", q:"Suyun kendi kendine iyonlaşma sabiti Kw'nin 25°C'deki değeri yaklaşık nedir?", opts:["1,0 x 10⁻⁷","1,0 x 10⁻¹⁴","1,0 x 10⁻¹","1,0 x 10⁷"], correct:1, exp:"25°C'de Kw = [H⁺][OH⁻] = 1,0 x 10⁻¹⁴ olup, nötr suda her iki iyon derişimi de 1,0 x 10⁻⁷ M'dir."},
+      {type:"mc", topic:"Asit-Baz Dengesi", diff:"zor", q:"Suyun kendi kendine iyonlaşma sabiti Kw'nin 25°C'deki değeri yaklaşık nedir?", opts:["1,0 x 10⁻⁷","1,0 x 10⁻¹⁴","1,0 x 10⁻¹","1,0 x 10⁷"], correct:1, diagMisc:{0:"kw-h-derisim-karisikligi"}, exp:"25°C'de Kw = [H⁺][OH⁻] = 1,0 x 10⁻¹⁴ olup, nötr suda her iki iyon derişimi de 1,0 x 10⁻⁷ M'dir."},
       {type:"fill", topic:"Kimyasal Denge", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Ekzotermik bir tepkimede sıcaklık artırılırsa denge ___ yönüne kayar.", bank:["reaktan","ürün","hiçbir"], correct:"reaktan", exp:"Le Chatelier ilkesine göre ekzotermik tepkimede sıcaklık artışı, fazla ısıyı tüketecek yönde yani reaktan (geri) yönüne kaymaya sebep olur."},
       {type:"fill", topic:"Asit-Baz Dengesi", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"pH değeri 7'den küçük olan bir çözelti ___ özellik gösterir.", bank:["asidik","bazik","nötr"], correct:"asidik", exp:"25°C'de pH<7 olan çözeltiler asidik, pH>7 olanlar baziktir, pH=7 nötrdür."},
       {type:"match", topic:"Çözünürlük Dengesi", diff:"zor", q:"Kavramı tanımıyla eşleştir:", pairs:[["Ksp","Çözünürlük çarpımı sabiti"],["Ortak iyon etkisi","Çözünürlüğü azaltan iyon etkisi"],["Doygun çözelti","Çözünmenin dengeye ulaştığı çözelti"]], exp:"Ksp iyonlarına ayrışma dengesini, ortak iyon etkisi çözünürlüğü azaltan etkiyi, doygun çözelti ise dengedeki çözeltiyi tanımlar."},
-      {type:"mc", topic:"Kimyasal Denge", diff:"orta", q:"Dinamik denge durumunda ileri ve geri tepkime hızları için ne söylenebilir?", opts:["İleri tepkime hızı daha büyüktür","Geri tepkime hızı daha büyüktür","İkisi de birbirine eşittir","İkisi de sıfırdır"], correct:2, diagMisc:{0:"dinamik-denge-hiz-karisikligi",1:"dinamik-denge-hiz-karisikligi"}, exp:"Dinamik dengede ileri ve geri tepkime hızları birbirine eşitlenir; tepkime durmaz ama net derişim değişimi gözlenmez."},
+      {type:"mc", topic:"Kimyasal Denge", diff:"orta", q:"Dinamik denge durumunda ileri ve geri tepkime hızları için ne söylenebilir?", opts:["İleri tepkime hızı daha büyüktür","Geri tepkime hızı daha büyüktür","İkisi de birbirine eşittir","İkisi de sıfırdır"], correct:2, diagMisc:{0:"dinamik-denge-hiz-karisikligi",1:"dinamik-denge-hiz-karisikligi",3:"denge-tepkime-durur"}, exp:"Dinamik dengede ileri ve geri tepkime hızları birbirine eşitlenir; tepkime durmaz ama net derişim değişimi gözlenmez."},
       {type:"mc", topic:"Asit-Baz Dengesi", diff:"kolay", q:"Turnusol kağıdını maviye çeviren bir çözelti hangi özelliktedir?", opts:["Asidik","Bazik","Nötr","Renksiz"], correct:1, exp:"Bazik çözeltiler kırmızı turnusolü maviye çevirir; asidik çözeltiler ise maviyi kırmızıya çevirir."},
       {type:"fill", topic:"Çözünürlük Dengesi", diff:"orta", q:"Cümledeki boşluğu tamamla:", sentence:"Az çözünen bir tuzun doymuş çözeltisindeki iyon derişimleri çarpımına o tuzun ___ denir.", bank:["çözünürlük çarpımı (Ksp)","molaritesi","pH değeri"], correct:"çözünürlük çarpımı (Ksp)", exp:"Ksp, az çözünen bir bileşiğin doymuş çözeltisindeki iyon derişimlerinin çarpımıdır ve sabit sıcaklıkta sabittir."},
       {type:"fill", topic:"Sürdürülebilirlik", diff:"kolay", q:"Cümledeki boşluğu tamamla:", sentence:"Nanometre boyutundaki malzemelerin özelliklerini inceleyen alana ___ denir.", bank:["nanoteknoloji","biyoteknoloji","petrokimya"], correct:"nanoteknoloji", exp:"Nanoteknoloji, maddelerin nanometre ölçeğindeki özelliklerini inceleyip yeni uygulamalar geliştiren bir alandır."},
@@ -637,9 +630,9 @@ const BANK = {
     questions: [
       {type:"mc", topic:"Kimya ve Elektrik", diff:"orta", q:"Bir galvanik (voltaik) hücrede elektrik akımını üreten şey nedir?", opts:["Dışarıdan uygulanan elektrik enerjisi","Kendiliğinden gerçekleşen redoks tepkimesi","Sıcaklık farkı","Manyetik alan"], correct:1, diagMisc:{0:"elektroliz-galvanik-karisikligi"}, exp:"Galvanik hücrelerde kendiliğinden gerçekleşen (istemli) bir redoks tepkimesinin kimyasal enerjisi elektrik enerjisine dönüştürülür."},
       {type:"mc", topic:"Kimya ve Elektrik", diff:"orta", q:"Elektroliz işleminde elektrik enerjisi nasıl kullanılır?", opts:["Kendiliğinden olan tepkimeyi hızlandırmak için","İstemsiz bir tepkimeyi gerçekleştirmek için","Sadece ısı üretmek için","Sadece ışık üretmek için"], correct:1, diagMisc:{0:"elektroliz-galvanik-karisikligi"}, exp:"Elektroliz, dışarıdan verilen elektrik enerjisiyle kendiliğinden gerçekleşmeyen (istemsiz) bir redoks tepkimesini zorlar."},
-      {type:"mc", topic:"Kimya ve Elektrik", diff:"kolay", q:"Demirin paslanması gibi metallerin çevresel etkenlerle bozunmasına ne ad verilir?", opts:["Elektroliz","Korozyon","Redüksiyon","Polimerizasyon"], correct:1, exp:"Korozyon, metallerin oksijen ve nem gibi çevresel etkenlerle elektrokimyasal olarak aşınıp bozunması sürecidir."},
+      {type:"mc", topic:"Kimya ve Elektrik", diff:"kolay", q:"Demirin paslanması gibi metallerin çevresel etkenlerle bozunmasına ne ad verilir?", opts:["Elektroliz","Korozyon","Redüksiyon","Polimerizasyon"], correct:1, diagMisc:{2:"yukseltgenme-indirgenme-karisikligi"}, exp:"Korozyon, metallerin oksijen ve nem gibi çevresel etkenlerle elektrokimyasal olarak aşınıp bozunması sürecidir."},
       {type:"mc", topic:"Karbon Kimyasına Giriş", diff:"kolay", q:"Elmas, grafit ve grafen gibi yapılar karbonun neyine örnektir?", opts:["İzotoplarına","Allotroplarına","İyonlarına","Radikallerine"], correct:1, diagMisc:{0:"izotop-allotrop-karisikligi"}, exp:"Aynı elementin farklı yapısal formlarına allotrop denir; elmas, grafit, fulleren ve grafen karbonun allotroplarıdır."},
-      {type:"mc", topic:"Karbon Kimyasına Giriş", diff:"zor", q:"Karbon atomunun sp3 hibritleşmesi yaptığında molekül geometrisi genellikle nasıldır?", opts:["Doğrusal","Üçgen düzlem","Tetrahedral (dörtyüzlü)","Kare düzlem"], correct:2, diagMisc:{1:"hibritlesme-geometri-karisikligi"}, exp:"sp3 hibritleşmesinde karbon 4 eş enerjili orbital oluşturur ve bağ açıları yaklaşık 109,5° olan tetrahedral geometri ortaya çıkar."},
+      {type:"mc", topic:"Karbon Kimyasına Giriş", diff:"zor", q:"Karbon atomunun sp3 hibritleşmesi yaptığında molekül geometrisi genellikle nasıldır?", opts:["Doğrusal","Üçgen düzlem","Tetrahedral (dörtyüzlü)","Kare düzlem"], correct:2, diagMisc:{0:"hibritlesme-geometri-karisikligi",1:"hibritlesme-geometri-karisikligi",3:"hibritlesme-geometri-karisikligi"}, exp:"sp3 hibritleşmesinde karbon 4 eş enerjili orbital oluşturur ve bağ açıları yaklaşık 109,5° olan tetrahedral geometri ortaya çıkar."},
       {type:"mc", topic:"Organik Bileşikler", diff:"kolay", q:"–OH fonksiyonel grubunu taşıyan organik bileşik sınıfı hangisidir?", opts:["Alkoller","Karboksilik asitler","Eterler","Esterler"], correct:0, exp:"Hidroksil (–OH) grubunu bir karbon zincirine bağlı olarak taşıyan bileşikler alkol sınıfını oluşturur."},
       {type:"mc", topic:"Organik Bileşikler", diff:"orta", q:"Bir karboksilik asit ile bir alkolün tepkimesinden hangi fonksiyonel grup ve yan ürün oluşur?", opts:["Eter ve hidrojen gazı","Ester ve su","Alkol ve oksijen gazı","Keton ve amonyak"], correct:1, exp:"Esterleşme tepkimesinde karboksilik asit ve alkol, bir ester ve su molekülü oluşturmak üzere yoğuşma tepkimesi verir."},
       {type:"mc", topic:"Enerji Kaynakları", diff:"kolay", q:"Aşağıdakilerden hangisi bir alternatif (yenilenebilir) enerji kaynağıdır?", opts:["Petrol","Doğalgaz","Güneş enerjisi","Kömür"], correct:2, exp:"Güneş, rüzgar, biyoyakıt ve hidrojen gibi kaynaklar sınırsız ya da hızlı yenilenebilir oldukları için alternatif enerji kaynağı sayılır; fosil yakıtlar (petrol, kömür, doğalgaz) yenilenemezdir."},
@@ -662,7 +655,7 @@ const BANK = {
       {type:"numeric", topic:"Kimyasal Kinetik", diff:"zor", q:"Bir tepkimenin hız sabiti k, T₁ sıcaklığında 2×10⁻³ s⁻¹ iken T₂'de 8×10⁻³ s⁻¹ olmuştur. Hız sabiti kaç kat artmıştır?", correct:4, tolerance:0.1, unit:"kat", exp:"Oran hesaplanırsa 8×10⁻³ / 2×10⁻³ = 4 bulunur; hız sabiti 4 kat artmıştır."},
       {type:"numeric", topic:"Elektrokimya", diff:"zor", q:"Bir galvanik hücrede katot potansiyeli +0,34 V, anot potansiyeli -0,76 V ise hücre potansiyeli (E°hücre) kaç volttur?", correct:1.10, tolerance:0.02, unit:"V", exp:"E°hücre = E°katot - E°anot formülüyle E°hücre = 0,34 - (-0,76) = 1,10 V bulunur."},
       {type:"numeric", topic:"Asit-Baz (ileri)", diff:"orta", q:"0,01 M HCl çözeltisinin pH değeri kaçtır? (HCl suda tamamen iyonlaşır)", correct:2, tolerance:0.05, unit:"pH birimi", exp:"HCl tam iyonlaştığı için [H⁺]=0,01 M olur; pH = -log(0,01) = 2 bulunur."},
-      {type:"mc", topic:"Kimyasal Kinetik", diff:"zor", q:"Bir tepkimenin hız denklemi hız = k[A]²[B] şeklindeyse, tepkime A'ya göre kaçıncı derecedendir?", opts:["1","2","3","0"], correct:1, exp:"[A] üssü 2 olduğu için tepkime A'ya göre 2. derecedendir; toplam tepkime derecesi 2+1=3'tür."},
+      {type:"mc", topic:"Kimyasal Kinetik", diff:"zor", q:"Bir tepkimenin hız denklemi hız = k[A]²[B] şeklindeyse, tepkime A'ya göre kaçıncı derecedendir?", opts:["1","2","3","0"], correct:1, diagMisc:{2:"kinetik-toplam-derece-karisikligi"}, exp:"[A] üssü 2 olduğu için tepkime A'ya göre 2. derecedendir; toplam tepkime derecesi 2+1=3'tür."},
       {type:"mc", topic:"Termokimya", diff:"zor", q:"Ekzotermik bir tepkimede ürünlerin toplam entalpisi, reaktanların toplam entalpisine göre nasıldır?", opts:["Daha büyüktür","Daha küçüktür","Eşittir","Karşılaştırılamaz"], correct:1, diagMisc:{0:"ekzotermik-entalpi-karisikligi"}, exp:"Ekzotermik tepkimede sistem çevreye ısı verir; bu yüzden ürünlerin entalpisi reaktanlardan daha düşüktür (ΔH<0)."},
       {type:"mc", topic:"Elektrokimya", diff:"zor", q:"Nernst denklemi hangi durumda hücre potansiyelinin hesaplanmasını sağlar?", opts:["Standart olmayan derişim ve sıcaklık koşullarında","Sadece 25°C'de","Sadece 1 M derişimde","Hiçbir zaman kullanılmaz"], correct:0, diagMisc:{1:"nernst-kosul-karisikligi",2:"nernst-kosul-karisikligi"}, exp:"Nernst denklemi, standart olmayan (1 M ve 25°C dışı) koşullarda hücre potansiyelini hesaplamak için kullanılır."},
       {type:"mc", topic:"Atom Yapısı (ileri)", diff:"zor", q:"Bir elektronun kuantum sayıları n=3, l=1 ise bu elektron hangi orbitalde bulunur?", opts:["3s","3p","3d","4p"], correct:1, exp:"l=1 orbital türünü 'p' olarak belirtir; n=3 ile birlikte bu elektron 3p orbitalindedir."},
@@ -712,7 +705,19 @@ const MISCONCEPTIONS = {
   "elektrot-potansiyel-karisikligi": { title: "Daha pozitif potansiyele sahip yarı hücrenin anot olacağını sanma", fix: "Daha pozitif standart elektrot potansiyeline sahip yarı hücre indirgenmeye daha yatkındır ve pilde katot görevi görür." },
   "ekzotermik-entalpi-karisikligi": { title: "Ekzotermik tepkimede ürün entalpisinin daha yüksek olduğunu sanma", fix: "Ekzotermik tepkimede sistem çevreye ısı verir; ürünlerin toplam entalpisi reaktanlardan daha düşüktür (ΔH<0)." },
   "sn2-yon-karisikligi": { title: "SN2 mekanizmasında nükleofilin ayrılan grupla aynı yönden saldırdığını sanma", fix: "SN2 mekanizmasında nükleofil, ayrılan gruba göre karbon merkezinin tam karşı tarafından saldırır (arkadan saldırı, Walden inversiyonu)." },
-  "katsayi-oran-karisikligi": { title: "Tepkime denklemindeki katsayı oranını dikkate almadan mol hesabı yapma", fix: "Denklemdeki katsayılar mol oranını belirler; ürün miktarı hesaplanırken bu oran mutlaka dikkate alınmalıdır." }
+  "katsayi-oran-karisikligi": { title: "Tepkime denklemindeki katsayı oranını dikkate almadan mol hesabı yapma", fix: "Denklemdeki katsayılar mol oranını belirler; ürün miktarı hesaplanırken bu oran mutlaka dikkate alınmalıdır." },
+  "ayni-kabuk-ayni-boyut": { title: "Aynı periyottaki atomların, kabuk sayısı aynı olduğu için aynı boyutta olduğunu sanma", fix: "Aynı periyotta kabuk sayısı aynıdır ama soldan sağa proton sayısı artar; çekirdek dış elektronları daha güçlü çeker ve atom yarıçapı küçülür." },
+  "metal-iceren-metalik-bag": { title: "Bileşikte metal atomu varsa bağın metalik olduğunu sanma", fix: "Metalik bağ, metal atomları arasındaki bağdır (saf metaller, alaşımlar). NaCl'de metal olan Na, ametal olan Cl'ye elektron aktarır; oluşan bağ iyonik bağdır." },
+  "dogal-ise-yesil": { title: "'Doğal' olanın her zaman zararsız veya 'yeşil' olduğunu sanma", fix: "Yeşil kimya, maddenin doğal ya da yapay olmasına değil; tehlikeyi, atığı ve enerji kullanımını azaltmasına bakar. Doğal maddeler de zararlı olabilir." },
+  "reaktiflik-elektronegatiflik-karisikligi": { title: "Tepkimeye girme isteğini (reaktifliği) elektronegatiflikle karıştırma", fix: "Alkali metaller elektron vermeye çok yatkındır (çok reaktiftir) ama elektronegatiflikleri en düşük olanlardır. Elektronegatiflik, bağ elektronlarını çekme gücüdür." },
+  "redoks-asit-baz-karisikligi": { title: "Yükseltgenme-indirgenmeyi (elektron aktarımı) asit-baz tepkimeleriyle (proton aktarımı) karıştırma", fix: "Redoks tepkimelerinde elektron aktarılır: elektron veren yükseltgenir, elektron alan indirgenir. Proton aktarımı ise asit-baz tepkimelerinin konusudur." },
+  "mol-avogadro-hacim-karisikligi": { title: "Mol sayısı, Avogadro sayısı ve molar gaz hacmini birbirine karıştırma", fix: "6,02×10²³ bir moldeki tanecik sayısıdır (Avogadro sayısı). Normal koşullarda 1 mol ideal gazın hacmi ise 22,4 L'dir; bunlar farklı büyüklüklerdir." },
+  "ayni-sicaklik-ayni-hiz": { title: "Aynı sıcaklıkta tüm gaz taneciklerinin aynı hızda olduğunu sanma", fix: "Aynı sıcaklıkta ortalama kinetik enerji eşittir; ancak E = ½mv² olduğundan kütlesi küçük taneciklerin hızı daha büyüktür. Bu yüzden hafif gazlar daha hızlı yayılır." },
+  "katsayi-carpan-karisikligi": { title: "Denklem katsayısını mol oranı yerine çarpan olarak kullanma", fix: "Katsayılar tepkimedeki mol oranını verir. 2H₂ + O₂ → 2H₂O'da H₂ ile H₂O 1:1 oranındadır; 4 mol H₂'den 4 mol H₂O oluşur. Katsayı mol sayısıyla çarpılmaz." },
+  "denge-tepkime-durur": { title: "Dengeye ulaşıldığında tepkimelerin durduğunu sanma", fix: "Kimyasal denge dinamiktir: ileri ve geri tepkimeler sürer, sadece hızları eşit olduğu için derişimler sabit kalır." },
+  "ph-yon-karisikligi": { title: "pH değeri küçük olan çözeltinin daha bazik olduğunu sanma", fix: "pH ne kadar küçükse çözelti o kadar asidiktir. pH 7 nötrdür; 7'nin altı asidik, üstü baziktir." },
+  "kw-h-derisim-karisikligi": { title: "Suyun iyonlaşma sabiti Kw'yi, saf sudaki [H⁺] derişimiyle karıştırma", fix: "Saf suda [H⁺] = [OH⁻] = 10⁻⁷ M'dir. Kw ise bunların çarpımıdır: 10⁻⁷ × 10⁻⁷ = 10⁻¹⁴ (25°C)." },
+  "kinetik-toplam-derece-karisikligi": { title: "Bir maddeye göre tepkime derecesi ile toplam dereceyi karıştırma", fix: "hız = k[A]²[B] ifadesinde A'ya göre derece 2, B'ye göre 1'dir; toplam derece ise 2 + 1 = 3'tür. Soruda hangi derecenin istendiğine dikkat et." }
 };
 
 // Kök neden (önkoşul kavram) haritası: bir yanılgının, aynı sınıf müfredatı içinde
@@ -1752,7 +1757,6 @@ function showResult(isGameOver){
 async function finalizeMisconceptionFlow(){
   await loadAndRenderMiscMap();
   renderMiscReport();
-  renderCalibrationReport();
   await saveMiscToSharedMap();
   loadAndRenderMiscMap();
 }
@@ -1763,12 +1767,16 @@ function renderMiscReport(){
   const confirmed = getConfirmedMisconceptions(); // Bayesçi eşik geçen yanılgılar
   const uniqueIds = confirmed.map(c => c.id);
 
-  if(uniqueIds.length === 0){
-    wrap.classList.add('hidden');
-    return;
-  }
+  // Yanılgı teşhis edilmemiş olsa bile kutu (ve yapay zekâ tavsiye düğmesi) görünür kalır:
+  // öğrenci yine de zayıf konularına dair tavsiye alabilmeli.
   wrap.classList.remove('hidden');
   rows.innerHTML = '';
+  if(uniqueIds.length === 0){
+    const none = document.createElement('div');
+    none.className = 'comp-note';
+    none.textContent = 'Bu oturumda belirgin bir kavram yanılgısı teşhis edilmedi. İstersen yine de aşağıdan zayıf konularına göre bir çalışma tavsiyesi alabilirsin.';
+    rows.appendChild(none);
+  }
 
   const relapseIds = updateHistoryAndDetectRelapses(confirmed);
 
@@ -1871,7 +1879,7 @@ function renderMiscReport(){
   aiBox.classList.remove('show');
   aiBox.textContent = '';
   aiBtn.disabled = false;
-  aiBtn.textContent = '🤖 Yapay Zekadan Kişiye Özel Tavsiye Al';
+  aiBtn.textContent = '💡 Kişiye Özel Çalışma Tavsiyesi Al';
   aiBtn.onclick = async () => {
     aiBtn.disabled = true;
     aiBtn.textContent = 'Hazırlanıyor...';
@@ -1911,7 +1919,7 @@ function renderMiscReport(){
     } catch (err){
       // Ağ/CORS/API erişimi yoksa (ör. dosya indirilip çevrimdışı açıldığında) yerel motoru kullan.
       aiBox.textContent = '📋 ' + generateLocalTip(uniqueIds, weakTopicEntries) +
-        '\n\n(Not: Bu tavsiye çevrimdışı yerel motor tarafından oluşturuldu. Canlı yapay zeka tavsiyesi için bu oyunu Claude içinde açık tutarken deneyebilirsin.)';
+        '\n\n(Bu tavsiye, tespit edilen yanılgılarına ve zayıf konularına göre hazırlandı.)';
     }
     aiBtn.disabled = false;
     aiBtn.textContent = usedAI ? '🔄 Tekrar Tavsiye Al' : '🔄 Tavsiyeyi Yenile';
@@ -1962,33 +1970,6 @@ function computeMisconceptionCorrelations(sessionDocs){
     }
   });
   return co;
-}
-
-function renderCalibrationReport(){
-  const wrap = document.getElementById('calibReport');
-  const note = document.getElementById('calibNote');
-  const report = computeCalibrationReport();
-  if(!report || report.n < 3){
-    wrap.classList.add('hidden');
-    return;
-  }
-  wrap.classList.remove('hidden');
-  const lines = [];
-  lines.push(`Bu oturumda motor ${report.n} kez bir tahminde bulunup sonrasında test edildi.`);
-  lines.push(`Bu oturumun Brier skoru: ${report.brier.toFixed(3)} (0'a ne kadar yakınsa o kadar iyi kalibre edilmiş demektir).`);
-  lines.push(`Motor hiç öğrenmeseydi (sabit ön-olasılık kullansaydı) skor ${report.baselineBrier.toFixed(3)} olurdu — yani motor tahminlerini rastgele sabit bir tahmine göre yaklaşık %${Math.max(report.improvement,0).toFixed(0)} daha isabetli hale getirdi.`);
-  if(communityBrier && communityBrier.n >= 10){
-    lines.push(`Topluluktaki tüm kayıtlı kanıtlar (n=${communityBrier.n}) üzerinden hesaplanan genel Brier skoru: ${communityBrier.brier.toFixed(3)} — bu, tek bir oturumdan çok daha güvenilir bir istatistiktir.`);
-  } else {
-    lines.push('Topluluk genelinde güvenilir bir kalibrasyon istatistiği için henüz yeterli veri yok (en az 10 kanıt gerekiyor).');
-  }
-  // Katman D: eğitim/test ayrımı — bu oturumun ikinci yarısı, motorun ilk yarıdan
-  // ÖĞRENDİĞİ inançlarla ne kadar iyi tahmin edildiğini gösterir (dışa-örneklem doğrulama).
-  const tt = computeTrainTestCalibration();
-  if(tt && tt.outOfSampleBrier !== null){
-    lines.push(`📊 Eğitim/Test ayrımı: Oturumun ilk yarısıyla "öğrenilen" inançlar, hiç görülmemiş ikinci yarı üzerinde test edildiğinde Brier skoru ${tt.outOfSampleBrier.toFixed(3)} çıktı (n=${tt.n}) — bu, motorun sadece ezberlemediğini, gerçekten genelleyebildiğini gösteren bağımsız bir doğrulamadır.`);
-  }
-  note.innerHTML = lines.map(l => `<div style="margin-bottom:6px;">${l}</div>`).join('');
 }
 
 async function saveMiscToSharedMap(){
