@@ -511,6 +511,7 @@
     <div class="field"><div class="chip-row" id="teacherTabs">
       <button class="chip active" data-tab="school">🏫 Okulum</button>
       <button class="chip" data-tab="turkey">🇹🇷 Türkiye</button>
+      <button class="chip hidden" data-tab="admin" id="teacherTabAdminBtn">🛡️ Yönetim</button>
     </div></div>
 
     <div id="teacherTabSchool">
@@ -532,6 +533,13 @@
       </div>
     </div>
 
+    <div id="teacherTabAdmin" class="hidden">
+      <div class="topic-perf-title">⏳ Onay bekleyen öğretmenler</div>
+      <div id="admPending"></div>
+      <div class="topic-perf-title" style="margin-top:14px;">✅ Onaylı öğretmenler</div>
+      <div id="admTeachers"></div>
+      <div class="comp-note" id="admNote"></div>
+    </div>
     <div id="teacherTabTurkey" class="hidden">
       <div class="tile-row" id="trTiles"></div>
       <div class="comp-note" id="trNote"></div>
@@ -621,6 +629,8 @@ function jsToFirestoreFields(obj){
   Object.entries(obj).forEach(([k, v]) => {
     if(typeof v === 'string'){
       fields[k] = { stringValue: v };
+    } else if(typeof v === 'boolean'){
+      fields[k] = { booleanValue: v };
     } else if(typeof v === 'number' && Number.isInteger(v)){
       fields[k] = { integerValue: String(v) };
     } else if(typeof v === 'number'){
@@ -639,6 +649,7 @@ function firestoreFieldsToJs(fields){
   if(!fields) return out;
   Object.entries(fields).forEach(([k, v]) => {
     if(v.stringValue !== undefined) out[k] = v.stringValue;
+    else if(v.booleanValue !== undefined) out[k] = v.booleanValue;
     else if(v.integerValue !== undefined) out[k] = parseInt(v.integerValue, 10);
     else if(v.doubleValue !== undefined) out[k] = v.doubleValue;
     else if(v.timestampValue !== undefined) out[k] = v.timestampValue;
@@ -2306,9 +2317,11 @@ async function fsCreateDoc(collection, obj, docId){
   const q = docId ? `?documentId=${encodeURIComponent(docId)}` : '';
   return fsRequest(`/${collection}${q}`, { method: 'POST', body: { fields: jsToFirestoreFields(obj) } });
 }
-async function fsQueryEq(collection, field, value, limit = 300){
-  const body = { structuredQuery: { from: [{ collectionId: collection }],
-    where: { fieldFilter: { field: { fieldPath: field }, op: 'EQUAL', value: { stringValue: value } } }, limit } };
+async function fsQueryEq(collection, field, value, limit = 300, extra){
+  const pairs = [[field, value], ...(extra || [])];
+  const f = pairs.map(([k, v]) => ({ fieldFilter: { field: { fieldPath: k }, op: 'EQUAL', value: { stringValue: v } } }));
+  const where = f.length === 1 ? f[0] : { compositeFilter: { op: 'AND', filters: f } };
+  const body = { structuredQuery: { from: [{ collectionId: collection }], where, limit } };
   const rows = await fsRequest(':runQuery', { method: 'POST', body });
   return (rows || []).filter(r => r.document).map(r => docToObj(r.document));
 }
@@ -2325,13 +2338,15 @@ async function fsListAll(collection, maxPages = 3){
 
 // ---- Rol çözümleme ----
 async function resolveRole(){
+  const adm = await fsGetDoc(`/admins/${acct.uid}`); // yalnızca konsoldan eklenir
+  if(adm){ acct.role = 'admin'; acct.canApprove = true; acct.schoolCode = ''; return acct.role; }
   const profile = await fsGetDoc(`/users/${acct.uid}`);
   acct.profile = profile;
   if(!profile){ acct.role = 'noprofile'; return acct.role; }
   if(profile.role === 'student'){ acct.role = 'student'; acct.schoolCode = profile.schoolCode; }
   else if(profile.role === 'teacher_pending'){
     const t = await fsGetDoc(`/teachers/${acct.uid}`); // yalnızca yönetici (konsol) oluşturabilir
-    if(t){ acct.role = 'teacher'; acct.schoolCode = t.schoolCode || profile.schoolCode; }
+    if(t){ acct.role = 'teacher'; acct.canApprove = t.canApprove === true; acct.schoolCode = t.schoolCode || profile.schoolCode; }
     else { acct.role = 'pending'; acct.schoolCode = profile.schoolCode; }
   } else acct.role = 'noprofile';
   return acct.role;
@@ -2356,6 +2371,9 @@ function renderUserBar(bar){
   if(acct.role === 'student'){
     who = `👤 ${classLabel(acct.profile.className)} · No ${acct.profile.studentNumber}`;
     acts = [['progress', '📈 Gelişimim'], ['logout', 'Çıkış']];
+  } else if(acct.role === 'admin'){
+    who = '🛡️ Yönetici';
+    acts = [['panel', 'Panel'], ['logout', 'Çıkış']];
   } else if(acct.role === 'teacher'){
     who = `👩‍🏫 Öğretmen · ${acct.schoolCode}`;
     acts = [['panel', 'Panel'], ['play', 'Oyunu dene'], ['logout', 'Çıkış']];
@@ -2376,7 +2394,7 @@ $('userBar').addEventListener('click', (e) => {
   const b = e.target.closest('[data-act]'); if(!b) return;
   const a = b.dataset.act;
   if(a === 'progress'){ showScreen('student'); loadStudentHome(); }
-  else if(a === 'panel'){ showScreen('teacher'); loadTeacherHome(); }
+  else if(a === 'panel'){ if(acct.role === 'admin'){ showScreen('teacher'); loadAdmin(); } else { showScreen('teacher'); loadTeacherHome(); } }
   else if(a === 'play'){ showScreen('setup'); checkPoolSize(); }
   else if(a === 'logout') signOut();
 });
@@ -2434,13 +2452,13 @@ async function handleTeacherAuth(){
   if(reg){
     if(code.length < 6) fail('Okul kodu en az 6 harf/rakam olmalı.');
     setTokens(await authRequest('signUp', { email, password: pass }));
-    try { await fsCreateDoc('users', { role: 'teacher_pending', schoolCode: code, className: '', studentNumber: '', createdAt: new Date() }, acct.uid); }
+    try { await fsCreateDoc('users', { role: 'teacher_pending', schoolCode: code, className: '', studentNumber: '', email, createdAt: new Date() }, acct.uid); }
     catch(e){ resetAcct(); fail(`Hesap açıldı ama profil kaydedilemedi (${e.message}). Firestore güvenlik kurallarını kontrol et.`); }
   } else {
     setTokens(await authRequest('signInWithPassword', { email, password: pass }));
   }
   await resolveRole();
-  if(acct.role === 'teacher'){ enterApp(); return; }
+  if(acct.role === 'teacher' || acct.role === 'admin'){ enterApp(); return; }
   if(acct.role === 'pending'){ showPending(); return; }
   const wasStudent = acct.role === 'student';
   resetAcct();
@@ -2455,7 +2473,7 @@ function showPending(){
 }
 $('authPending').addEventListener('click', async (e) => {
   if(!e.target.closest('#pendingRecheck')) return;
-  try { await resolveRole(); if(acct.role === 'teacher'){ $('authPending').classList.add('hidden'); enterApp(); } else authSay('Henüz onaylanmadı.'); }
+  try { await resolveRole(); if(acct.role === 'teacher' || acct.role === 'admin'){ $('authPending').classList.add('hidden'); enterApp(); } else authSay('Henüz onaylanmadı.'); }
   catch(err){ authSay('Kontrol edilemedi: ' + err.message); }
 });
 $('authSubmit').addEventListener('click', async () => {
@@ -2471,10 +2489,25 @@ function signOut(){
   $('authPass').value = ''; $('authPending').classList.add('hidden'); authSay('');
   showScreen('auth'); renderAuthForm();
 }
+function activateTeacherTab(name){
+  document.querySelectorAll('#teacherTabs .chip').forEach(c => c.classList.toggle('active', c.dataset.tab === name));
+  $('teacherTabSchool').classList.toggle('hidden', name !== 'school');
+  $('teacherTabTurkey').classList.toggle('hidden', name !== 'turkey');
+  $('teacherTabAdmin').classList.toggle('hidden', name !== 'admin');
+}
 function enterApp(){
-  if(acct.role === 'teacher'){ showScreen('teacher'); loadTeacherHome(); }
-  else { showScreen('setup'); checkPoolSize(); }
-  if(acct.role === 'student' || acct.role === 'teacher') loadCommunityStats();
+  const adm = acct.role === 'admin', tch = acct.role === 'teacher';
+  if(adm || tch){
+    showScreen('teacher');
+    const mgr = adm || acct.canApprove;
+    $('teacherTabAdminBtn').classList.toggle('hidden', !mgr);
+    document.querySelector('#teacherTabs [data-tab="school"]').classList.toggle('hidden', adm);
+    document.querySelector('#teacherTabs [data-tab="turkey"]').classList.toggle('hidden', adm);
+    activateTeacherTab(adm ? 'admin' : 'school');
+    if(!adm) loadTeacherHome();
+    if(mgr) loadAdmin();
+  } else { showScreen('setup'); checkPoolSize(); }
+  if(acct.role === 'student' || tch) loadCommunityStats();
 }
 async function restoreSession(){
   let stored = null; try { stored = JSON.parse(localStorage.getItem(AUTH_STORE_KEY) || 'null'); } catch(e){}
@@ -2482,7 +2515,7 @@ async function restoreSession(){
   acct.refreshToken = stored.refreshToken;
   try {
     await getIdToken(); await resolveRole();
-    if(acct.role === 'student' || acct.role === 'teacher') return true;
+    if(acct.role === 'student' || acct.role === 'teacher' || acct.role === 'admin') return true;
     if(acct.role === 'pending'){ showPending(); return false; }
   } catch(e){
     // Yalnızca jeton gerçekten geçersizse kayıtlı oturumu sil; internet yokluğunda sakla (sonraki açılışta tekrar denenir).
@@ -2520,7 +2553,7 @@ async function saveMiscToSharedMap(){
   const statusEl = $('connStatusText');
   const setStatus = (m) => { if(statusEl) statusEl.textContent = m; };
   if(acct.role === 'guest'){ setStatus('ℹ️ Misafir oturumu kaydedilmez. Kayıt için giriş yap.'); return; }
-  if(acct.role === 'teacher'){ setStatus('ℹ️ Öğretmen denemeleri kaydedilmez.'); return; }
+  if(acct.role === 'teacher' || acct.role === 'admin'){ setStatus('ℹ️ Öğretmen/yönetici denemeleri kaydedilmez.'); return; }
   if(acct.role !== 'student'){ setStatus('ℹ️ Giriş yapılmadığı için kaydedilmedi.'); return; }
   setStatus('Veri gönderiliyor...');
   const ids = getConfirmedMisconceptions().map(c => c.id);
@@ -2762,11 +2795,41 @@ function renderTurkeyView(){
     dr.appendChild(row);
   });
 }
-$('teacherTabs').addEventListener('click', (e) => {
-  const b = e.target.closest('[data-tab]'); if(!b) return;
-  document.querySelectorAll('#teacherTabs .chip').forEach(c => c.classList.toggle('active', c === b));
-  $('teacherTabSchool').classList.toggle('hidden', b.dataset.tab !== 'school');
-  $('teacherTabTurkey').classList.toggle('hidden', b.dataset.tab !== 'turkey');
+$('teacherTabs').addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); if(b) activateTeacherTab(b.dataset.tab); });
+// ---- Yönetim: onay / yetki ----
+async function loadAdmin(){
+  const adm = acct.role === 'admin', note = $('admNote');
+  note.textContent = 'Yükleniyor…';
+  try {
+    const [pendAll, teachers] = await Promise.all([
+      adm ? fsQueryEq('users', 'role', 'teacher_pending') : fsQueryEq('users', 'schoolCode', acct.schoolCode, 300, [['role', 'teacher_pending']]),
+      adm ? fsListAll('teachers') : fsQueryEq('teachers', 'schoolCode', acct.schoolCode)
+    ]);
+    const done = new Set(teachers.map(t => t.id)), pend = pendAll.filter(u => !done.has(u.id));
+    const pr = $('admPending'); pr.innerHTML = '';
+    if(!pend.length) pr.innerHTML = '<div class="comp-note">Bekleyen başvuru yok.</div>';
+    pend.forEach(u => { const r = document.createElement('div'); r.className = 'topic-row';
+      r.innerHTML = `<div class="topic-row-head"><span class="t-name">${esc(u.email || '(e-posta yok)')}</span><span class="t-frac">${esc(u.schoolCode)}</span></div><div class="comp-note">UID: ${esc(u.id)}</div><button class="btn-secondary" data-adm="approve" data-id="${esc(u.id)}" data-code="${esc(u.schoolCode)}">Onayla</button>`;
+      pr.appendChild(r); });
+    const tr = $('admTeachers'); tr.innerHTML = '';
+    if(!teachers.length) tr.innerHTML = '<div class="comp-note">Henüz onaylı öğretmen yok.</div>';
+    teachers.forEach(t => { const r = document.createElement('div'); r.className = 'topic-row';
+      const own = t.id === acct.uid, tag = t.canApprove ? ' · okul yetkilisi' : '';
+      const btns = adm && !own ? `<button class="btn-secondary" data-adm="${t.canApprove ? 'demote' : 'promote'}" data-id="${esc(t.id)}">${t.canApprove ? 'Yetkiyi al' : 'Okul yetkilisi yap'}</button> <button class="btn-secondary" data-adm="revoke" data-id="${esc(t.id)}">Onayı kaldır</button>` : '';
+      r.innerHTML = `<div class="topic-row-head"><span class="t-name">${esc(t.schoolCode)}${tag}</span><span class="t-frac">${esc(t.id.slice(0, 8))}…</span></div>${btns}`;
+      tr.appendChild(r); });
+    note.textContent = adm ? 'Yönetici: tüm okullar.' : `Okul yetkilisi: yalnızca ${acct.schoolCode} okulu.`;
+  } catch(e){ note.textContent = `Yönetim verisi okunamadı (${e.message}). Firestore kurallarını kontrol et.`; }
+}
+$('teacherTabAdmin').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-adm]'); if(!b) return;
+  const id = b.dataset.id, act = b.dataset.adm; b.disabled = true;
+  try {
+    if(act === 'approve') await fsCreateDoc('teachers', { schoolCode: b.dataset.code, approvedBy: acct.uid, createdAt: new Date() }, id);
+    else if(act === 'revoke') await fsRequest(`/teachers/${id}`, { method: 'DELETE' });
+    else await fsRequest(`/teachers/${id}?updateMask.fieldPaths=canApprove`, { method: 'PATCH', body: { fields: jsToFirestoreFields({ canApprove: act === 'promote' }) } });
+  } catch(err){ $('admNote').textContent = `İşlem başarısız (${err.message}).`; b.disabled = false; return; }
+  loadAdmin();
 });
 $('teacherBackBtn').addEventListener('click', () => { showScreen('setup'); checkPoolSize(); });
 $('teacherOptimizeBtn').addEventListener('click', () => {
