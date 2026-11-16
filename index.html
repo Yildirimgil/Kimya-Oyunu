@@ -335,6 +335,66 @@
 
   footer{ text-align:center; margin-top: 22px; font-family:'IBM Plex Mono', monospace; font-size: 10.5px; color: #8a8e80; }
   .hidden{ display:none !important; }
+
+  /* ===== Hafif, anlamlı geri bildirim efektleri ===== */
+  @keyframes popOk{ 0%{transform:scale(1);} 45%{transform:scale(1.03);} 100%{transform:scale(1);} }
+  @keyframes shakeNo{ 0%,100%{transform:translateX(0);} 20%{transform:translateX(-5px);} 40%{transform:translateX(5px);} 60%{transform:translateX(-3px);} 80%{transform:translateX(3px);} }
+  @keyframes cardIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes softIn{ from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes barGrow{ from{transform:scaleX(0);} to{transform:scaleX(1);} }
+  @keyframes conflictGlow{ 0%{box-shadow:0 0 0 0 rgba(214,154,31,.55);} 100%{box-shadow:0 0 0 12px rgba(214,154,31,0);} }
+  .opt.correct{ animation: popOk .3s ease-out; }
+  .opt.wrong{ animation: shakeNo .35s ease-out; }
+  .q-card.q-enter{ animation: cardIn .25s ease-out; }
+  .q-card.conflict{ border-color: var(--amber); animation: cardIn .25s ease-out, conflictGlow .9s ease-out; }
+  .explain.show{ animation: softIn .25s ease-out; }
+  .result-panel{ animation: cardIn .35s ease-out; }
+  .topic-bar-fill{ transform-origin: left center; animation: barGrow .6s ease-out; }
+  @media (prefers-reduced-motion: reduce){
+    .opt.correct, .opt.wrong, .q-card.q-enter, .q-card.conflict, .explain.show, .result-panel, .topic-bar-fill{ animation: none !important; }
+    .progress-fill{ transition: none; }
+  }
+
+  /* ===== İkinci grup efektler (hepsi kısa ve işlev taşır) ===== */
+  @keyframes nudge{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+  @keyframes urgentPulse{ 0%,100%{opacity:1;} 50%{opacity:.45;} }
+  @keyframes streakPop{ 0%{transform:scale(.7);} 60%{transform:scale(1.15);} 100%{transform:scale(1);} }
+  @keyframes toastInOut{ 0%{opacity:0; transform:translate(-50%,10px);} 12%,80%{opacity:1; transform:translate(-50%,0);} 100%{opacity:0; transform:translate(-50%,-6px);} }
+  @keyframes confettiFall{ 0%{transform:translateY(-20px) rotate(0deg); opacity:1;} 100%{transform:translateY(105vh) rotate(540deg); opacity:.85;} }
+  .btn-next.show{ animation: nudge 1.2s ease-in-out .7s 2; }
+  .timer-wrap.urgent{ animation: urgentPulse .8s ease-in-out infinite; }
+  .streak-chip{ font-family:'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: var(--amber); }
+  .streak-chip.pop{ animation: streakPop .35s ease-out; }
+  .topic-row.row-in{ animation: softIn .3s ease-out both; }
+  .toast{ position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+          background: var(--ink); color: #fff; padding: 9px 16px; border-radius: 999px; font-size: 13px; font-weight: 600;
+          z-index: 60; pointer-events: none; animation: toastInOut 1.9s ease-in-out forwards; }
+  .confetti{ position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 55; }
+  .confetti i{ position: absolute; top: -14px; width: 8px; height: 12px; animation: confettiFall var(--d) linear var(--dl) forwards; }
+  @media (prefers-reduced-motion: reduce){
+    .btn-next.show, .timer-wrap.urgent, .streak-chip.pop, .topic-row.row-in, .toast, .confetti i{ animation: none !important; }
+    .toast{ opacity: 1; }
+  }
+
+  /* ===== Hesap, rol ve grafik arayüzü ===== */
+  .user-bar{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; margin:0 0 12px; padding:8px 10px; border:1.5px solid var(--ink); background:var(--card); font-size:12px; }
+  .user-bar .who{ font-weight:600; }
+  .user-bar .acts{ display:flex; gap:6px; flex-wrap:wrap; }
+  .user-bar button{ font-family:inherit; font-size:12px; padding:5px 9px; border:1px solid var(--ink); background:#fff; color:var(--ink); cursor:pointer; }
+  .txt-input{ width:100%; padding:10px 12px; border-radius:10px; border:1px solid #d8dcd0; font-size:14px; font-family:inherit; background:#fff; }
+  .tile-row{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin:10px 0 8px; }
+  .tile{ border:1.5px solid var(--ink); background:#fff; padding:10px; }
+  .tile .t-val{ font-family:'IBM Plex Mono', monospace; font-size:20px; font-weight:600; }
+  .tile .t-lbl{ font-size:11px; color:#6a6f60; margin-top:2px; }
+  .tile .t-delta{ font-size:11px; font-weight:600; margin-left:6px; }
+  .tile .t-delta.good{ color:var(--good); } .tile .t-delta.bad{ color:var(--bad); }
+  .chart-wrap{ overflow-x:auto; border:1px solid var(--line); background:#fff; padding:6px 4px 2px; }
+  .chart-wrap svg{ display:block; }
+  .chart-legend{ font-size:11px; color:#6a6f60; margin:6px 0 8px; }
+  .chart-detail{ border-left:3px solid var(--teal); padding:6px 10px; margin:8px 0 14px; font-size:12.5px; line-height:1.5; background:#fff; }
+  .chart-detail ul{ margin:4px 0 0 16px; padding:0; }
+  .pending-box{ border:1.5px dashed var(--amber); background:#fffaf0; padding:10px 12px; font-size:12.5px; line-height:1.55; margin:10px 0; }
+  .pending-box code{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; word-break:break-all; }
 </style>
 </head>
 <body>
@@ -346,6 +406,8 @@
     <div class="tag">Maarif Modeli</div>
   </header>
 
+  <div class="user-bar hidden" id="userBar"></div>
+
   <div class="grade-select" id="gradeSelect">
     <button class="grade-btn" data-grade="9">9<span class="lvl">Etkileşim</span></button>
     <button class="grade-btn" data-grade="10">10<span class="lvl">Tepkime·Gaz</span></button>
@@ -356,13 +418,25 @@
 
   <div class="theme-line" id="themeLine">Bir sınıf seç, o sınıfın öğretim programındaki temalardan sorular gelsin.</div>
 
-  <div id="setupScreen" class="setup-panel">
-    <h2>Sınavını kur</h2>
-    <p class="sub">Zorluk, konu ve oyun modunu seç, sonra başlat. Sorular çoktan seçmeli, boşluk doldurma ve eşleştirme olarak karışık gelir.</p>
-
+  <div id="authScreen" class="setup-panel hidden">
+    <h2>Giriş</h2>
+    <p class="sub">Hesabınla giriş yap; gelişimini oturum oturum görebilirsin. Ad-soyad ve e-posta istenmez (öğrenciler için).</p>
     <div class="field">
-      <span class="field-label">Sınıfın *</span>
-      <select class="topic-select" id="classInput">
+      <div class="chip-row" id="authRoleTabs">
+        <button class="chip active" data-role="student">Öğrenci</button>
+        <button class="chip" data-role="teacher">Öğretmen</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="chip-row" id="authModeTabs">
+        <button class="chip active" data-mode="login">Giriş yap</button>
+        <button class="chip" data-mode="register">Kayıt ol</button>
+      </div>
+    </div>
+    <div class="field" id="fEmail"><span class="field-label">E-posta</span><input class="txt-input" id="authEmail" type="email" autocomplete="username" placeholder="ornek@okul.k12.tr"></div>
+    <div class="field" id="fSchool"><span class="field-label">Okul kodu</span><input class="txt-input" id="authSchool" type="text" autocomplete="off" maxlength="24" placeholder="öğretmeninin verdiği kod"><small id="authSchoolHelp" style="display:block;margin-top:4px;color:#8a8e80;font-size:11px;"></small></div>
+    <div class="field" id="fClass"><span class="field-label">Sınıfın</span>
+      <select class="topic-select" id="authClass">
         <option value="">Sınıfını seç</option>
         <option value="9A">9-A</option><option value="9B">9-B</option>
         <option value="10A">10-A</option><option value="10B">10-B</option>
@@ -370,12 +444,34 @@
         <option value="12A">12-A</option><option value="12B">12-B</option>
       </select>
     </div>
+    <div class="field" id="fNumber"><span class="field-label">Okul numaran</span><input class="txt-input" id="authNumber" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="username" placeholder="örn. 1245"></div>
+    <div class="field" id="fPass"><span class="field-label">Şifre (en az 6 karakter)</span><input class="txt-input" id="authPass" type="password" autocomplete="current-password"></div>
+    <div class="warn-line" id="authMsg"></div>
+    <div class="pending-box hidden" id="authPending"></div>
+    <button class="btn-primary" id="authSubmit">Giriş yap</button>
+    <button class="btn-secondary" id="guestBtn" style="margin-top:10px;">Misafir olarak dene (kaydedilmez)</button>
+    <div class="comp-note">Şifreni unutursan öğretmeninden sıfırlama iste. Öğrenci hesabı için gerçek e-posta toplanmaz.</div>
+  </div>
 
-    <div class="field">
-      <span class="field-label">Okul Numaran *</span>
-      <input type="text" inputmode="numeric" pattern="[0-9]*" id="numberInput" placeholder="örn. 1245" maxlength="5" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid #d8dcd0;font-size:14px;box-sizing:border-box;">
-      <small style="display:block;margin-top:4px;color:#8a8e80;font-size:11px;">Sınıf ve numara zorunludur; öğretmenin takip edebilmesi için istenir, ad-soyad istenmez.</small>
+  <div id="studentScreen" class="hidden setup-panel">
+    <h2>📈 Gelişimim</h2>
+    <p class="sub" id="stuSub">Her çubuk bir oturumdur; yükseklik tespit edilen yanılgı sayısını, çizgi skoru gösterir.</p>
+    <div class="tile-row" id="stuTiles"></div>
+    <div class="chart-wrap" id="stuChart"></div>
+    <div class="chart-legend">▮ yanılgı sayısı (yeşil çizgi = yanılgı çıkmadı) · ● skor % · bir çubuğa dokun</div>
+    <div class="chart-detail hidden" id="stuDetail"></div>
+    <div class="topic-perf"><div class="topic-perf-title">Kavram yanılgılarım</div><div id="stuMiscRows"></div></div>
+    <div class="field"><span class="field-label">Sınıfımı değiştir</span>
+      <select class="topic-select" id="stuClassSelect"></select>
+      <button class="btn-secondary" id="stuClassSave" style="margin-top:8px;">Sınıfı kaydet</button>
+      <div class="comp-note" id="stuClassMsg"></div>
     </div>
+    <button class="btn-secondary" id="stuBackBtn" style="margin-top:10px;">← Oyuna dön</button>
+  </div>
+
+  <div id="setupScreen" class="setup-panel hidden">
+    <h2>Sınavını kur</h2>
+    <p class="sub">Zorluk, konu ve oyun modunu seç, sonra başlat. Sorular çoktan seçmeli, boşluk doldurma ve eşleştirme olarak karışık gelir.</p>
 
     <div class="field">
       <span class="field-label">Zorluk</span>
@@ -406,45 +502,57 @@
     </div>
 
     <div class="warn-line" id="warnLine">Bu filtreyle eşleşen soru yok, başka bir zorluk/konu seç.</div>
-    <div class="warn-line" id="identWarn">Başlamak için sınıfını seç ve okul numaranı yaz.</div>
     <button class="btn-primary" id="startBtn">Sınavı Başlat</button>
-    <button class="btn-secondary" id="teacherPanelBtn" style="margin-top:10px;">👩‍🏫 Öğretmen Paneli</button>
   </div>
 
   <div id="teacherScreen" class="hidden setup-panel">
     <h2>👩‍🏫 Öğretmen Paneli</h2>
-    <p class="sub">Bu görünüm, tüm öğrencilerin (isimsiz, toplu) verisinden oluşur — giriş sistemi olmadığı için tek bir sınıfa değil, oyunu oynayan herkese aittir.</p>
-    <div class="topic-perf" id="teacherSummary">
-      <div class="topic-perf-title"><span>Genel Durum</span></div>
-      <div class="comp-note" id="teacherSummaryNote">Yükleniyor...</div>
-    </div>
+    <p class="sub" id="teacherSub">Okulundaki sınıfları ve Türkiye genelini görürsün. Öğrenci verileri yalnızca kendi okulun için açılır.</p>
+    <div class="field"><div class="chip-row" id="teacherTabs">
+      <button class="chip active" data-tab="school">🏫 Okulum</button>
+      <button class="chip" data-tab="turkey">🇹🇷 Türkiye</button>
+    </div></div>
 
-    <div class="topic-perf" id="teacherClassPanel">
-      <div class="topic-perf-title"><span>🏫 Sınıf Görünümü</span></div>
-      <div class="field">
-        <span class="field-label">Sınıf seç</span>
-        <select class="topic-select" id="teacherClassSelect">
-          <option value="">Yükleniyor...</option>
-        </select>
+    <div id="teacherTabSchool">
+      <div class="field"><span class="field-label">Sınıf</span><select class="topic-select" id="schClassSelect"></select></div>
+      <div class="tile-row" id="schTiles"></div>
+      <div class="comp-note" id="schNote"></div>
+      <div class="chart-wrap" id="schChart"></div>
+      <div class="chart-legend">Her çubuk bir oturum (altında öğrenci numarası) · ▮ yanılgı sayısı · ● skor % · dokun</div>
+      <div class="chart-detail hidden" id="schDetail"></div>
+      <div class="topic-perf"><div class="topic-perf-title">Sınıfta en sık görülen yanılgılar</div><div id="schMiscRows"></div></div>
+      <div class="topic-perf"><div class="topic-perf-title">👤 Öğrenciler (numaraya dokun)</div><div id="schStudentRows"></div></div>
+      <div class="topic-perf hidden" id="schStudentBox">
+        <div class="topic-perf-title" id="schStudentTitle"></div>
+        <div class="tile-row" id="schStudentTiles"></div>
+        <div class="chart-wrap" id="schStudentChart"></div>
+        <div class="chart-detail hidden" id="schStudentDetail"></div>
+        <div class="topic-perf-title" style="margin-top:12px;">🧩 Bu öğrencinin kavram yanılgıları</div>
+        <div id="schStudentMisc"></div>
       </div>
-      <div class="comp-note" id="teacherClassHeatNote" style="margin-top:8px;"></div>
-      <div id="teacherClassHeatRows"></div>
-      <div class="comp-note" style="margin-top:10px;">👤 Öğrenci listesi (numarayla, oynama sırasına göre):</div>
-      <div id="teacherClassStudentRows"></div>
     </div>
 
-    <div class="topic-perf" id="teacherTrend">
-      <div class="topic-perf-title"><span>📈 Zaman İçinde Yanılgı Eğilimi</span></div>
-      <div class="comp-note">Her nokta, o güne ait oturumlarda ortalama tespit edilen yanılgı sayısıdır. Düşen bir çizgi, zamanla daha az yanılgıya düşüldüğünü gösterir.</div>
-      <div id="teacherTrendChart"></div>
+    <div id="teacherTabTurkey" class="hidden">
+      <div class="tile-row" id="trTiles"></div>
+      <div class="comp-note" id="trNote"></div>
+      <div class="chart-wrap" id="trChart"></div>
+      <div class="chart-legend">Her çubuk bir gün (oturum başına ortalama yanılgı) · ● ortalama skor % · dokun</div>
+      <div class="chart-detail hidden" id="trDetail"></div>
+      <div class="topic-perf"><div class="topic-perf-title">🗺️ Türkiye kavram yanılgıları haritası</div><div id="trMiscRows"></div></div>
+      <div class="topic-perf"><div class="topic-perf-title">🌡️ Konu bazlı yoğunluk</div><div id="trHeatRows"></div></div>
+      <div class="topic-perf hidden" id="trDiscovery">
+        <div class="topic-perf-title">🔍 Olası yeni yanılgı adayları</div>
+        <div class="comp-note">Kütüphanede tanımlı olmayan, birden çok öğrencinin seçtiği yanlış şıklar. Doğrulanmamış adaylardır.</div>
+        <div id="trDiscoveryRows"></div>
+      </div>
+      <div class="topic-perf" id="teacherOptimize">
+        <div class="topic-perf-title">🔧 Parametreleri veriden optimize et</div>
+        <div class="comp-note">Motorun katsayıları (LR₊, LR₋) elle seçildi. Düğme, Türkiye verisindeki ham kanıt günlüklerini farklı katsayılarla yeniden oynatıp en düşük Brier skorunu veren kombinasyonu bulur.</div>
+        <button class="btn-secondary" id="teacherOptimizeBtn">Optimizasyonu çalıştır</button>
+        <div class="comp-note" id="teacherOptimizeResult" style="margin-top:8px;"></div>
+      </div>
     </div>
-    <div class="topic-perf" id="teacherOptimize">
-      <div class="topic-perf-title"><span>🔧 Parametreleri Veriden Optimize Et</span></div>
-      <div class="comp-note">Motorun şu anki katsayıları (LR₊=6, LR₋=0.55) elle seçildi. Bu buton, topluluktaki tüm ham kanıt günlüklerini farklı katsayı kombinasyonlarıyla yeniden oynatıp hangisinin en düşük (en iyi kalibre) Brier skorunu verdiğini bir ızgara aramayla bulur.</div>
-      <button class="btn-secondary" id="teacherOptimizeBtn">Optimizasyonu Çalıştır</button>
-      <div class="comp-note" id="teacherOptimizeResult" style="margin-top:8px;"></div>
-    </div>
-    <button class="btn-secondary" id="teacherBackBtn" style="margin-top:14px;">← Sınav Kurulumuna Dön</button>
+    <button class="btn-secondary" id="teacherBackBtn" style="margin-top:14px;">🎮 Oyunu dene (kaydedilmez)</button>
   </div>
 
   <div id="gameScreen" class="hidden">
@@ -455,13 +563,14 @@
     </div>
     <div class="status-row">
       <span class="lives hidden" id="livesDisplay"></span>
+      <span class="streak-chip hidden" id="streakChip"></span>
       <span class="timer-wrap hidden" id="timerWrap">
         <span id="timerNum">20</span>s
         <span class="timer-bar"><span class="timer-fill" id="timerFill"></span></span>
       </span>
     </div>
 
-    <div class="q-card">
+    <div class="q-card" id="qCardBox">
       <div class="q-topic"><span id="qTopic">ÜNİTE</span><span><span class="q-type-badge" id="qTypeBadge"></span> <span class="q-diff" id="qDiff"></span></span></div>
       <p class="q-text" id="qText"></p>
       <div id="answerArea"></div>
@@ -486,35 +595,12 @@
       <div class="explain hidden" id="aiTipBox"></div>
     </div>
 
-    <div class="topic-perf hidden" id="miscMap">
-      <div class="topic-perf-title">
-        <span>🗺️ Türkiye Kavram Yanılgıları Haritası</span>
-      </div>
-      <div class="comp-note" id="miscMapNote"></div>
-      <div id="miscMapRows"></div>
-    </div>
-
-    <div class="topic-perf hidden" id="topicHeatmap">
-      <div class="topic-perf-title">
-        <span>🌡️ Konu Bazlı Yoğunluk Haritası</span>
-      </div>
-      <div class="comp-note">Not: Bu oyunda öğrenci/sınıf girişi olmadığından bu harita tek bir sınıfa değil, oyunu oynayan HERKESE ait toplu (isimsiz) veriye dayanır — yine de hangi konularda genel olarak en çok yanılgı üretildiğini gösterir.</div>
-      <div id="topicHeatmapRows"></div>
-    </div>
-
-    <div class="topic-perf hidden" id="miscDiscovery">
-      <div class="topic-perf-title">
-        <span>🔍 Olası Yeni Yanılgı Adayları</span>
-      </div>
-      <div class="comp-note">Henüz kütüphanede tanımlı olmayan, birden çok öğrencinin bağımsız olarak düştüğü örüntüler — doğrulanmamış adaylar, öğretmen/araştırmacı incelemesi içindir.</div>
-      <div id="miscDiscoveryRows"></div>
-    </div>
-
     <div class="topic-perf" id="connStatus">
       <div class="topic-perf-title">Veri Bağlantı Durumu</div>
       <div class="comp-note" id="connStatusText">Kontrol ediliyor...</div>
     </div>
 
+    <button class="btn-primary hidden" id="resultProgressBtn">📈 Gelişimimi Gör</button>
     <button class="btn-primary" id="retryBtn">Aynı Ayarlarla Tekrar</button>
     <button class="btn-secondary" id="reconfigBtn">Ayarları Değiştir</button>
   </div>
@@ -1100,12 +1186,13 @@ function findTopicForMisconception(miscId){
   return null;
 }
 
+function miscHistoryKey(){ return MISC_HISTORY_KEY + '_' + ((typeof acct !== 'undefined' && acct.uid) || 'guest'); }
 function loadMiscHistory(){
-  try { return JSON.parse(localStorage.getItem(MISC_HISTORY_KEY) || '{}'); }
+  try { return JSON.parse(localStorage.getItem(miscHistoryKey()) || '{}'); }
   catch(e){ return {}; }
 }
 function saveMiscHistory(hist){
-  try { localStorage.setItem(MISC_HISTORY_KEY, JSON.stringify(hist)); } catch(e){}
+  try { localStorage.setItem(miscHistoryKey(), JSON.stringify(hist)); } catch(e){}
 }
 
 // Oturum sonunda yerel geçmişle birleştirir: nüks (relapse) tespiti yapar ve
@@ -1149,7 +1236,7 @@ function updateHistoryAndDetectRelapses(confirmed){
 
 let state = {
   grade: null, diff: 'all', topic: 'all', timed: false, livesMode: false,
-  className: '', studentNumber: '',
+  className: '', studentNumber: '', streak: 0, halfShown: false,
   pool: [], idx: 0, score: 0, wrongCount: 0, livesLeft: 3, answered: false,
   timerId: null, timeLeft: 20,
   matchState: null,
@@ -1248,10 +1335,7 @@ function checkPoolSize(){
 }
 
 function showSetup(){
-  setupScreen.classList.remove('hidden');
-  gameScreen.classList.add('hidden');
-  resultScreen.classList.add('hidden');
-  document.getElementById('teacherScreen').classList.add('hidden');
+  showScreen('setup');
   checkPoolSize();
 }
 
@@ -1267,8 +1351,12 @@ function shuffle(arr){
 function beginGame(){
   state.timed = timedToggle.checked;
   state.livesMode = livesToggle.checked;
-  state.className = (document.getElementById('classInput').value || '').trim().slice(0, 10);
-  state.studentNumber = (document.getElementById('numberInput').value || '').replace(/\D/g, '').slice(0, 5);
+  state.streak = 0;
+  state.halfShown = false;
+  document.getElementById('streakChip').classList.add('hidden');
+  state.className = (acct.profile && acct.profile.className) || '';
+  state.studentNumber = (acct.profile && acct.profile.studentNumber) || '';
+  setUserBarVisible(false);
   state.pool = shuffle(getPool());
   state.idx = 0;
   state.score = 0;
@@ -1292,72 +1380,11 @@ function beginGame(){
   renderQuestion();
 }
 
-const identWarn = document.getElementById('identWarn');
-function identMissing(){
-  const cls = document.getElementById('classInput').value;
-  const num = (document.getElementById('numberInput').value || '').replace(/\D/g, '');
-  return { cls: !cls, num: !num };
-}
-['classInput','numberInput'].forEach(id => {
-  const el = document.getElementById(id);
-  const clear = () => { el.style.borderColor = ''; identWarn.classList.remove('show'); };
-  el.addEventListener('input', clear);
-  el.addEventListener('change', clear);
-});
-
 startBtn.addEventListener('click', () => {
-  // Sınıf ve numara girilmeden oyun başlamaz.
-  const miss = identMissing();
-  if(miss.cls || miss.num){
-    identWarn.textContent = miss.cls && miss.num ? 'Başlamak için sınıfını seç ve okul numaranı yaz.'
-      : (miss.cls ? 'Başlamak için sınıfını seçmelisin.' : 'Başlamak için okul numaranı yazmalısın.');
-    identWarn.classList.add('show');
-    if(miss.cls) document.getElementById('classInput').style.borderColor = 'var(--coral)';
-    if(miss.num) document.getElementById('numberInput').style.borderColor = 'var(--coral)';
-    (miss.cls ? document.getElementById('classInput') : document.getElementById('numberInput')).focus();
-    return;
-  }
+  if(acct.role === 'none') { showScreen('auth'); return; } // giriş yapılmadan oyun başlamaz
   if(!state.grade){ gradeBtns[0].click(); }
   if(checkPoolSize().length === 0) return;
   beginGame();
-});
-
-document.getElementById('teacherPanelBtn').addEventListener('click', () => {
-  setupScreen.classList.add('hidden');
-  document.getElementById('teacherScreen').classList.remove('hidden');
-  loadTeacherPanel();
-});
-document.getElementById('teacherBackBtn').addEventListener('click', () => {
-  document.getElementById('teacherScreen').classList.add('hidden');
-  showSetup();
-});
-
-document.getElementById('teacherOptimizeBtn').addEventListener('click', () => {
-  const out = document.getElementById('teacherOptimizeResult');
-  if(teacherDocsCache.length === 0){
-    out.textContent = 'Önce panelin yüklenmesini bekle (veri henüz gelmedi).';
-    return;
-  }
-  out.textContent = 'Izgara arama çalışıyor...';
-  setTimeout(() => { // arayüzün donmaması için hesaplamayı bir sonraki tick'e it
-    const result = optimizeBayesParameters(teacherDocsCache);
-    if(!result){
-      out.textContent = 'Optimizasyon için yeterli ham kanıt günlüğü yok (henüz hiç oturum kaydedilmemiş olabilir).';
-      return;
-    }
-    const { best, currentBrier, sessionsUsed, totalTrials } = result;
-    const lines = [];
-    lines.push(`${sessionsUsed} oturumun ham kanıt günlüğü (${totalTrials} kanıt) üzerinden ızgara arama yapıldı.`);
-    lines.push(`Şu anki sabit katsayılar (LR₊=${BAYES_LR_POSITIVE}, LR₋=${BAYES_LR_NEGATIVE}) ile Brier skoru: ${currentBrier !== null ? currentBrier.toFixed(4) : 'hesaplanamadı'}.`);
-    lines.push(`En iyi bulunan kombinasyon: LR₊=${best.lrPos}, LR₋=${best.lrNeg} → Brier skoru: ${best.brier.toFixed(4)}.`);
-    if(currentBrier !== null && currentBrier > best.brier){
-      const impr = ((currentBrier - best.brier) / currentBrier * 100).toFixed(1);
-      lines.push(`Bu, şu anki katsayılara göre yaklaşık %${impr} iyileşme demek — kodda BAYES_LR_POSITIVE ve BAYES_LR_NEGATIVE sabitlerini bu değerlerle güncelleyip motoru "yeniden eğitebilirsin".`);
-    } else {
-      lines.push('Şu anki katsayılar zaten (denenen aralıkta) en iyi veya ona çok yakın — henüz güncelleme gerekmiyor.');
-    }
-    out.innerHTML = lines.map(l => `<div style="margin-bottom:6px;">${l}</div>`).join('');
-  }, 10);
 });
 
 retryBtn.addEventListener('click', () => { beginGame(); });
@@ -1380,6 +1407,7 @@ function updateLivesDisplay(){
 }
 
 function stopTimer(){
+  const tw = document.getElementById('timerWrap'); if(tw) tw.classList.remove('urgent');
   if(state.timerId){ clearInterval(state.timerId); state.timerId = null; }
 }
 
@@ -1406,6 +1434,7 @@ function startTimer(q){
   state.timerId = setInterval(() => {
     state.timeLeft--;
     timerNum.textContent = Math.max(state.timeLeft,0);
+    document.getElementById('timerWrap').classList.toggle('urgent', state.timeLeft <= 5 && state.timeLeft > 0);
     if(state.timeLeft <= 0){
       stopTimer();
       handleTimeout();
@@ -1422,6 +1451,8 @@ function resolveAnswer(isCorrect, prefix){
   } else {
     state.wrongCount++;
   }
+  state.streak = isCorrect ? state.streak + 1 : 0;
+  updateStreakChip(isCorrect);
 
   let lostLife = false;
   if(!isCorrect && state.livesMode){
@@ -1488,6 +1519,12 @@ function renderQuestion(){
   stopTimer();
   const total = state.pool.length;
   const q = state.pool[state.idx];
+
+  if(total >= 8 && !state.halfShown && state.idx === Math.floor(total / 2)){ state.halfShown = true; showToast('Yarıyı geçtin 👏'); }
+  const qCardBox = document.getElementById('qCardBox');
+  qCardBox.classList.remove('q-enter', 'conflict');
+  void qCardBox.offsetWidth; // animasyonu yeniden başlatmak için
+  qCardBox.classList.add(q._isConflict ? 'conflict' : 'q-enter');
 
   document.getElementById('qCount').textContent = `Soru ${state.idx+1}/${total}`;
   document.getElementById('scoreChip').textContent = `Skor: ${state.score}`;
@@ -1772,18 +1809,81 @@ function showResult(isGameOver){
     else msg = "Bu konuları baştan çalışmakta fayda var — tekrar dene!";
   }
   document.getElementById('resultMsg').textContent = msg;
+  animateResultScore();
+  if(!isGameOver && total >= 5 && state.score === total) launchConfetti();
   renderTopicPerf();
   finalizeMisconceptionFlow();
+}
+
+function prefersReducedMotion(){
+  return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+
+// Üst üste doğru cevap serisi: 3 ve üzerinde küçük bir rozet gösterir, yanlışta gizler.
+function updateStreakChip(isCorrect){
+  const chip = document.getElementById('streakChip');
+  if(state.streak >= 3){
+    chip.textContent = `🔥 ${state.streak} üst üste`;
+    chip.classList.remove('hidden', 'pop');
+    if(isCorrect){ void chip.offsetWidth; chip.classList.add('pop'); }
+  } else {
+    chip.classList.add('hidden');
+  }
+}
+
+function showToast(text){
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = text;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2000);
+}
+
+// Sadece tüm sorular doğru bilindiğinde, kısa bir kutlama.
+function launchConfetti(){
+  if(prefersReducedMotion()) return;
+  const box = document.createElement('div');
+  box.className = 'confetti';
+  const colors = ['#0e6b5c', '#d69a1f', '#c1542f', '#1d1f1a'];
+  for(let i = 0; i < 28; i++){
+    const piece = document.createElement('i');
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.background = colors[i % colors.length];
+    piece.style.setProperty('--d', `${1.6 + Math.random() * 1.2}s`);
+    piece.style.setProperty('--dl', `${Math.random() * 0.5}s`);
+    box.appendChild(piece);
+  }
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 3500);
+}
+
+// Sonuç ekranındaki skoru 0'dan hedefe doğru kısa süre sayarak gösterir (bilgiyi vurgular, süslemez).
+function animateResultScore(){
+  const el = document.getElementById('resultScore');
+  const m = /^(\d+)\/(\d+)$/.exec(el.textContent);
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!m || reduce) return;
+  const target = Number(m[1]), denom = m[2];
+  if(target === 0) return;
+  const t0 = performance.now(), dur = 600;
+  const tick = (now) => {
+    const p = Math.min(1, (now - t0) / dur);
+    el.textContent = `${Math.round(target * p)}/${denom}`;
+    if(p < 1) requestAnimationFrame(tick); else el.textContent = `${target}/${denom}`;
+  };
+  el.textContent = `0/${denom}`;
+  requestAnimationFrame(tick);
 }
 
 // Sıralama önemli: önce toplulukdaki mevcut veriyi oku (akran karşılaştırması ve keşif
 // adayları için), sonra kişisel raporu göster, sonra bu oturumu kaydet (kendi verimizle
 // karşılaştırmayı çarpıtmamak için), en son topluluk görünümünü tazele.
 async function finalizeMisconceptionFlow(){
-  await loadAndRenderMiscMap();
+  document.getElementById('resultProgressBtn').classList.toggle('hidden', acct.role !== 'student');
+  setUserBarVisible(true);
   renderMiscReport();
   await saveMiscToSharedMap();
-  loadAndRenderMiscMap();
 }
 
 function renderMiscReport(){
@@ -1805,11 +1905,12 @@ function renderMiscReport(){
 
   const relapseIds = updateHistoryAndDetectRelapses(confirmed);
 
-  confirmed.forEach(({ id, belief }) => {
+  confirmed.forEach(({ id, belief }, rowIdx) => {
     const m = MISCONCEPTIONS[id];
     if(!m) return;
     const row = document.createElement('div');
-    row.className = 'topic-row';
+    row.className = 'topic-row row-in';
+    row.style.animationDelay = `${rowIdx * 90}ms`;
 
     const head = document.createElement('div');
     head.className = 'topic-row-head';
@@ -1859,17 +1960,6 @@ function renderMiscReport(){
       relapseLine.style.fontWeight = '700';
       relapseLine.textContent = '🔁 Nüks: Bu yanılgı daha önce çözülmüş görünüyordu, bu oturumda tekrar ortaya çıktı. Kalıcı öğrenme için bir kez daha üzerine gitmek iyi olur.';
       row.appendChild(relapseLine);
-    }
-
-    // Katman 5: akran karşılaştırması — toplulukdaki (Firestore) veriyle kıyaslama.
-    if(communityTotal > 0 && communityAgg[id]){
-      const pct = Math.round((communityAgg[id] / communityTotal) * 100);
-      const peerLine = document.createElement('div');
-      peerLine.style.fontSize = '11.5px';
-      peerLine.style.color = '#8a8e80';
-      peerLine.style.marginTop = '5px';
-      peerLine.textContent = `👥 Bu yanılgıya, veritabanına kaydedilen oturumların yaklaşık %${pct}'i de düşmüş — yalnız değilsin.`;
-      row.appendChild(peerLine);
     }
 
     // Katman B: bu yanılgının başlangıç olasılığı, topluluk verisinden öğrenilen bir
@@ -1995,423 +2085,6 @@ function computeMisconceptionCorrelations(sessionDocs){
     }
   });
   return co;
-}
-
-async function saveMiscToSharedMap(){
-  const uniqueIds = getConfirmedMisconceptions().map(c => c.id); // sadece Bayesçi eşiği geçenler
-  const statusEl = document.getElementById('connStatusText');
-  const setStatus = (msg) => { if(statusEl) statusEl.textContent = msg; };
-  setStatus('Veri gönderiliyor...');
-  const trials = state.beliefTrials;
-  const brierSumSq = trials.reduce((sum, t) => sum + Math.pow(t.pBefore - t.outcome, 2), 0);
-  try {
-    const doc = {
-      fields: jsToFirestoreFields({
-        grade: String(state.grade),
-        diff: state.diff,
-        topic: state.topic,
-        className: state.className || '',
-        studentNumber: state.studentNumber || '',
-        score: state.score,
-        total: state.pool.length,
-        misconceptions: uniqueIds,
-        unlabeled: state.sessionUnlabeled.slice(0, 30), // keşif katmanı: etiketlenmemiş yanlış şıklar
-        brierSumSq: brierSumSq,        // Katman 8: topluluk çapında kalibrasyon için ham veri
-        brierN: trials.length,
-        evidenceLog: state.evidenceLog.slice(0, 60).map(e => `${e.miscId}|${e.kind}|${e.idx}`), // Katman A/D
-        ts: new Date()
-      })
-    };
-    const res = await fetch(`${FIRESTORE_BASE}/sessions?key=${FIREBASE_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(doc)
-    });
-    if(!res.ok){
-      const errText = await res.text();
-      console.warn('Oturum verisi kaydedilemedi:', res.status, errText);
-      setStatus(`❌ Kaydedilemedi. HTTP ${res.status}. Detay: ${errText.slice(0, 200)}`);
-    } else {
-      setStatus('✅ Bu oturum Firebase veritabanına başarıyla kaydedildi.');
-    }
-  } catch(e) {
-    console.warn('Oturum verisi kaydedilemedi:', e);
-    setStatus(`❌ Bağlantı kurulamadı: ${e.message || e}. (Bu ortam dış bağlantıya izin vermiyor olabilir; dosyayı Safari'de açmayı dene.)`);
-  }
-}
-
-async function loadAndRenderMiscMap(){
-  const wrap = document.getElementById('miscMap');
-  const note = document.getElementById('miscMapNote');
-  const rows = document.getElementById('miscMapRows');
-  try {
-    const res = await fetch(`${FIRESTORE_BASE}/sessions?key=${FIREBASE_API_KEY}&pageSize=300`);
-    if(!res.ok){
-      const errText = await res.text();
-      console.warn('Harita verisi okunamadı:', res.status, errText);
-      wrap.classList.add('hidden');
-      return;
-    }
-    const data = await res.json();
-    const docs = data.documents || [];
-    const agg = {};
-    const unlabeledAgg = {};
-    const parsedDocs = [];
-    let total = 0;
-    let brierSumSqTotal = 0;
-    let brierNTotal = 0;
-    docs.forEach(d => {
-      total++;
-      const parsed = firestoreFieldsToJs(d.fields);
-      parsedDocs.push(parsed);
-      (parsed.misconceptions || []).forEach(id => {
-        agg[id] = (agg[id] || 0) + 1;
-      });
-      (parsed.unlabeled || []).forEach(key => {
-        unlabeledAgg[key] = (unlabeledAgg[key] || 0) + 1;
-      });
-      if(parsed.brierN){
-        brierSumSqTotal += Number(parsed.brierSumSq) || 0;
-        brierNTotal += Number(parsed.brierN) || 0;
-      }
-    });
-    communityAgg = agg;
-    communityTotal = total;
-    communityUnlabeledAgg = unlabeledAgg;
-    communityBrier = brierNTotal > 0 ? { brier: brierSumSqTotal / brierNTotal, n: brierNTotal } : null;
-    communityCorrelations = computeMisconceptionCorrelations(parsedDocs); // Katman B
-
-    const entries = Object.entries(agg).filter(([k]) => MISCONCEPTIONS[k]);
-    if(entries.length === 0){
-      note.textContent = total > 0
-        ? `Şu ana kadar ${total} oturum kaydedildi ama henüz belirgin bir yanılgı deseni yok.`
-        : 'Henüz veri birikmedi — bu, kaydedilen ilk oturumlardan biri.';
-      rows.innerHTML = '';
-    } else {
-      entries.sort((a,b) => b[1] - a[1]);
-      const maxCount = entries[0][1];
-      note.textContent = `Bu artifact'ı kullanan tüm öğrencilerden Firebase'e toplanan, isimsiz gerçek veridir. Şu ana kadar ${total} oturum kaydedildi.`;
-      rows.innerHTML = '';
-      entries.slice(0, 8).forEach(([id, count]) => {
-        const m = MISCONCEPTIONS[id];
-        const row = document.createElement('div');
-        row.className = 'topic-row';
-        const head = document.createElement('div');
-        head.className = 'topic-row-head';
-        const name = document.createElement('span');
-        name.className = 't-name';
-        name.textContent = m.title;
-        const frac = document.createElement('span');
-        frac.className = 't-frac';
-        frac.textContent = `${count} kez`;
-        head.appendChild(name);
-        head.appendChild(frac);
-        const bar = document.createElement('div');
-        bar.className = 'topic-bar';
-        const fill = document.createElement('div');
-        const ratio = count / maxCount;
-        fill.className = 'topic-bar-fill' + (ratio > 0.66 ? ' weak' : (ratio > 0.33 ? ' mid' : ''));
-        fill.style.width = `${ratio*100}%`;
-        bar.appendChild(fill);
-        row.appendChild(head);
-        row.appendChild(bar);
-        rows.appendChild(row);
-      });
-    }
-    wrap.classList.remove('hidden');
-    renderMiscDiscovery(unlabeledAgg);
-    renderTopicHeatmap(agg);
-  } catch(e) {
-    console.warn('Harita verisi okunamadı:', e);
-    wrap.classList.add('hidden');
-  }
-}
-
-// Katman 2: Konu Bazlı Yoğunluk Haritası (Yanılgı "Bulaşıcılığı" Görünümü)
-// Not: giriş/sınıf sistemi olmadığı için bu, tek bir sınıfın değil TÜM kullanıcıların
-// toplu verisidir — yine de hangi KONULARIN en çok yanılgı ürettiğini gösterip
-// öğretmene "bu konuda sınıfın geneli zorlanıyor" tarzı bir sinyal verir.
-function renderTopicHeatmap(agg){
-  const wrap = document.getElementById('topicHeatmap');
-  const rows = document.getElementById('topicHeatmapRows');
-  if(!wrap || !rows) return;
-  const topicCounts = {};
-  Object.entries(agg).forEach(([id, count]) => {
-    if(!MISCONCEPTIONS[id]) return;
-    const topic = findTopicForMisconception(id) || 'Diğer';
-    topicCounts[topic] = (topicCounts[topic] || 0) + count;
-  });
-  const entries = Object.entries(topicCounts).sort((a,b) => b[1]-a[1]);
-  if(entries.length === 0){ wrap.classList.add('hidden'); return; }
-  wrap.classList.remove('hidden');
-  const maxCount = entries[0][1];
-  rows.innerHTML = '';
-  entries.forEach(([topic, count]) => {
-    const ratio = count / maxCount;
-    // Yeşilden kırmızıya ısı skalası: az yoğun -> yeşilimsi, çok yoğun -> kırmızımsı
-    const hue = 120 - Math.round(ratio * 120); // 120=yeşil, 0=kırmızı
-    const cell = document.createElement('div');
-    cell.style.display = 'flex';
-    cell.style.justifyContent = 'space-between';
-    cell.style.alignItems = 'center';
-    cell.style.padding = '8px 12px';
-    cell.style.marginBottom = '6px';
-    cell.style.borderRadius = '8px';
-    cell.style.background = `hsl(${hue}, 70%, 88%)`;
-    cell.style.borderLeft = `4px solid hsl(${hue}, 70%, 55%)`;
-    const label = document.createElement('span');
-    label.style.fontSize = '12.5px';
-    label.style.fontWeight = '600';
-    label.textContent = topic;
-    const val = document.createElement('span');
-    val.style.fontSize = '12px';
-    val.textContent = `${count} yanılgı`;
-    cell.appendChild(label);
-    cell.appendChild(val);
-    rows.appendChild(cell);
-  });
-}
-
-// ===================================================================================
-// Katman 9: Öğretmen Paneli — toplu (isimsiz) veriden basit bir zaman-içi eğilim grafiği
-// ve genel özet çıkarır. Harici grafik kütüphanesi kullanılmaz (projenin bağımsızlık
-// ilkesiyle tutarlı); trend çizgisi elle SVG olarak çizilir.
-// ===================================================================================
-let teacherDocsCache = []; // Katman A: öğretmen paneli için önbelleğe alınmış oturum verisi
-
-async function loadTeacherPanel(){
-  const summaryNote = document.getElementById('teacherSummaryNote');
-  const trendChart = document.getElementById('teacherTrendChart');
-  summaryNote.textContent = 'Yükleniyor...';
-  trendChart.innerHTML = '';
-  try {
-    const res = await fetch(`${FIRESTORE_BASE}/sessions?key=${FIREBASE_API_KEY}&pageSize=300`);
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    const docs = (data.documents || []).map(d => firestoreFieldsToJs(d.fields));
-    teacherDocsCache = docs; // Katman A: optimize butonu bu önbelleği kullanır
-    populateClassSelect(docs); // Sınıf Görünümü: seçiciyi doldur
-    if(docs.length === 0){
-      summaryNote.textContent = 'Henüz kaydedilmiş oturum yok.';
-      return;
-    }
-    const dayBuckets = {};
-    docs.forEach(d => {
-      if(!d.ts) return;
-      const day = String(d.ts).slice(0, 10); // YYYY-MM-DD
-      if(!dayBuckets[day]) dayBuckets[day] = { count: 0, miscSum: 0 };
-      dayBuckets[day].count++;
-      dayBuckets[day].miscSum += (d.misconceptions || []).length;
-    });
-    const days = Object.keys(dayBuckets).sort();
-    const avgPerDay = days.map(day => dayBuckets[day].miscSum / dayBuckets[day].count);
-
-    const totalSessions = docs.length;
-    const totalMiscDetections = docs.reduce((s, d) => s + (d.misconceptions || []).length, 0);
-    const avgOverall = totalSessions ? (totalMiscDetections / totalSessions).toFixed(2) : '0';
-    let summaryHtml = `Toplam <b>${totalSessions}</b> oturum kaydedildi. Oturum başına ortalama <b>${avgOverall}</b> yanılgı tespit ediliyor.`;
-    // Kalibrasyon istatistiğini bu panelin kendi az önce çektiği veriden hesapla
-    // (loadAndRenderMiscMap hiç çalışmamış olsa bile panel bağımsız çalışabilsin diye).
-    const localBrierN = docs.reduce((s, d) => s + (Number(d.brierN) || 0), 0);
-    const localBrierSumSq = docs.reduce((s, d) => s + (Number(d.brierSumSq) || 0), 0);
-    if(localBrierN >= 10){
-      summaryHtml += `<br>Topluluk genelinde motor kalibrasyon (Brier) skoru: <b>${(localBrierSumSq/localBrierN).toFixed(3)}</b> (n=${localBrierN} kanıt).`;
-    }
-    summaryNote.innerHTML = summaryHtml;
-
-    if(days.length < 2){
-      trendChart.innerHTML = '<div class="comp-note">Bir trend çizgisi çizmek için en az 2 farklı günde veri gerekiyor — daha fazla oturum biriktikçe burada bir eğilim çizgisi belirecek.</div>';
-      return;
-    }
-    trendChart.innerHTML = buildTrendSVG(days, avgPerDay);
-  } catch(e){
-    console.warn('Öğretmen paneli yüklenemedi:', e);
-    summaryNote.textContent = 'Veri okunamadı (bağlantı sorunu olabilir).';
-  }
-}
-
-function buildTrendSVG(days, values){
-  const w = 320, h = 140, pad = 24;
-  const maxV = Math.max(...values, 1);
-  const stepX = (w - pad * 2) / (days.length - 1 || 1);
-  const coords = values.map((v, i) => ({
-    x: pad + i * stepX,
-    y: h - pad - (v / maxV) * (h - pad * 2)
-  }));
-  const points = coords.map(c => `${c.x},${c.y}`).join(' ');
-  const dots = coords.map(c => `<circle cx="${c.x}" cy="${c.y}" r="3" fill="var(--teal-dark, #2b6f6b)" />`).join('');
-  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;">
-    <polyline points="${points}" fill="none" stroke="var(--teal-dark, #2b6f6b)" stroke-width="2" />
-    ${dots}
-    <text x="${pad}" y="${h-4}" font-size="9" fill="#8a8e80">${days[0]}</text>
-    <text x="${w-pad-42}" y="${h-4}" font-size="9" fill="#8a8e80">${days[days.length-1]}</text>
-  </svg>`;
-}
-
-// ===================================================================================
-// Sınıf Görünümü: öğretmenin kendi sınıfını (öğrencilerin girdiği "Sınıf" alanına göre)
-// seçip o sınıfa özel konu ısı haritasını ve öğrenci listesini görmesini sağlar.
-// Not: isim yerine okul numarası kullanılıyor; giriş sistemi olmadığı için bu bilgi
-// öğrencinin kendi girdiği, doğrulanmamış bir alandır.
-// ===================================================================================
-const CLASS_LIST = ['9A','9B','10A','10B','11A','11B','12A','12B'];
-
-function populateClassSelect(docs){
-  const sel = document.getElementById('teacherClassSelect');
-  const counts = {};
-  docs.forEach(d => { const c = (d.className || '').trim(); if(c) counts[c] = (counts[c] || 0) + 1; });
-  sel.innerHTML = '';
-  // Sabit sınıf listesi her zaman gösterilir (verisi olmasa da seçilebilsin)
-  CLASS_LIST.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c;
-    opt.textContent = `${c.slice(0, -1)}-${c.slice(-1)} (${counts[c] || 0} oturum)`;
-    sel.appendChild(opt);
-  });
-  // Listede olmayan eski/özel sınıf kayıtları varsa onlar da eklensin
-  Object.keys(counts).filter(c => !CLASS_LIST.includes(c)).sort().forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c;
-    opt.textContent = `${c} (${counts[c]} oturum)`;
-    sel.appendChild(opt);
-  });
-  // Verisi olan ilk sınıfı varsayılan seç, yoksa ilkini
-  const firstWithData = CLASS_LIST.find(c => counts[c]) || Object.keys(counts)[0] || CLASS_LIST[0];
-  sel.value = firstWithData;
-  renderClassView(docs, firstWithData);
-}
-
-function renderClassView(docs, className){
-  const heatNote = document.getElementById('teacherClassHeatNote');
-  const heatRows = document.getElementById('teacherClassHeatRows');
-  const studentRows = document.getElementById('teacherClassStudentRows');
-  const classDocs = docs.filter(d => (d.className || '').trim() === className);
-
-  if(classDocs.length === 0){
-    heatNote.textContent = 'Bu sınıfa ait kayıt bulunamadı.';
-    heatRows.innerHTML = '';
-    studentRows.innerHTML = '';
-    return;
-  }
-
-  // Sınıfa özel yanılgı yoğunluğu (aynı ısı haritası mantığı, sadece bu sınıfın verisiyle)
-  const classAgg = {};
-  classDocs.forEach(d => (d.misconceptions || []).forEach(id => { classAgg[id] = (classAgg[id] || 0) + 1; }));
-  const topicCounts = {};
-  Object.entries(classAgg).forEach(([id, count]) => {
-    if(!MISCONCEPTIONS[id]) return;
-    const topic = findTopicForMisconception(id) || 'Diğer';
-    topicCounts[topic] = (topicCounts[topic] || 0) + count;
-  });
-  const topicEntries = Object.entries(topicCounts).sort((a,b) => b[1]-a[1]);
-  heatNote.textContent = `${className} sınıfından toplam ${classDocs.length} oturum kaydedildi. Konu bazlı yoğunluk:`;
-  heatRows.innerHTML = '';
-  if(topicEntries.length === 0){
-    heatRows.innerHTML = '<div class="comp-note">Bu sınıfta henüz teşhis edilmiş bir yanılgı yok.</div>';
-  } else {
-    const maxCount = topicEntries[0][1];
-    topicEntries.forEach(([topic, count]) => {
-      const ratio = count / maxCount;
-      const hue = 120 - Math.round(ratio * 120);
-      const cell = document.createElement('div');
-      cell.style.cssText = `display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin-bottom:6px;border-radius:8px;background:hsl(${hue},70%,88%);border-left:4px solid hsl(${hue},70%,55%);`;
-      cell.innerHTML = `<span style="font-size:12.5px;font-weight:600;">${topic}</span><span style="font-size:12px;">${count} yanılgı</span>`;
-      heatRows.appendChild(cell);
-    });
-  }
-
-  // Öğrenci listesi: numaraya göre grupla, her öğrencinin kaç oturum oynadığını,
-  // kaç farklı yanılgı tespit edildiğini ve en son ne zaman oynadığını göster.
-  const byStudent = {};
-  classDocs.forEach(d => {
-    const num = (d.studentNumber || '').trim() || '(numara girilmemiş)';
-    if(!byStudent[num]) byStudent[num] = { sessions: 0, miscCount: 0, lastTs: null };
-    byStudent[num].sessions++;
-    byStudent[num].miscCount += (d.misconceptions || []).length;
-    if(d.ts && (!byStudent[num].lastTs || d.ts > byStudent[num].lastTs)) byStudent[num].lastTs = d.ts;
-  });
-  const studentEntries = Object.entries(byStudent).sort((a,b) => {
-    const an = /^\d+$/.test(a[0]) ? Number(a[0]) : Infinity;
-    const bn = /^\d+$/.test(b[0]) ? Number(b[0]) : Infinity;
-    return an - bn;
-  });
-  studentRows.innerHTML = '';
-  studentEntries.forEach(([num, s]) => {
-    const row = document.createElement('div');
-    row.className = 'topic-row';
-    const head = document.createElement('div');
-    head.className = 'topic-row-head';
-    const name = document.createElement('span');
-    name.className = 't-name';
-    name.textContent = `No: ${num}`;
-    const frac = document.createElement('span');
-    frac.className = 't-frac';
-    frac.textContent = `${s.sessions} oturum · ${s.miscCount} yanılgı`;
-    head.appendChild(name);
-    head.appendChild(frac);
-    row.appendChild(head);
-    if(s.lastTs){
-      const lastLine = document.createElement('div');
-      lastLine.style.fontSize = '11px';
-      lastLine.style.color = '#8a8e80';
-      lastLine.style.marginTop = '3px';
-      lastLine.textContent = `Son oturum: ${String(s.lastTs).slice(0,16).replace('T',' ')}`;
-      row.appendChild(lastLine);
-    }
-    studentRows.appendChild(row);
-  });
-}
-
-document.getElementById('numberInput').addEventListener('input', (e) => {
-  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 5); // sadece rakam, en fazla 5 hane
-});
-
-document.getElementById('teacherClassSelect').addEventListener('change', (e) => {
-  renderClassView(teacherDocsCache, e.target.value);
-});
-
-// Katman 3: Yeni yanılgı keşif katmanı. Diagnostik olarak henüz etiketlenmemiş bir yanlış
-// şık, farklı öğrenciler tarafından yeterince tekrar seçildiyse, bunu olası bir dokümante
-// edilmemiş kavram yanılgısı ADAYI olarak (kesin teşhis değil) öğretmene/araştırmacıya gösterir.
-function renderMiscDiscovery(unlabeledAgg){
-  const wrap = document.getElementById('miscDiscovery');
-  const rows = document.getElementById('miscDiscoveryRows');
-  if(!wrap || !rows) return;
-  const candidates = Object.entries(unlabeledAgg)
-    .filter(([, count]) => count >= DISCOVERY_THRESHOLD)
-    .sort((a,b) => b[1] - a[1])
-    .slice(0, 5);
-  if(candidates.length === 0){
-    wrap.classList.add('hidden');
-    return;
-  }
-  wrap.classList.remove('hidden');
-  rows.innerHTML = '';
-  candidates.forEach(([key, count]) => {
-    const parts = key.split('||');
-    const topic = parts[0] || '—';
-    const optText = parts[2] || key;
-    const row = document.createElement('div');
-    row.className = 'topic-row';
-    const head = document.createElement('div');
-    head.className = 'topic-row-head';
-    const name = document.createElement('span');
-    name.className = 't-name';
-    name.textContent = `🔍 [${topic}] "${optText}"`;
-    const frac = document.createElement('span');
-    frac.className = 't-frac';
-    frac.textContent = `${count} öğrenci`;
-    head.appendChild(name);
-    head.appendChild(frac);
-    row.appendChild(head);
-    const note = document.createElement('div');
-    note.style.fontSize = '11px';
-    note.style.color = '#8a8e80';
-    note.style.marginTop = '3px';
-    note.textContent = 'Henüz kütüphanede adlandırılmış bir yanılgıya bağlanmadı — birden çok öğrenci bağımsız olarak bu şıkkı seçtiği için olası yeni bir yanılgı adayı olarak işaretlendi.';
-    row.appendChild(note);
-    rows.appendChild(row);
-  });
 }
 
 function renderTopicPerf(){
@@ -2542,8 +2215,580 @@ function renderPracticeQuestion(topic, container){
   });
 }
 
+// =====================================================================
+// HESAP, ROLLER ve VERİ ERİŞİMİ (Firebase Authentication + Firestore REST)
+// Öğrenci: yalnızca kendi oturumlarını okur/yazar.
+// Öğretmen (yönetici onaylı): kendi okul kodundaki oturumları + Türkiye geneli ANONİM istatistikleri okur.
+// Gizlilik kuralları istemcide değil Firestore güvenlik kurallarında (firestore.rules) uygulanır.
+// =====================================================================
+const AUTH_STORE_KEY = 'kimyaAuth_v1';
+const AUTH_BASE = 'https://identitytoolkit.googleapis.com/v1/accounts';
+const TOKEN_URL = 'https://securetoken.googleapis.com/v1/token';
+const STUDENT_EMAIL_DOMAIN = 'ogrenci.example.com'; // gerçek e-posta toplanmaz; yalnızca giriş kimliği üretir, posta gönderilmez
+const CLASS_LIST = ['9A','9B','10A','10B','11A','11B','12A','12B'];
+
+let acct = { role: 'none', uid: null, idToken: null, refreshToken: null, expiresAt: 0, profile: null, schoolCode: '' };
+let authRole = 'student', authMode = 'login', authNeedClass = false;
+let currentScreen = 'auth', userBarForceHidden = false;
+let communityDocs = [], schoolSessions = [], turkeyStats = [], studentSessions = [];
+
+const $ = (id) => document.getElementById(id);
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function classLabel(c){ return c ? `${c.slice(0, -1)}-${c.slice(-1)}` : ''; }
+function normSchoolCode(v){ return String(v || '').toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 24); }
+function studentEmail(code, num){ return `${code.toLowerCase()}-${num}@${STUDENT_EMAIL_DOMAIN}`; }
+function pad2(n){ return String(n).padStart(2, '0'); }
+function fmtDate(ts){ const d = new Date(ts); return isNaN(d) ? '' : `${pad2(d.getDate())}.${pad2(d.getMonth() + 1)}`; }
+function fmtDateTime(ts){ const d = new Date(ts); return isNaN(d) ? '' : `${pad2(d.getDate())}.${pad2(d.getMonth() + 1)} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`; }
+function fmtNum(v){ return Number.isInteger(v) ? String(v) : v.toFixed(1); }
+const byTs = (a, b) => String(a.ts || '').localeCompare(String(b.ts || ''));
+
+const AUTH_ERRORS = {
+  EMAIL_EXISTS: 'Bu hesap zaten kayıtlı. "Giriş yap" sekmesini kullan.',
+  INVALID_LOGIN_CREDENTIALS: 'Okul kodu, numara/e-posta veya şifre hatalı.',
+  INVALID_PASSWORD: 'Şifre hatalı.',
+  EMAIL_NOT_FOUND: 'Bu hesap bulunamadı. "Kayıt ol" sekmesini dene.',
+  WEAK_PASSWORD: 'Şifre en az 6 karakter olmalı.',
+  INVALID_EMAIL: 'E-posta biçimi geçersiz.',
+  OPERATION_NOT_ALLOWED: 'E-posta/şifre girişi kapalı. Firebase konsolunda Authentication > Sign-in method > Email/Password açılmalı.',
+  TOO_MANY_ATTEMPTS_TRY_LATER: 'Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.',
+  USER_DISABLED: 'Bu hesap devre dışı bırakılmış.'
+};
+function authErrText(code){ const k = String(code || '').split(/[\s:]/)[0]; return AUTH_ERRORS[k] || `Giriş hatası: ${code}`; }
+function fail(text){ const e = new Error(text); e.userMessage = text; throw e; }
+
+// ---- Authentication (REST) ----
+async function authRequest(kind, body){
+  const res = await fetch(`${AUTH_BASE}:${kind}?key=${FIREBASE_API_KEY}`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...body, returnSecureToken: true })
+  });
+  const data = await res.json().catch(() => ({}));
+  if(!res.ok) throw new Error((data.error && data.error.message) || ('HTTP ' + res.status));
+  return data;
+}
+function setTokens(data){
+  acct.uid = data.localId || data.user_id || acct.uid;
+  acct.idToken = data.idToken || data.id_token;
+  acct.refreshToken = data.refreshToken || data.refresh_token || acct.refreshToken;
+  acct.expiresAt = Date.now() + (Number(data.expiresIn || data.expires_in || 3600) - 60) * 1000;
+  try { localStorage.setItem(AUTH_STORE_KEY, JSON.stringify({ refreshToken: acct.refreshToken })); } catch(e){}
+}
+async function getIdToken(){
+  if(acct.idToken && Date.now() < acct.expiresAt) return acct.idToken;
+  if(!acct.refreshToken) throw new Error('NOT_SIGNED_IN');
+  const res = await fetch(`${TOKEN_URL}?key=${FIREBASE_API_KEY}`, {
+    method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `grant_type=refresh_token&refresh_token=${encodeURIComponent(acct.refreshToken)}`
+  });
+  const data = await res.json().catch(() => ({}));
+  if(!res.ok) throw new Error((data.error && data.error.message) || 'TOKEN_REFRESH_FAILED');
+  setTokens(data);
+  return acct.idToken;
+}
+
+// ---- Firestore (REST, kimlik jetonlu) ----
+async function fsRequest(path, opts = {}){
+  const token = await getIdToken();
+  const res = await fetch(`${FIRESTORE_BASE}${path}`, {
+    method: opts.method || 'GET',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  const text = await res.text();
+  let data = null; try { data = text ? JSON.parse(text) : null; } catch(e){}
+  if(!res.ok){ const err = new Error(`HTTP ${res.status}`); err.status = res.status; err.detail = String(text).slice(0, 160); throw err; }
+  return data;
+}
+function docToObj(d){ return { id: String(d.name).split('/').pop(), ...firestoreFieldsToJs(d.fields) }; }
+async function fsGetDoc(path){ try { return docToObj(await fsRequest(path)); } catch(e){ if(e.status === 404) return null; throw e; } }
+async function fsCreateDoc(collection, obj, docId){
+  const q = docId ? `?documentId=${encodeURIComponent(docId)}` : '';
+  return fsRequest(`/${collection}${q}`, { method: 'POST', body: { fields: jsToFirestoreFields(obj) } });
+}
+async function fsQueryEq(collection, field, value, limit = 300){
+  const body = { structuredQuery: { from: [{ collectionId: collection }],
+    where: { fieldFilter: { field: { fieldPath: field }, op: 'EQUAL', value: { stringValue: value } } }, limit } };
+  const rows = await fsRequest(':runQuery', { method: 'POST', body });
+  return (rows || []).filter(r => r.document).map(r => docToObj(r.document));
+}
+async function fsListAll(collection, maxPages = 3){
+  let token = '', out = [];
+  for(let i = 0; i < maxPages; i++){
+    const data = await fsRequest(`/${collection}?pageSize=300${token ? `&pageToken=${encodeURIComponent(token)}` : ''}`);
+    ((data && data.documents) || []).forEach(d => out.push(docToObj(d)));
+    token = data && data.nextPageToken;
+    if(!token) break;
+  }
+  return out;
+}
+
+// ---- Rol çözümleme ----
+async function resolveRole(){
+  const profile = await fsGetDoc(`/users/${acct.uid}`);
+  acct.profile = profile;
+  if(!profile){ acct.role = 'noprofile'; return acct.role; }
+  if(profile.role === 'student'){ acct.role = 'student'; acct.schoolCode = profile.schoolCode; }
+  else if(profile.role === 'teacher_pending'){
+    const t = await fsGetDoc(`/teachers/${acct.uid}`); // yalnızca yönetici (konsol) oluşturabilir
+    if(t){ acct.role = 'teacher'; acct.schoolCode = t.schoolCode || profile.schoolCode; }
+    else { acct.role = 'pending'; acct.schoolCode = profile.schoolCode; }
+  } else acct.role = 'noprofile';
+  return acct.role;
+}
+function resetAcct(clearStore = true){
+  acct = { role: 'none', uid: null, idToken: null, refreshToken: null, expiresAt: 0, profile: null, schoolCode: '' };
+  communityDocs = []; schoolSessions = []; turkeyStats = []; studentSessions = [];
+  if(clearStore){ try { localStorage.removeItem(AUTH_STORE_KEY); } catch(e){} }
+}
+
+// ---- Ekran yönetimi ----
+const SCREEN_IDS = ['auth', 'setup', 'student', 'teacher', 'game', 'result'];
+function showScreen(name){
+  currentScreen = name; userBarForceHidden = false;
+  SCREEN_IDS.forEach(id => $(id + 'Screen').classList.toggle('hidden', id !== name));
+  const showPlayChrome = ['setup', 'game', 'result'].includes(name);
+  ['gradeSelect', 'olympiadBtn', 'themeLine'].forEach(id => $(id).classList.toggle('hidden', !showPlayChrome));
+  applyUserBar();
+}
+function renderUserBar(bar){
+  let who = '', acts = [];
+  if(acct.role === 'student'){
+    who = `👤 ${classLabel(acct.profile.className)} · No ${acct.profile.studentNumber}`;
+    acts = [['progress', '📈 Gelişimim'], ['logout', 'Çıkış']];
+  } else if(acct.role === 'teacher'){
+    who = `👩‍🏫 Öğretmen · ${acct.schoolCode}`;
+    acts = [['panel', 'Panel'], ['play', 'Oyunu dene'], ['logout', 'Çıkış']];
+  } else {
+    who = 'Misafir (kaydedilmez)';
+    acts = [['logout', 'Giriş yap']];
+  }
+  bar.innerHTML = `<span class="who">${esc(who)}</span><span class="acts">${acts.map(([a, t]) => `<button data-act="${a}">${t}</button>`).join('')}</span>`;
+}
+function applyUserBar(){
+  const bar = $('userBar');
+  const ok = ['student', 'teacher', 'guest'].includes(acct.role) && ['setup', 'student', 'teacher', 'result'].includes(currentScreen) && !userBarForceHidden;
+  if(ok) renderUserBar(bar);
+  bar.classList.toggle('hidden', !ok);
+}
+function setUserBarVisible(v){ userBarForceHidden = !v; applyUserBar(); }
+$('userBar').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-act]'); if(!b) return;
+  const a = b.dataset.act;
+  if(a === 'progress'){ showScreen('student'); loadStudentHome(); }
+  else if(a === 'panel'){ showScreen('teacher'); loadTeacherHome(); }
+  else if(a === 'play'){ showScreen('setup'); checkPoolSize(); }
+  else if(a === 'logout') signOut();
+});
+
+// ---- Giriş ekranı ----
+function renderAuthForm(){
+  const stu = authRole === 'student', reg = authMode === 'register';
+  const show = (id, v) => $(id).classList.toggle('hidden', !v);
+  show('fEmail', !stu); show('fSchool', stu || reg); show('fClass', stu && (reg || authNeedClass)); show('fNumber', stu); show('fPass', true);
+  $('authSchoolHelp').textContent = stu ? 'Okul kodunu öğretmenin verir.' : 'Okulun için tahmin edilmesi zor bir kod seç (en az 6 harf/rakam). Öğrencilerin kayıtta bunu yazacak.';
+  $('authSubmit').textContent = reg ? 'Kayıt ol' : 'Giriş yap';
+  $('authPass').setAttribute('autocomplete', reg ? 'new-password' : 'current-password');
+  document.querySelectorAll('#authRoleTabs .chip').forEach(c => c.classList.toggle('active', c.dataset.role === authRole));
+  document.querySelectorAll('#authModeTabs .chip').forEach(c => c.classList.toggle('active', c.dataset.mode === authMode));
+}
+function authSay(t){ const m = $('authMsg'); m.textContent = t || ''; m.classList.toggle('show', !!t); }
+$('authRoleTabs').addEventListener('click', (e) => { const b = e.target.closest('[data-role]'); if(!b) return; authRole = b.dataset.role; authNeedClass = false; $('authPending').classList.add('hidden'); authSay(''); renderAuthForm(); });
+$('authModeTabs').addEventListener('click', (e) => { const b = e.target.closest('[data-mode]'); if(!b) return; authMode = b.dataset.mode; authSay(''); renderAuthForm(); });
+$('authNumber').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 5); });
+
+async function handleStudentAuth(){
+  const code = normSchoolCode($('authSchool').value), num = $('authNumber').value.replace(/\D/g, '').slice(0, 5);
+  const pass = $('authPass').value, cls = $('authClass').value, reg = authMode === 'register';
+  if(code.length < 4) fail('Okul kodunu yaz (en az 4 karakter).');
+  if(!num) fail('Okul numaranı yaz.');
+  if(pass.length < 6) fail('Şifre en az 6 karakter olmalı.');
+  if(reg && !cls) fail('Sınıfını seç.');
+  const email = studentEmail(code, num);
+  if(reg){
+    setTokens(await authRequest('signUp', { email, password: pass }));
+    try { await fsCreateDoc('users', { role: 'student', schoolCode: code, className: cls, studentNumber: num, createdAt: new Date() }, acct.uid); }
+    catch(e){ resetAcct(); fail(`Hesap açıldı ama profil kaydedilemedi (${e.message}). Firestore güvenlik kurallarını kontrol et.`); }
+  } else {
+    setTokens(await authRequest('signInWithPassword', { email, password: pass }));
+  }
+  await resolveRole();
+  if(acct.role === 'noprofile'){
+    if(cls){
+      try { await fsCreateDoc('users', { role: 'student', schoolCode: code, className: cls, studentNumber: num, createdAt: new Date() }, acct.uid); }
+      catch(e){ resetAcct(); fail(`Profil kaydedilemedi (${e.message}).`); }
+      await resolveRole();
+    } else {
+      authNeedClass = true; renderAuthForm();
+      fail('Profilin eksik: sınıfını seçip tekrar "Giriş yap"a bas.');
+    }
+  }
+  if(acct.role !== 'student'){ resetAcct(); fail('Bu hesap öğrenci hesabı değil.'); }
+  authNeedClass = false; enterApp();
+}
+async function handleTeacherAuth(){
+  const email = $('authEmail').value.trim().toLowerCase(), pass = $('authPass').value;
+  const code = normSchoolCode($('authSchool').value), reg = authMode === 'register';
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) fail('Geçerli bir e-posta yaz.');
+  if(pass.length < 6) fail('Şifre en az 6 karakter olmalı.');
+  if(reg){
+    if(code.length < 6) fail('Okul kodu en az 6 harf/rakam olmalı.');
+    setTokens(await authRequest('signUp', { email, password: pass }));
+    try { await fsCreateDoc('users', { role: 'teacher_pending', schoolCode: code, className: '', studentNumber: '', createdAt: new Date() }, acct.uid); }
+    catch(e){ resetAcct(); fail(`Hesap açıldı ama profil kaydedilemedi (${e.message}). Firestore güvenlik kurallarını kontrol et.`); }
+  } else {
+    setTokens(await authRequest('signInWithPassword', { email, password: pass }));
+  }
+  await resolveRole();
+  if(acct.role === 'teacher'){ enterApp(); return; }
+  if(acct.role === 'pending'){ showPending(); return; }
+  const wasStudent = acct.role === 'student';
+  resetAcct();
+  fail(wasStudent ? 'Bu hesap öğrenci hesabı. "Öğrenci" sekmesinden gir.' : 'Hesap profili bulunamadı.');
+}
+function showPending(){
+  const box = $('authPending');
+  box.innerHTML = `Hesabın oluşturuldu ve <b>yönetici onayı bekliyor</b>. Onaylanınca öğretmen paneli açılır.<br>Okul kodun: <b>${esc(acct.schoolCode)}</b><br>Hesap kimliği (UID): <code>${esc(acct.uid)}</code><br><button class="btn-secondary" id="pendingRecheck" style="margin-top:8px;">Onay durumunu kontrol et</button>`;
+  box.classList.remove('hidden');
+  authSay('');
+  showScreen('auth');
+}
+$('authPending').addEventListener('click', async (e) => {
+  if(!e.target.closest('#pendingRecheck')) return;
+  try { await resolveRole(); if(acct.role === 'teacher'){ $('authPending').classList.add('hidden'); enterApp(); } else authSay('Henüz onaylanmadı.'); }
+  catch(err){ authSay('Kontrol edilemedi: ' + err.message); }
+});
+$('authSubmit').addEventListener('click', async () => {
+  const btn = $('authSubmit'); btn.disabled = true; authSay('');
+  try { if(authRole === 'student') await handleStudentAuth(); else await handleTeacherAuth(); }
+  catch(e){ authSay(e.userMessage || authErrText(e.message)); }
+  finally { btn.disabled = false; }
+});
+$('guestBtn').addEventListener('click', () => { resetAcct(); acct.role = 'guest'; enterApp(); });
+
+function signOut(){
+  resetAcct();
+  $('authPass').value = ''; $('authPending').classList.add('hidden'); authSay('');
+  showScreen('auth'); renderAuthForm();
+}
+function enterApp(){
+  if(acct.role === 'teacher'){ showScreen('teacher'); loadTeacherHome(); }
+  else { showScreen('setup'); checkPoolSize(); }
+  if(acct.role === 'student' || acct.role === 'teacher') loadCommunityStats();
+}
+async function restoreSession(){
+  let stored = null; try { stored = JSON.parse(localStorage.getItem(AUTH_STORE_KEY) || 'null'); } catch(e){}
+  if(!stored || !stored.refreshToken) return false;
+  acct.refreshToken = stored.refreshToken;
+  try {
+    await getIdToken(); await resolveRole();
+    if(acct.role === 'student' || acct.role === 'teacher') return true;
+    if(acct.role === 'pending'){ showPending(); return false; }
+  } catch(e){
+    // Yalnızca jeton gerçekten geçersizse kayıtlı oturumu sil; internet yokluğunda sakla (sonraki açılışta tekrar denenir).
+    resetAcct(/TOKEN|USER_|INVALID_REFRESH|MISSING_REFRESH/.test(String(e.message)));
+    return false;
+  }
+  resetAcct();
+  return false;
+}
+async function initApp(){
+  showScreen('auth'); renderAuthForm();
+  if(await restoreSession()) enterApp();
+}
+
+// ---- Topluluk (anonim) istatistikleri: motorun korelasyon bilgisi için ----
+function applyCommunityStats(docs){
+  communityDocs = docs;
+  const agg = {}, unl = {}; let bs = 0, bn = 0;
+  docs.forEach(d => {
+    (d.misconceptions || []).forEach(id => { agg[id] = (agg[id] || 0) + 1; });
+    (d.unlabeled || []).forEach(k => { unl[k] = (unl[k] || 0) + 1; });
+    if(d.brierN){ bs += Number(d.brierSumSq) || 0; bn += Number(d.brierN) || 0; }
+  });
+  communityAgg = agg; communityTotal = docs.length; communityUnlabeledAgg = unl;
+  communityBrier = bn > 0 ? { brier: bs / bn, n: bn } : null;
+  communityCorrelations = computeMisconceptionCorrelations(docs);
+}
+async function loadCommunityStats(){
+  if(acct.role !== 'student' && acct.role !== 'teacher') return;
+  try { applyCommunityStats(await fsListAll('stats')); } catch(e){ console.warn('Topluluk istatistikleri okunamadı:', e.message); }
+}
+
+// ---- Oturum kaydı (yalnızca öğrenci) ----
+async function saveMiscToSharedMap(){
+  const statusEl = $('connStatusText');
+  const setStatus = (m) => { if(statusEl) statusEl.textContent = m; };
+  if(acct.role === 'guest'){ setStatus('ℹ️ Misafir oturumu kaydedilmez. Kayıt için giriş yap.'); return; }
+  if(acct.role === 'teacher'){ setStatus('ℹ️ Öğretmen denemeleri kaydedilmez.'); return; }
+  if(acct.role !== 'student'){ setStatus('ℹ️ Giriş yapılmadığı için kaydedilmedi.'); return; }
+  setStatus('Veri gönderiliyor...');
+  const ids = getConfirmedMisconceptions().map(c => c.id);
+  const trials = state.beliefTrials;
+  const brierSumSq = trials.reduce((s, t) => s + Math.pow(t.pBefore - t.outcome, 2), 0);
+  const now = new Date();
+  try {
+    await fsCreateDoc('sessions', {
+      uid: acct.uid, schoolCode: acct.profile.schoolCode, className: acct.profile.className, studentNumber: acct.profile.studentNumber,
+      grade: String(state.grade), diff: state.diff, topic: state.topic,
+      score: state.score, total: state.pool.length, misconceptions: ids, ts: now
+    });
+    await fsCreateDoc('stats', { // kimlik içermeyen, anonim kopya (Türkiye geneli grafikler ve motor için)
+      grade: String(state.grade), score: state.score, total: state.pool.length, misconceptions: ids,
+      unlabeled: state.sessionUnlabeled.slice(0, 30),
+      evidenceLog: state.evidenceLog.slice(0, 60).map(e => `${e.miscId}|${e.kind}|${e.idx}`),
+      brierSumSq, brierN: trials.length, ts: now
+    });
+    setStatus('✅ Bu oturum kaydedildi. "Gelişimimi Gör" ile grafiğine bakabilirsin.');
+  } catch(e){
+    console.warn('Oturum kaydedilemedi:', e);
+    setStatus(`❌ Kaydedilemedi (${e.message}).${e.detail ? ' ' + e.detail : ''}`);
+  }
+}
+
+// =====================================================================
+// GRAFİKLER (harici kütüphane yok; elle SVG) — oturum bazlı
+// =====================================================================
+function buildSessionChartSVG(items, sel){
+  if(!items.length) return '<div class="comp-note" style="padding:10px;">Henüz grafik çizecek oturum yok. Bir oyun oynayınca burada belirir.</div>';
+  const barW = 22, gap = 14, padL = 26, padR = 30, padT = 20, padB = 40, h = 210;
+  const w = Math.max(320, padL + padR + items.length * (barW + gap) - gap);
+  const plotH = h - padT - padB;
+  const maxM = Math.max(3, Math.ceil(Math.max(...items.map(i => i.miscCount))));
+  const yM = v => padT + plotH - (v / maxM) * plotH;
+  const yS = p => padT + plotH - (Math.max(0, Math.min(100, p)) / 100) * plotH;
+  let g = '';
+  [0, maxM / 2, maxM].forEach(v => {
+    const y = yM(v);
+    g += `<line x1="${padL - 4}" y1="${y}" x2="${w - padR + 4}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;
+    g += `<text x="${padL - 7}" y="${y + 3}" font-size="9" text-anchor="end" fill="#8a8e80">${fmtNum(v)}</text>`;
+  });
+  [0, 50, 100].forEach(p => { g += `<text x="${w - padR + 8}" y="${yS(p) + 3}" font-size="9" fill="var(--amber)">${p}%</text>`; });
+  const pts = [];
+  items.forEach((it, i) => {
+    const x = padL + i * (barW + gap), cx = x + barW / 2, isSel = i === sel;
+    const by = yM(it.miscCount), top = it.miscCount > 0 ? by : yM(0) - 3;
+    if(it.miscCount > 0) g += `<rect x="${x}" y="${by}" width="${barW}" height="${yM(0) - by}" fill="var(--coral)" opacity="${isSel ? 1 : .75}"/>`;
+    else g += `<rect x="${x}" y="${yM(0) - 3}" width="${barW}" height="3" fill="var(--good)" opacity="${isSel ? 1 : .8}"/>`;
+    g += `<text x="${cx}" y="${top - 4}" font-size="10" text-anchor="middle" font-weight="600" fill="var(--ink)">${fmtNum(it.miscCount)}</text>`;
+    g += `<text x="${cx}" y="${h - padB + 14}" font-size="9" text-anchor="middle" fill="var(--ink)">${esc(it.label)}</text>`;
+    g += `<text x="${cx}" y="${h - padB + 26}" font-size="8.5" text-anchor="middle" fill="#8a8e80">${esc(it.sub || '')}</text>`;
+    if(isSel) g += `<rect x="${x - 3}" y="${padT - 6}" width="${barW + 6}" height="${plotH + padB - 4}" fill="none" stroke="var(--ink)" stroke-width="1" stroke-dasharray="3 2"/>`;
+    pts.push([cx, yS(it.scorePct)]);
+    g += `<rect data-i="${i}" x="${x - gap / 2}" y="${padT - 6}" width="${barW + gap}" height="${plotH + padB}" fill="transparent" style="cursor:pointer"/>`;
+  });
+  g += `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="var(--amber)" stroke-width="2"/>`;
+  pts.forEach(p => { g += `<circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="var(--amber)" stroke="#fff" stroke-width="1.5"/>`; });
+  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Oturum bazlı yanılgı ve skor grafiği">${g}</svg>`;
+}
+function mountChart(chartEl, detailEl, items){
+  let sel = items.length ? items.length - 1 : -1;
+  const draw = () => { chartEl.innerHTML = buildSessionChartSVG(items, sel); chartEl.scrollLeft = chartEl.scrollWidth; };
+  const detail = () => {
+    if(sel < 0){ detailEl.classList.add('hidden'); return; }
+    detailEl.classList.remove('hidden'); detailEl.innerHTML = items[sel].detailHtml;
+  };
+  chartEl.onclick = (e) => { const t = e.target.closest ? e.target.closest('[data-i]') : null; if(!t) return; sel = Number(t.getAttribute('data-i')); draw(); detail(); };
+  draw(); detail();
+}
+function tileHtml(val, lbl, delta){
+  const d = delta ? `<span class="t-delta ${delta.cls}">${esc(delta.text)}</span>` : '';
+  return `<div class="tile"><div class="t-val">${esc(val)}${d}</div><div class="t-lbl">${esc(lbl)}</div></div>`;
+}
+function sessionToItem(d, title, label, sub){
+  const ids = (d.misconceptions || []).filter(id => MISCONCEPTIONS[id]);
+  const pct = d.total ? Math.round(d.score / d.total * 100) : 0;
+  const list = ids.length ? `<ul>${ids.map(id => `<li>${esc(MISCONCEPTIONS[id].title)}</li>`).join('')}</ul>` : '<div>✅ Bu oturumda yanılgı teşhis edilmedi.</div>';
+  return { label, sub, miscCount: ids.length, scorePct: pct,
+    detailHtml: `<b>${esc(title)}</b> · ${esc(fmtDateTime(d.ts))} · skor ${d.score}/${d.total} (%${pct})${list}` };
+}
+function miscCounts(sessions){
+  const c = {};
+  sessions.forEach(d => (d.misconceptions || []).forEach(id => { if(MISCONCEPTIONS[id]) c[id] = (c[id] || 0) + 1; }));
+  return c;
+}
+function avg(arr){ return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0; }
+function scoreAvgPct(sessions){ return Math.round(avg(sessions.filter(d => d.total).map(d => d.score / d.total * 100))); }
+
+// ---- Öğrenci: Gelişimim ----
+async function loadStudentHome(){
+  $('stuTiles').innerHTML = ''; $('stuDetail').classList.add('hidden');
+  $('stuChart').innerHTML = '<div class="comp-note" style="padding:10px;">Yükleniyor...</div>';
+  const sel = $('stuClassSelect');
+  sel.innerHTML = CLASS_LIST.map(c => `<option value="${c}">${classLabel(c)}</option>`).join('');
+  sel.value = acct.profile.className;
+  try {
+    studentSessions = (await fsQueryEq('sessions', 'uid', acct.uid, 200)).sort(byTs);
+    renderStudentHome();
+  } catch(e){
+    $('stuChart').innerHTML = `<div class="comp-note" style="padding:10px;">Veri okunamadı (${esc(e.message)}). ${esc(e.detail || '')}</div>`;
+  }
+}
+function renderStudentHome(){
+  const ss = studentSessions, n = ss.length, last = ss[n - 1], prev = ss[n - 2];
+  const lastM = last ? (last.misconceptions || []).length : 0, prevM = prev ? (prev.misconceptions || []).length : null;
+  let delta = null;
+  if(prevM !== null && lastM !== prevM) delta = lastM < prevM ? { cls: 'good', text: `↓${prevM - lastM}` } : { cls: 'bad', text: `↑${lastM - prevM}` };
+  $('stuTiles').innerHTML =
+    tileHtml(String(n), 'Oturum sayısı') +
+    tileHtml(n ? `%${scoreAvgPct(ss)}` : '—', 'Ortalama skor') +
+    tileHtml(last ? `${last.score}/${last.total}` : '—', 'Son oturum skoru') +
+    tileHtml(n ? String(lastM) : '—', 'Son oturumda yanılgı', delta);
+  mountChart($('stuChart'), $('stuDetail'), ss.map((d, i) => sessionToItem(d, `Oturum ${i + 1}`, `S${i + 1}`, fmtDate(d.ts))));
+  renderMiscList($('stuMiscRows'), ss, 'Henüz teşhis edilmiş bir kavram yanılgın yok.');
+}
+function renderMiscList(rows, ss, emptyText){
+  rows.innerHTML = '';
+  const n = ss.length, last = ss[n - 1];
+  const counts = miscCounts(ss), lastIds = new Set(last ? last.misconceptions || [] : []);
+  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  if(!entries.length){ rows.innerHTML = `<div class="comp-note">${n ? '✅ ' + esc(emptyText) : 'Henüz oturum yok.'}</div>`; return; }
+  entries.forEach(([id, c]) => {
+    const m = MISCONCEPTIONS[id], row = document.createElement('div'); row.className = 'topic-row';
+    const status = lastIds.has(id) ? '⚠️ son oturumda var' : '✅ son oturumda görülmedi';
+    row.innerHTML = `<div class="topic-row-head"><span class="t-name">${esc(m.title)}</span><span class="t-frac">${c} oturum</span></div>` +
+      `<div style="font-size:12px;color:#4a4f46;line-height:1.5;margin-top:3px;">${esc(m.fix)}</div><div class="comp-note">${status}</div>`;
+    rows.appendChild(row);
+  });
+}
+$('stuClassSave').addEventListener('click', async () => {
+  const v = $('stuClassSelect').value, msg = $('stuClassMsg');
+  try {
+    await fsRequest(`/users/${acct.uid}?updateMask.fieldPaths=className`, { method: 'PATCH', body: { fields: { className: { stringValue: v } } } });
+    acct.profile.className = v; msg.textContent = '✅ Sınıfın güncellendi. Yeni oturumlar bu sınıfla kaydedilir.'; applyUserBar();
+  } catch(e){ msg.textContent = `❌ Güncellenemedi (${e.message}).`; }
+});
+$('stuBackBtn').addEventListener('click', () => { showScreen('setup'); checkPoolSize(); });
+$('resultProgressBtn').addEventListener('click', () => { showScreen('student'); loadStudentHome(); });
+
+// ---- Öğretmen: Okulum + Türkiye ----
+function miscBarRows(container, counts, limit){
+  container.innerHTML = '';
+  const entries = Object.entries(counts).filter(([id]) => MISCONCEPTIONS[id]).sort((a, b) => b[1] - a[1]).slice(0, limit);
+  if(!entries.length){ container.innerHTML = '<div class="comp-note">Henüz teşhis edilmiş yanılgı yok.</div>'; return; }
+  const max = entries[0][1];
+  entries.forEach(([id, c]) => {
+    const ratio = c / max, row = document.createElement('div'); row.className = 'topic-row';
+    row.innerHTML = `<div class="topic-row-head"><span class="t-name">${esc(MISCONCEPTIONS[id].title)}</span><span class="t-frac">${c} kez</span></div>` +
+      `<div class="topic-bar"><div class="topic-bar-fill${ratio > .66 ? ' weak' : (ratio > .33 ? ' mid' : '')}" style="width:${ratio * 100}%"></div></div>`;
+    container.appendChild(row);
+  });
+}
+async function loadTeacherHome(){
+  $('schNote').textContent = 'Yükleniyor...'; $('trNote').textContent = '';
+  try {
+    const [sess, stats] = await Promise.all([fsQueryEq('sessions', 'schoolCode', acct.schoolCode, 500), fsListAll('stats')]);
+    schoolSessions = sess; turkeyStats = stats; applyCommunityStats(stats);
+    const sel = $('schClassSelect');
+    const counts = {}; sess.forEach(d => { if(d.className) counts[d.className] = (counts[d.className] || 0) + 1; });
+    const extra = Object.keys(counts).filter(c => !CLASS_LIST.includes(c)).sort();
+    sel.innerHTML = CLASS_LIST.concat(extra).map(c => `<option value="${esc(c)}">${esc(classLabel(c))} (${counts[c] || 0} oturum)</option>`).join('');
+    sel.value = CLASS_LIST.find(c => counts[c]) || extra[0] || CLASS_LIST[0];
+    $('schNote').textContent = `Okul kodun: ${acct.schoolCode} · toplam ${sess.length} oturum.`;
+    renderSchoolView(); renderTurkeyView();
+  } catch(e){
+    $('schNote').textContent = `Veri okunamadı (${e.message}). ${e.detail || ''} Firestore kuralları ve öğretmen onayı (teachers/UID belgesi) kontrol edilmeli.`;
+  }
+}
+function renderSchoolView(){
+  const cls = $('schClassSelect').value;
+  const docs = schoolSessions.filter(d => d.className === cls).sort(byTs);
+  const students = new Set(docs.map(d => d.studentNumber));
+  $('schTiles').innerHTML =
+    tileHtml(String(docs.length), 'Oturum') + tileHtml(String(students.size), 'Öğrenci') +
+    tileHtml(docs.length ? `%${scoreAvgPct(docs)}` : '—', 'Ortalama skor') +
+    tileHtml(docs.length ? avg(docs.map(d => (d.misconceptions || []).length)).toFixed(1) : '—', 'Oturum başına yanılgı');
+  mountChart($('schChart'), $('schDetail'), docs.slice(-60).map(d => sessionToItem(d, `No ${d.studentNumber}`, `#${d.studentNumber}`, fmtDate(d.ts))));
+  miscBarRows($('schMiscRows'), miscCounts(docs), 6);
+  const rows = $('schStudentRows'); rows.innerHTML = '';
+  const by = {}; docs.forEach(d => { (by[d.studentNumber] = by[d.studentNumber] || []).push(d); });
+  const nums = Object.keys(by).sort((a, b) => Number(a) - Number(b));
+  if(!nums.length) rows.innerHTML = '<div class="comp-note">Bu sınıfta henüz kayıtlı oturum yok.</div>';
+  nums.forEach(num => {
+    const list = by[num], last = list[list.length - 1], row = document.createElement('div'); row.className = 'topic-row';
+    row.style.cursor = 'pointer'; row.dataset.num = num;
+    row.innerHTML = `<div class="topic-row-head"><span class="t-name">No: ${esc(num)}</span><span class="t-frac">${list.length} oturum · son %${last.total ? Math.round(last.score / last.total * 100) : 0} · ${(last.misconceptions || []).length} yanılgı</span></div>`;
+    rows.appendChild(row);
+  });
+  $('schStudentBox').classList.add('hidden');
+}
+$('schClassSelect').addEventListener('change', renderSchoolView);
+$('schStudentRows').addEventListener('click', (e) => {
+  const row = e.target.closest('[data-num]'); if(!row) return;
+  const cls = $('schClassSelect').value, num = row.dataset.num;
+  const docs = schoolSessions.filter(d => d.className === cls && d.studentNumber === num).sort(byTs);
+  $('schStudentBox').classList.remove('hidden');
+  $('schStudentTitle').textContent = `No ${num} — oturum bazlı gelişim`;
+  const n = docs.length, lastM = (docs[n - 1].misconceptions || []).length;
+  $('schStudentTiles').innerHTML = tileHtml(String(n), 'Oturum') + tileHtml(`%${scoreAvgPct(docs)}`, 'Ortalama skor') + tileHtml(`${docs[n - 1].score}/${docs[n - 1].total}`, 'Son skor') + tileHtml(String(lastM), 'Son oturumda yanılgı');
+  mountChart($('schStudentChart'), $('schStudentDetail'), docs.map((d, i) => sessionToItem(d, `Oturum ${i + 1}`, `S${i + 1}`, fmtDate(d.ts))));
+  renderMiscList($('schStudentMisc'), docs, 'Bu öğrencide teşhis edilmiş kavram yanılgısı yok.');
+});
+function renderTurkeyView(){
+  const docs = turkeyStats.slice().sort(byTs), counts = miscCounts(docs);
+  $('trTiles').innerHTML =
+    tileHtml(String(docs.length), 'Toplam oturum') + tileHtml(docs.length ? `%${scoreAvgPct(docs)}` : '—', 'Ortalama skor') +
+    tileHtml(docs.length ? avg(docs.map(d => (d.misconceptions || []).length)).toFixed(1) : '—', 'Oturum başına yanılgı') +
+    tileHtml(String(Object.keys(counts).length), 'Görülen yanılgı türü');
+  $('trNote').textContent = 'Tüm okullardan, kimlik içermeyen (anonim) veriler.';
+  const days = {};
+  docs.forEach(d => { if(d.ts){ const k = String(d.ts).slice(0, 10); (days[k] = days[k] || []).push(d); } });
+  mountChart($('trChart'), $('trDetail'), Object.keys(days).sort().slice(-40).map(k => {
+    const list = days[k], m = avg(list.map(d => (d.misconceptions || []).length)), pct = scoreAvgPct(list);
+    const top = Object.entries(miscCounts(list)).sort((a, b) => b[1] - a[1]).slice(0, 3);
+    const topHtml = top.length ? `<ul>${top.map(([id, c]) => `<li>${esc(MISCONCEPTIONS[id].title)} (${c})</li>`).join('')}</ul>` : '';
+    return { label: fmtDate(k), sub: `${list.length} oturum`, miscCount: Math.round(m * 10) / 10, scorePct: pct,
+      detailHtml: `<b>${esc(fmtDate(k))}</b> · ${list.length} oturum · oturum başına ${m.toFixed(1)} yanılgı · ortalama skor %${pct}${topHtml}` };
+  }));
+  miscBarRows($('trMiscRows'), counts, 8);
+  // Konu bazlı yoğunluk
+  const topicCounts = {};
+  Object.entries(counts).forEach(([id, c]) => { const t = findTopicForMisconception(id) || 'Diğer'; topicCounts[t] = (topicCounts[t] || 0) + c; });
+  const te = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]), heat = $('trHeatRows'); heat.innerHTML = '';
+  if(!te.length) heat.innerHTML = '<div class="comp-note">Henüz veri yok.</div>';
+  te.forEach(([t, c]) => {
+    const hue = 120 - Math.round((c / te[0][1]) * 120), cell = document.createElement('div');
+    cell.style.cssText = `display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin-bottom:6px;border-radius:8px;background:hsl(${hue},70%,88%);border-left:4px solid hsl(${hue},70%,55%);`;
+    cell.innerHTML = `<span style="font-size:12.5px;font-weight:600;">${esc(t)}</span><span style="font-size:12px;">${c} yanılgı</span>`;
+    heat.appendChild(cell);
+  });
+  // Yeni yanılgı adayları
+  const cand = Object.entries(communityUnlabeledAgg).filter(([, c]) => c >= DISCOVERY_THRESHOLD).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  $('trDiscovery').classList.toggle('hidden', !cand.length);
+  const dr = $('trDiscoveryRows'); dr.innerHTML = '';
+  cand.forEach(([k, c]) => {
+    const p = k.split('||'), row = document.createElement('div'); row.className = 'topic-row';
+    row.innerHTML = `<div class="topic-row-head"><span class="t-name">🔍 [${esc(p[0] || '—')}] "${esc(p[2] || k)}"</span><span class="t-frac">${c} öğrenci</span></div>`;
+    dr.appendChild(row);
+  });
+}
+$('teacherTabs').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-tab]'); if(!b) return;
+  document.querySelectorAll('#teacherTabs .chip').forEach(c => c.classList.toggle('active', c === b));
+  $('teacherTabSchool').classList.toggle('hidden', b.dataset.tab !== 'school');
+  $('teacherTabTurkey').classList.toggle('hidden', b.dataset.tab !== 'turkey');
+});
+$('teacherBackBtn').addEventListener('click', () => { showScreen('setup'); checkPoolSize(); });
+$('teacherOptimizeBtn').addEventListener('click', () => {
+  const out = $('teacherOptimizeResult');
+  if(!turkeyStats.length){ out.textContent = 'Önce panelin yüklenmesini bekle (veri henüz gelmedi).'; return; }
+  out.textContent = 'Izgara arama çalışıyor...';
+  setTimeout(() => {
+    const r = optimizeBayesParameters(turkeyStats);
+    if(!r){ out.textContent = 'Optimizasyon için yeterli ham kanıt günlüğü yok.'; return; }
+    const { best, currentBrier, sessionsUsed, totalTrials } = r, L = [];
+    L.push(`${sessionsUsed} oturumun ham kanıt günlüğü (${totalTrials} kanıt) üzerinden ızgara arama yapıldı.`);
+    L.push(`Şu anki katsayılar (LR₊=${BAYES_LR_POSITIVE}, LR₋=${BAYES_LR_NEGATIVE}) ile Brier skoru: ${currentBrier !== null ? currentBrier.toFixed(4) : 'hesaplanamadı'}.`);
+    L.push(`En iyi kombinasyon: LR₊=${best.lrPos}, LR₋=${best.lrNeg} → Brier skoru: ${best.brier.toFixed(4)}.`);
+    L.push(currentBrier !== null && currentBrier > best.brier ? `Yaklaşık %${((currentBrier - best.brier) / currentBrier * 100).toFixed(1)} iyileşme; BAYES_LR_POSITIVE ve BAYES_LR_NEGATIVE sabitlerini güncelleyebilirsin.` : 'Şu anki katsayılar denenen aralıkta en iyi ya da çok yakın; güncelleme gerekmiyor.');
+    out.innerHTML = L.map(l => `<div style="margin-bottom:6px;">${l}</div>`).join('');
+  }, 10);
+});
+
+
 // default select grade 9
 gradeBtns[0].click();
+initApp();
 </script>
 </body>
 </html>
